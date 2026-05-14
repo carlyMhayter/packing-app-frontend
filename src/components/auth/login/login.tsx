@@ -1,66 +1,45 @@
 import { useState } from "react";
-import MainButton from "../basic/mainButton";
-import { createUser } from "../../services/auth";
+import MainButton from "../../basic/mainButton";
+// import platyImg from "../../../assets/platy_transparent.png";
 
-export default function CreateUser() {
+export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
   const [loading, setLoading] = useState(false);
-  const [registered, setRegistered] = useState(false);
+  const [loggedIn, setLoggedIn] = useState(false);
   const [error, setError] = useState("");
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
     setLoading(true);
-
-    // check passwords match
-    if (password !== confirmPassword) {
-      setError("Error: Passwords do not match.");
+    setTimeout(() => {
       setLoading(false);
-
-      setRegistered(false);
-      return;
-    }
-
-    // email validation regex (simple version)
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-      setError("Error: Please enter a valid email address.");
-      setLoading(false);
-      setRegistered(false);
-      return;
-    }
-
-    try {
-      await createUser(email, password);
-      setRegistered(true);
-    } catch (err) {
-      setError((err as Error).message);
-    } finally {
-      setLoading(false);
-    }
-
-    setLoading(true);
+      // Simulate API error 30% of the time for demo
+      if (Math.random() < 0.3) {
+        setError("Error: Invalid email or password. Please try again.");
+        return;
+      }
+      setLoggedIn(true);
+    }, 2000);
   };
 
-  const handleGoogleSignUp = () => {
+  const handleGoogleLogin = () => {
     // TODO: Implement Google OAuth
-    console.log("Google sign up clicked");
+    console.log("Google login clicked");
   };
 
   return (
     <div className="login-form">
-      <div className={registered ? "fade-out" : ""}>
-        <h1>Create Account</h1>
-        <p className="login-subtitle">Sign up to get started.</p>
-
+      <div className={loggedIn ? "fade-out" : ""}>
+        <h1>Welcome Back</h1>
+        <p className="login-subtitle">Please log in to continue.</p>
+        {/* <img src={platyImg} alt="Platypus mascot" className="login-platypus" /> */}
         <form onSubmit={handleSubmit} className="form">
           <div className="form-group">
-            <label htmlFor="signup-email">Email</label>
+            <label htmlFor="email">Email</label>
             <input
-              id="signup-email"
+              id="email"
               type="email"
               value={email}
               onChange={(e) => {
@@ -73,31 +52,16 @@ export default function CreateUser() {
           </div>
 
           <div className="form-group">
-            <label htmlFor="signup-password">Password</label>
+            <label htmlFor="password">Password</label>
             <input
-              id="signup-password"
+              id="password"
               type="password"
               value={password}
               onChange={(e) => {
                 setPassword(e.target.value);
                 setError("");
               }}
-              placeholder="Create a password"
-              required
-            />
-          </div>
-
-          <div className="form-group">
-            <label htmlFor="signup-confirm">Confirm Password</label>
-            <input
-              id="signup-confirm"
-              type="password"
-              value={confirmPassword}
-              onChange={(e) => {
-                setConfirmPassword(e.target.value);
-                setError("");
-              }}
-              placeholder="Confirm your password"
+              placeholder="Enter your password"
               required
             />
           </div>
@@ -109,7 +73,7 @@ export default function CreateUser() {
             loading={loading}
             className="login-submit-btn"
           >
-            Create Account
+            Log In
           </MainButton>
         </form>
 
@@ -122,7 +86,7 @@ export default function CreateUser() {
         <button
           type="button"
           className="btn-social"
-          onClick={handleGoogleSignUp}
+          onClick={handleGoogleLogin}
         >
           <svg
             className="social-icon"
@@ -150,10 +114,10 @@ export default function CreateUser() {
         </button>
       </div>
 
-      {registered && (
+      {loggedIn && (
         <div className="success-message">
           <p>
-            User registered!
+            Welcome back!
             <br />
             Logging you in!
           </p>

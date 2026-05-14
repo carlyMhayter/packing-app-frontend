@@ -1,0 +1,78 @@
+.platypus-scene {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+  min-height: 300px;
+}
+
+.platypus-wrapper {
+  position: relative;
+  max-width: 600px;
+  width: 100%;
+}
+
+.platypus-img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* ─── Eye overlays ─── */
+
+.platypus-eye {
+  position: absolute;
+  width: 6%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  overflow: hidden;
+  transform: translate(-50%, -50%);
+}
+
+/* Positioned over the eyes in the transparent PNG */
+.eye-top {
+  left: 20.5%;
+  top: 30%;
+}
+
+.eye-bottom {
+  left: 23%;
+  top: 47%;
+}
+
+/* ─── Blinking Eyelid ─── */
+
+.eyelid {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: #d14f46;
+  transform-origin: top;
+  transform: scaleY(0);
+  animation: blink 4s infinite ease-in-out;
+}
+
+/* Stagger the bottom eye blink slightly for a more natural feel */
+.eye-bottom .eyelid {
+  animation-delay: 0.1s;
+}
+
+@keyframes blink {
+  0%,
+  90%,
+  100% {
+    transform: scaleY(0);
+  }
+  95% {
+    transform: scaleY(1);
+  }
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .platypus-scene {
+    padding: 20px;
+  }
+}
