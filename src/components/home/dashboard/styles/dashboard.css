@@ -1,0 +1,196 @@
+/* ── Dashboard ── */
+
+.dashboard {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 32px 24px;
+}
+
+.dashboard-welcome {
+  font-family: var(--heading);
+  font-size: clamp(28px, 4vw, 40px);
+  font-weight: 600;
+  color: var(--mahogany);
+  margin: 0 0 32px;
+  letter-spacing: -0.5px;
+}
+
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+
+@media (max-width: 640px) {
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.dashboard-section {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.dashboard-section-title {
+  font-family: var(--heading);
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--mahogany);
+  text-align: left;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  text-decoration-thickness: 2px;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  width: fit-content;
+  transition: color 0.2s ease;
+}
+
+.dashboard-section-title:hover {
+  color: var(--lobster);
+}
+
+.dashboard-section-body {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.dashboard-empty-line {
+  font-family: var(--sans);
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--carbon);
+  opacity: 0.7;
+  margin: 0;
+  line-height: 140%;
+}
+
+.dashboard-add-btn {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: 2px solid var(--lobster);
+  background: var(--white);
+  color: var(--lobster);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  padding: 0;
+  margin-top: 4px;
+}
+
+.dashboard-add-btn:hover {
+  background: var(--lobster);
+  color: var(--white);
+  transform: scale(1.08);
+}
+
+.dashboard-add-btn svg {
+  width: 20px;
+  height: 20px;
+}
+
+/* Dashboard list items */
+
+.dashboard-list-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.dashboard-list-add {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  color: var(--carbon);
+  transition: color 0.2s ease;
+}
+
+.dashboard-list-add:hover {
+  color: var(--lobster);
+}
+
+.dashboard-list-clickable {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  width: 100%;
+  text-align: left;
+  color: var(--carbon);
+  transition: color 0.2s ease;
+}
+
+.dashboard-list-clickable:hover {
+  color: var(--lobster);
+}
+
+.dashboard-list-clickable:hover .dashboard-edit-icon {
+  opacity: 1;
+}
+
+.dashboard-edit-icon {
+  margin-left: auto;
+  opacity: 0.3;
+  transition: opacity 0.2s ease;
+  flex-shrink: 0;
+}
+
+.dashboard-list-text {
+  font-family: var(--sans);
+  font-size: 15px;
+  font-weight: 500;
+  color: inherit;
+}
+
+.dashboard-list-muted {
+  opacity: 0.55;
+}
+
+.dashboard-icon-circle {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 1.5px solid var(--steelBlue);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--carbon);
+  opacity: 0.7;
+  flex-shrink: 0;
+}
+
+.dashboard-icon-plus {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 1.5px solid var(--lobster);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--lobster);
+  flex-shrink: 0;
+}
+
+.dashboard-icon-star {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 1.5px solid var(--lobster);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--lobster);
+  flex-shrink: 0;
+}

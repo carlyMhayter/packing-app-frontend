@@ -4,6 +4,7 @@ import TripCards from "./TripCards";
 import TextRoulette from "./TextRoulette";
 import WeatherOverview from "./WeatherOverview";
 import EllipticalItems from "./EllipticalItems";
+import "./styles/homepage.css";
 
 export default function Homepage() {
   return (

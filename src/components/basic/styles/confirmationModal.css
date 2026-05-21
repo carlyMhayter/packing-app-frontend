@@ -1,0 +1,413 @@
+/* Confirmation Modal */
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  background: rgba(25, 25, 25, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  animation: modal-fade-in 0.2s ease;
+}
+
+.modal-overlay-dark {
+  background: rgba(25, 25, 25, 0.55);
+}
+
+@keyframes modal-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.modal-content {
+  background: var(--white);
+  border: 1px solid var(--steelBlue);
+  border-radius: 12px;
+  padding: 28px 32px;
+  max-width: 360px;
+  width: 100%;
+  box-shadow: var(--shadow);
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  animation: modal-scale-in 0.2s ease;
+}
+
+.modal-scrollable {
+  max-width: 480px;
+  max-height: 80vh;
+  padding: 0;
+  overflow: hidden;
+}
+
+@keyframes modal-scale-in {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24px 28px 0;
+  gap: 16px;
+}
+
+.modal-title {
+  font-family: var(--heading);
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--mahogany);
+  margin: 0;
+}
+
+.modal-close-btn {
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: transparent;
+  color: var(--carbon);
+  opacity: 0.4;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  transition:
+    opacity 0.2s ease,
+    background 0.2s ease;
+  padding: 0;
+  flex-shrink: 0;
+}
+
+.modal-close-btn:hover {
+  opacity: 0.8;
+  background: var(--ltMahogany);
+}
+
+.modal-body {
+  padding: 16px 28px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.modal-footer {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+  padding: 0 28px 24px;
+  border-top: 1px solid var(--steelBlue);
+  padding-top: 20px;
+  margin-top: 4px;
+}
+
+.modal-message {
+  font-family: var(--sans);
+  font-size: 15px;
+  color: var(--carbon);
+  opacity: 0.75;
+  margin: 0;
+  text-align: center;
+  line-height: 150%;
+}
+
+.modal-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+}
+
+.modal-confirm {
+  min-width: 80px;
+}
+
+.modal-cancel {
+  min-width: 80px;
+}
+
+/* Modal sections */
+
+.modal-section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.modal-section-label {
+  font-family: var(--sans);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--mahogany);
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.modal-section-heading {
+  font-family: var(--heading);
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--mahogany);
+  margin: 0;
+  padding-bottom: 4px;
+  border-bottom: 1px solid var(--steelBlue);
+}
+
+.modal-text-input {
+  font-family: var(--sans);
+  font-size: 16px;
+  color: var(--carbon);
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--steelBlue);
+  padding: 8px 0;
+  outline: none;
+  transition: border-color 0.2s ease;
+  width: 100%;
+}
+
+.modal-text-input:focus {
+  border-color: var(--lobster);
+}
+
+/* Temperature Preferences */
+
+.temp-preferences-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+@media (max-width: 480px) {
+  .temp-preferences-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.temp-preference-item {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.temp-preference-label {
+  font-family: var(--sans);
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--carbon);
+  opacity: 0.7;
+}
+
+.temp-preference-input-wrap {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.temp-preference-input {
+  font-family: var(--sans);
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--mahogany);
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid var(--steelBlue);
+  padding: 4px 0;
+  outline: none;
+  width: 56px;
+  text-align: center;
+  transition: border-color 0.2s ease;
+}
+
+.temp-preference-input:focus {
+  border-color: var(--lobster);
+}
+
+.temp-preference-unit {
+  font-family: var(--sans);
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--carbon);
+  opacity: 0.5;
+}
+
+/* Clothing Preferences */
+
+.clothing-preferences-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.clothing-preference-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.clothing-preference-label {
+  font-family: var(--sans);
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--carbon);
+}
+
+.clothing-preference-input {
+  font-family: var(--sans);
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--mahogany);
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid var(--steelBlue);
+  padding: 2px 4px;
+  outline: none;
+  width: 40px;
+  text-align: center;
+  transition: border-color 0.2s ease;
+}
+
+.clothing-preference-input:focus {
+  border-color: var(--lobster);
+}
+
+/* Tag Lists (Medications / Routines) */
+
+.tag-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.tag-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--sans);
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--mahogany);
+  background: var(--ltMahogany);
+  border: 1px solid rgba(209, 79, 70, 0.2);
+  border-radius: 20px;
+  padding: 6px 12px;
+  line-height: 1;
+}
+
+.tag-remove {
+  width: 18px;
+  height: 18px;
+  border: none;
+  background: transparent;
+  color: var(--lobster);
+  opacity: 0.5;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  padding: 0;
+  transition: opacity 0.2s ease;
+}
+
+.tag-remove:hover {
+  opacity: 1;
+}
+
+.tag-add-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.tag-add-input {
+  font-family: var(--sans);
+  font-size: 15px;
+  color: var(--carbon);
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--steelBlue);
+  padding: 6px 0;
+  outline: none;
+  flex: 1;
+  min-width: 0;
+  transition: border-color 0.2s ease;
+}
+
+.tag-add-input:focus {
+  border-color: var(--lobster);
+}
+
+.tag-add-input::placeholder {
+  color: var(--carbon);
+  opacity: 0.4;
+}
+
+.tag-add-btn {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 1.5px solid var(--lobster);
+  background: var(--white);
+  color: var(--lobster);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  padding: 0;
+  flex-shrink: 0;
+}
+
+.tag-add-btn:hover {
+  background: var(--lobster);
+  color: var(--white);
+}
+
+/* Previous Trips */
+
+.previous-trips-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.previous-trip-item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 10px 14px;
+  background: var(--steelBlueLt);
+  border: 1px solid var(--steelBlue);
+  border-radius: 10px;
+}
+
+.previous-trip-name {
+  font-family: var(--sans);
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--mahogany);
+}
+
+.previous-trip-dates {
+  font-family: var(--sans);
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--carbon);
+  opacity: 0.6;
+}

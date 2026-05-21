@@ -1,7 +1,10 @@
 import { useState, useRef, useEffect } from "react";
 import MainButton from "../../basic/mainButton";
 import { useLocation } from "react-router-dom";
-import { verify2FA, resend2FACode } from "../../../services/auth";
+import { verify2FA, resend2FACode, getCurrentUser } from "../../../services/auth";
+import { useAuth } from "../../../contexts/AuthContext";
+import { useNavigate } from "react-router-dom";
+import "./styles/twoFactorAuth.css";
 
 export default function TwoFactorAuth() {
   const [code, setCode] = useState(["", "", "", "", "", ""]);
@@ -10,8 +13,11 @@ export default function TwoFactorAuth() {
   const [error, setError] = useState("");
   const inputsRef = useRef<(HTMLInputElement | null)[]>([]);
   const location = useLocation();
+  const navigate = useNavigate();
+  const { login } = useAuth();
   const [tempToken, setTempToken] = useState(location.state?.tempToken);
   const [resendSent, setResendSent] = useState(false);
+
   const handleChange = (index: number, value: string) => {
     if (!/^\d?$/.test(value)) return;
     setError("");
@@ -35,30 +41,55 @@ export default function TwoFactorAuth() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
+    const paramsString = new URL(window.location.href).searchParams;
+    const tempTokenFromURL = paramsString.get("tempToken");
+    const tokenToUse = tempToken || tempTokenFromURL;
 
-    // Pass tempToken explicitly to auth function
-    const response = await verify2FA(tempToken, code.join(""));
+    if (!tokenToUse) {
+      setError("Missing authentication token. Please try logging in again.");
+      setLoading(false);
+      return;
+    }
 
-    if (response) {
+    try {
+      await verify2FA(tokenToUse, code.join(""));
+      const user = await getCurrentUser();
+      if (user) {
+        login(user);
+      }
       setVerified(true);
-    } else {
-      setError("Invalid code. Please try again.");
+      navigate("/dashboard");
+    } catch (err) {
+      let errorMessage = "";
+      if (typeof err === "string") {
+        errorMessage = err.toUpperCase();
+      } else if (err instanceof Error) {
+        errorMessage = err.message;
+      }
+      setError(
+        errorMessage || "An unexpected error occurred. Please try again.",
+      );
+    } finally {
+      setLoading(false);
     }
   };
+
   const handleResend = async () => {
     setLoading(true);
     try {
       const result = await resend2FACode(tempToken);
-      console.log("Resend result:", result);
-      // setTempToken(result.temp_token);
-      // setResendSent(true);
-    } catch (e) {
-      if (!(e instanceof Error)) {
-        const error1 = new Error(e);
-        console.log("Error resending code:", error1);
+      setTempToken(result.temp_token);
+      setResendSent(true);
+    } catch (err) {
+      let errorMessage = "";
+      if (typeof err === "string") {
+        errorMessage = err.toUpperCase();
+      } else if (err instanceof Error) {
+        errorMessage = err.message;
       }
-      // console.log("Error resending code:", error);
-      // setError((error as Error).message);
+      setError(
+        errorMessage || "An unexpected error occurred. Please try again.",
+      );
     } finally {
       setLoading(false);
     }

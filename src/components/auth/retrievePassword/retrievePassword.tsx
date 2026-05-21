@@ -1,5 +1,6 @@
 import { useState } from "react";
 import MainButton from "../../basic/mainButton";
+import { forgotPassword } from "../../../services/auth";
 
 export default function RetrievePassword() {
   const [email, setEmail] = useState("");
@@ -7,19 +8,27 @@ export default function RetrievePassword() {
   const [sent, setSent] = useState(false);
   const [error, setError] = useState("");
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
     setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
-      // Simulate API error 30% of the time for demo
-      if (Math.random() < 0.3) {
-        setError("Error: Unable to send reset link. Please check your email and try again.");
-        return;
-      }
+
+    try {
+      await forgotPassword(email);
       setSent(true);
-    }, 2000);
+    } catch (err) {
+      let errorMessage = "";
+      if (typeof err === "string") {
+        errorMessage = err.toUpperCase();
+      } else if (err instanceof Error) {
+        errorMessage = err.message;
+      }
+      setError(
+        errorMessage || "An unexpected error occurred. Please try again.",
+      );
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (

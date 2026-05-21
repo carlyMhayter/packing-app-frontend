@@ -1,34 +1,54 @@
 import { useState } from "react";
+import { useSearchParams, useNavigate } from "react-router-dom";
 import MainButton from "../../basic/mainButton";
+import { resetPassword } from "../../../services/auth";
 
 export default function ResetPassword() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [reset, setReset] = useState(false);
-  const [error, setError] = useState(
-    "Error: Unable to reset password. Token may be expired or invalid.",
-  );
+  const [error, setError] = useState("");
+  const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
+  const token = searchParams.get("token") || "";
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
+
     if (password !== confirmPassword) {
       setError("Error: Passwords do not match.");
       return;
     }
+
+    if (!token) {
+      setError("Error: Invalid or missing reset token.");
+      return;
+    }
+
     setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
-      // Simulate API error 30% of the time for demo
-      if (Math.random() < 0.3) {
-        setError(
-          "Error: Unable to reset password. Token may be expired or invalid.",
-        );
-        return;
-      }
+
+    try {
+      await resetPassword(token, password);
       setReset(true);
-    }, 2000);
+      // Redirect to login after a brief delay
+      setTimeout(() => {
+        navigate("/auth/login");
+      }, 2000);
+    } catch (err) {
+      let errorMessage = "";
+      if (typeof err === "string") {
+        errorMessage = err.toUpperCase();
+      } else if (err instanceof Error) {
+        errorMessage = err.message;
+      }
+      setError(
+        errorMessage || "An unexpected error occurred. Please try again.",
+      );
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -85,7 +105,7 @@ export default function ResetPassword() {
           <p>
             Password updated!
             <br />
-            Logging you in!
+            Redirecting to login...
           </p>
         </div>
       )}

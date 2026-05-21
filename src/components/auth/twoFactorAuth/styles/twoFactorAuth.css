@@ -1,0 +1,38 @@
+/* 2FA code inputs */
+
+.code-inputs {
+  display: flex;
+  gap: 8px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.code-digit {
+  font-family: var(--sans);
+  font-size: clamp(16px, 5vw, 20px);
+  font-weight: 600;
+  text-align: center;
+  flex: 1 1 0;
+  min-width: 0;
+  aspect-ratio: 3 / 4;
+  padding: 0;
+  border: 1px solid var(--steelBlue);
+  border-radius: 6px;
+  background: var(--white);
+  color: var(--carbon);
+  outline: none;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.code-digit:focus {
+  border-color: var(--lobster);
+  box-shadow: 0 0 0 3px var(--ltMahogany);
+}
+
+.code-digit::-webkit-outer-spin-button,
+.code-digit::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}

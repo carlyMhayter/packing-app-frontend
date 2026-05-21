@@ -1,7 +1,7 @@
 import { createBrowserRouter } from "react-router-dom";
 import RootLayout from "../components/layouts/RootLayout";
 import AuthLayout from "../components/layouts/AuthLayout";
-import DashboardLayout from "../components/layouts/DashboardLayout";
+import InternalLayout from "../components/layouts/InternalLayout.tsx";
 import Login from "../components/auth/login/login";
 import CreateUser from "../components/auth/createUser";
 import RetrievePassword from "../components/auth/retrievePassword/retrievePassword";
@@ -9,7 +9,9 @@ import ResetPassword from "../components/auth/resetPassword/resetPassword";
 import TwoFactorAuth from "../components/auth/twoFactorAuth/twoFactorAuth";
 import Homepage from "../components/home/homepage";
 import Dashboard from "../components/home/dashboard/dashboard";
-
+import TripPlanner from "../components/tripPlanner/tripPlanner";
+import PackingPlanner from "../components/packingPlanner/packingPlanner.tsx";
+import TravelerPlanner from "../components/travelerPlanner/travelerPlanner.tsx";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -29,8 +31,23 @@ const router = createBrowserRouter([
       },
       {
         path: "dashboard",
-        Component: DashboardLayout,
+        Component: InternalLayout,
         children: [{ index: true, Component: Dashboard }],
+      },
+      {
+        path: "trip_planner",
+        Component: InternalLayout,
+        children: [{ index: true, Component: TripPlanner }],
+      },
+      {
+        path: "packing_planner",
+        Component: InternalLayout,
+        children: [{ index: true, Component: PackingPlanner }],
+      },
+      {
+        path: "traveler_planner",
+        Component: InternalLayout,
+        children: [{ index: true, Component: TravelerPlanner }],
       },
     ],
   },

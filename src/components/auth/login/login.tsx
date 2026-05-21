@@ -1,6 +1,10 @@
 import { useState } from "react";
 import MainButton from "../../basic/mainButton";
-// import platyImg from "../../../assets/platy_transparent.png";
+import { loginUser, getCurrentUser } from "../../../services/auth";
+import { api } from "../../../services/api";
+import { useAuth } from "../../../contexts/AuthContext";
+import { useNavigate } from "react-router-dom";
+import "./styles/login.css";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -8,20 +12,44 @@ export default function Login() {
   const [loading, setLoading] = useState(false);
   const [loggedIn, setLoggedIn] = useState(false);
   const [error, setError] = useState("");
+  const navigate = useNavigate();
+  const { login } = useAuth();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
     setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
-      // Simulate API error 30% of the time for demo
-      if (Math.random() < 0.3) {
-        setError("Error: Invalid email or password. Please try again.");
-        return;
+
+    try {
+      const response = await loginUser(email, password);
+      if (response.requires_2fa) {
+        navigate("/auth/two_factor", {
+          state: { tempToken: response.temp_token },
+        });
+      } else {
+        api.setTokens(response.access_token!, response.refresh_token!);
+        const user = await getCurrentUser();
+        if (user) {
+          login(user);
+        }
+        setLoggedIn(true);
+        setTimeout(() => {
+          navigate("/dashboard");
+        }, 1500);
       }
-      setLoggedIn(true);
-    }, 2000);
+    } catch (err) {
+      let errorMessage = "";
+      if (typeof err === "string") {
+        errorMessage = err.toUpperCase();
+      } else if (err instanceof Error) {
+        errorMessage = err.message;
+      }
+      setError(
+        errorMessage || "An unexpected error occurred. Please try again.",
+      );
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleGoogleLogin = () => {
@@ -34,7 +62,6 @@ export default function Login() {
       <div className={loggedIn ? "fade-out" : ""}>
         <h1>Welcome Back</h1>
         <p className="login-subtitle">Please log in to continue.</p>
-        {/* <img src={platyImg} alt="Platypus mascot" className="login-platypus" /> */}
         <form onSubmit={handleSubmit} className="form">
           <div className="form-group">
             <label htmlFor="email">Email</label>
