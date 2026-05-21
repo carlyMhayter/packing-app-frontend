@@ -1,4 +1,5 @@
 export const theme = {
+  cssText: `background-color: white;`,
   variables: {
     border: "transparent",
     fontFamily: `"Outfit", system-ui, sans-serif`,

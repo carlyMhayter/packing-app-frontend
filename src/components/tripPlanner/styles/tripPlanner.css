@@ -129,7 +129,7 @@
 /* ── Destination Card ── */
 
 .destination-card {
-  background: var(--white);
+  background: var(--lobsterVLt);
   border: 1px solid var(--steelBlue);
   border-radius: 16px;
   padding: 20px;
@@ -150,6 +150,16 @@
     opacity: 1;
     transform: translateY(0);
   }
+}
+
+.destination-card-label-label {
+  font-family: var(--sans);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--carbon);
+  opacity: 0.5;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
 }
 
 .destination-card-header {
@@ -267,7 +277,8 @@
   display: flex;
   align-items: stretch;
   gap: 0;
-  border: 1px solid var(--steelBlue);
+  background-color: white;
+  /* border: 1px solid var(--steelBlue); */
   border-radius: 12px;
 }
 
@@ -322,8 +333,9 @@
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 8px 0;
-  border-top: 1px solid var(--steelBlue);
+  padding-left: 8px;
+  /* padding: 8px 0; */
+  /* border-top: 1px solid var(--lobsterMed); */
 }
 
 .destination-nights-label {

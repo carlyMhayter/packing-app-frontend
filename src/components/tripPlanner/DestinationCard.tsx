@@ -100,15 +100,17 @@ export default function DestinationCard({
       );
       return;
     }
+    console.log("First feature properties:", response.features[0].properties);
     const properties = response.features[0].properties;
     const coords = response.features[0].geometry?.coordinates;
-    console.log("Extracted properties:", properties.full_address);
-    onChange(data.id, {
+    console.log("Extracted properties name:", properties.name);
+    const updatedData = {
+      label: properties.name || data.label || "",
       addressData: {
         latitude: coords ? coords[1] : 0,
         longitude: coords ? coords[0] : 0,
         mapboxId: response.features[0].id,
-        fullName: `${properties.name || ""}, ${properties.full_address}`,
+        fullName: `${properties.full_address}`,
         countryCode: properties.country_code,
         region: properties.region || "",
         district: properties.district || "",
@@ -120,7 +122,9 @@ export default function DestinationCard({
         addressNumber: properties.address_number || "",
         addressID: properties.address_id || "",
       },
-    });
+    };
+
+    onChange(data.id, updatedData);
   };
   // console.log("Rendering data:", data);
 
@@ -170,7 +174,14 @@ export default function DestinationCard({
               <circle cx="16" cy="18" r="2" />
             </svg>
           </span>
+          <label
+            className="destination-card-label-label"
+            htmlFor="destination-name"
+          >
+            Destination:
+          </label>
           <input
+            id="destination-name"
             className="destination-card-label-input"
             value={isEditing ? editValue : data.label || ""}
             onChange={(e) => setEditValue(e.target.value)}
@@ -206,6 +217,7 @@ export default function DestinationCard({
             theme={theme}
             onRetrieve={handleSearchBoxRetrieve}
             value={data.addressData?.fullName || ""}
+            placeholder="Search for a location or address..."
           />
         </div>
 

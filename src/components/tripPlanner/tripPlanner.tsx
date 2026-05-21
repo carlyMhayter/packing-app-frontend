@@ -10,6 +10,7 @@ function getAutoLabel(index: number, total: number): string {
   if (index === total - 1) return "Ending Destination";
   return "Destination";
 }
+import { api } from "../../services/api";
 
 export default function TripPlanner() {
   const [tripName, setTripName] = useState("");
@@ -95,13 +96,70 @@ export default function TripPlanner() {
     setDragOverIndex(null);
   };
 
+  const validateTrip = (): string[] => {
+    const errors: string[] = [];
+
+    destinations.forEach((dest, index) => {
+      const label = `Destination ${index + 1}`;
+      if (!dest.addressData?.fullName)
+        errors.push(`${label}: address is required.`);
+      if (!dest.arrivalDate) errors.push(`${label}: arrival date is required.`);
+      if (!dest.departureDate)
+        errors.push(`${label}: departure date is required.`);
+    });
+
+    return errors;
+  };
+
   const handleSave = async () => {
     setIsSaving(true);
-    setSaveError(null);
+    const errors = validateTrip();
+    if (errors.length > 0) {
+      setSaveError(
+        `Please fix the following errors:\n- ${errors.join("\n- ")}`,
+      );
+      setIsSaving(false);
+      return;
+    }
+
+    const destinationsPayload = destinations.map((dest) => ({
+      destination_name: dest.label,
+      arrival_date: dest.arrivalDate,
+      departure_date: dest.departureDate,
+      nights: dest.nights,
+      has_laundry: false, // TODO: add laundry option to UI
+      address_data: {
+        latitude: dest.addressData?.latitude,
+        longitude: dest.addressData?.longitude,
+        mapbox_id: dest.addressData?.mapboxId,
+        full_name: dest.addressData?.fullName,
+        countryCode: dest.addressData?.countryCode,
+        region: dest.addressData?.region,
+        district: dest.addressData?.district,
+        place: dest.addressData?.place,
+        locality: dest.addressData?.locality,
+        neighborhood: dest.addressData?.neighborhood,
+        street: dest.addressData?.street,
+        address: dest.addressData?.address,
+        addressNumber: dest.addressData?.addressNumber,
+        addressID: dest.addressData?.addressID,
+      },
+    }));
+
+    const payload = {
+      name: tripName,
+      user_id: 1, // TODO: get actual user ID from auth context
+      destinations: destinationsPayload,
+    };
+
     try {
       // TODO: wire to actual API
-      await new Promise((resolve) => setTimeout(resolve, 800));
-      console.log("Saved trip:", { tripName, destinations });
+      const response = await api.request("/trips/create", {
+        method: "POST",
+        body: JSON.stringify(payload),
+      });
+
+      console.log("response", response);
     } catch {
       setSaveError("Failed to save trip. Please try again.");
     } finally {
@@ -164,7 +222,7 @@ export default function TripPlanner() {
           <Tooltip content="Add a destination" position="top">
             <button
               className="trip-planner-plus-btn"
-              onClick={() => addDestination("start")}
+              onClick={() => addDestination()}
               type="button"
               aria-label="Add a location"
             >
