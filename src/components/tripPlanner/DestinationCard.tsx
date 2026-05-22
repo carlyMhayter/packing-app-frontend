@@ -3,7 +3,10 @@ import ConfirmationModal from "../basic/confirmationModal";
 import Calendar from "../basic/calendar";
 import { SearchBox } from "@mapbox/search-js-react";
 import { formatDisplayDate, nightsBetween } from "./utils/utils";
-import { type DestinationCardProps } from "../../types/trip";
+import {
+  type DestinationCardProps,
+  type DestinationResponse,
+} from "../../types/trip";
 import "./styles/tripPlanner.css";
 import { theme } from "./styles/theming";
 
@@ -86,44 +89,41 @@ export default function DestinationCard({
     onChange(data.id, { departureDate: start, arrivalDate: end });
   };
 
-  const handleSearchBoxRetrieve = (response) => {
-    // console.log("Autofill response:", response);
+  const handleSearchBoxRetrieve = (response: DestinationResponse) => {
+    console.log("Autofill response:", response);
 
-    if (!response.features || response.features.length == 0) {
-      console.warn("No features found in search response");
-      return;
-    }
-
-    if (!response.features[0].properties || !response.features[0].geometry) {
-      console.warn(
-        "No properties or geometry found in first feature of search response",
-      );
-      return;
-    }
     console.log("First feature properties:", response.features[0].properties);
     const properties = response.features[0].properties;
-    const coords = response.features[0].geometry?.coordinates;
+    const context = response.features[0].properties.context;
+    const country = context.country?.country_code_alpha_3 || "UNK";
+
+    console.log("Extracted country code:", country);
     console.log("Extracted properties name:", properties.name);
     const updatedData = {
       label: properties.name || data.label || "",
       addressData: {
-        latitude: coords ? coords[1] : 0,
-        longitude: coords ? coords[0] : 0,
-        mapboxId: response.features[0].id,
-        fullName: `${properties.full_address}`,
-        countryCode: properties.country_code,
-        region: properties.region || "",
-        district: properties.district || "",
-        place: properties.place || "",
-        locality: properties.locality || "",
-        neighborhood: properties.neighborhood || "",
-        street: properties.street || "",
-        address: properties.address || "",
-        addressNumber: properties.address_number || "",
-        addressID: properties.address_id || "",
+        latitude: properties.coordinates?.latitude
+          ? properties.coordinates?.latitude
+          : 0,
+        longitude: properties.coordinates?.longitude
+          ? properties.coordinates?.longitude
+          : 0,
+        mapbox_id: properties?.mapbox_id || "",
+        full_name: `${properties.full_address}`,
+        country_id: country,
+        region: context.region?.name || "",
+        district: context.district?.name || "",
+        place: context.place?.name || "",
+        locality: context.locality?.name || "",
+        neighborhood: context.neighborhood?.name || "",
+        street: context.street?.name || "",
+        address: context.address?.name || "",
+        postcode: context.postcode?.name || "",
+        // TODO: accomodate when a user has selected a pre-existing address with an id
+        // addressID: properties.context.address_id || "",
       },
     };
-
+    console.log("Updating destination with data:", updatedData);
     onChange(data.id, updatedData);
   };
   // console.log("Rendering data:", data);
@@ -216,7 +216,7 @@ export default function DestinationCard({
             accessToken={import.meta.env.VITE_MAPBOX_TOKEN}
             theme={theme}
             onRetrieve={handleSearchBoxRetrieve}
-            value={data.addressData?.fullName || ""}
+            value={data.addressData?.full_name || ""}
             placeholder="Search for a location or address..."
           />
         </div>

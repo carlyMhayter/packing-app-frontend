@@ -1,3 +1,5 @@
+import { type CreateDestinationData } from "../../../types/trip";
+
 export function nightsBetween(departure: string, arrival: string): number {
   if (!departure || !arrival) return 1;
   const d1 = new Date(departure);
@@ -33,3 +35,20 @@ export function getDateinYYYYMMDD(date: Date): string {
   const day = String(date.getDate()).padStart(2, "0");
   return `${year}-${month}-${day}`;
 }
+
+export const validateTrip = (
+  destinations: CreateDestinationData[],
+): string[] => {
+  const errors: string[] = [];
+
+  destinations.forEach((dest, index) => {
+    const label = `Destination ${index + 1}`;
+    if (!dest.addressData?.full_name)
+      errors.push(`${label}: address is required.`);
+    if (!dest.arrivalDate) errors.push(`${label}: arrival date is required.`);
+    if (!dest.departureDate)
+      errors.push(`${label}: departure date is required.`);
+  });
+
+  return errors;
+};

@@ -2,8 +2,11 @@ import { useState } from "react";
 import Tooltip from "../basic/tooltip";
 import DestinationCard from "./DestinationCard";
 import "./styles/tripPlanner.css";
-import { type DestinationData, type DestinationUpdate } from "../../types/trip";
-import { getDateinYYYYMMDD, addDays } from "./utils/utils";
+import {
+  type CreateDestinationData,
+  type DestinationUpdate,
+} from "../../types/trip";
+import { getDateinYYYYMMDD, addDays, validateTrip } from "./utils/utils";
 function getAutoLabel(index: number, total: number): string {
   if (total === 1) return "Starting Destination";
   if (index === 0) return "Starting Destination";
@@ -14,7 +17,7 @@ import { api } from "../../services/api";
 
 export default function TripPlanner() {
   const [tripName, setTripName] = useState("");
-  const [destinations, setDestinations] = useState<DestinationData[]>([]);
+  const [destinations, setDestinations] = useState<CreateDestinationData[]>([]);
   const [draggingId, setDraggingId] = useState<string | null>(null);
   const [dragOverIndex, setDragOverIndex] = useState<number | null>(null);
   const [isSaving, setIsSaving] = useState(false);
@@ -23,7 +26,7 @@ export default function TripPlanner() {
   const addDestination = () => {
     const id = `dest-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`;
     const currentDate = getDateinYYYYMMDD(new Date());
-    const newDestination: DestinationData = {
+    const newDestination: CreateDestinationData = {
       arrivalDate: currentDate,
       departureDate: addDays(currentDate, 1),
       nights: 1,
@@ -96,24 +99,9 @@ export default function TripPlanner() {
     setDragOverIndex(null);
   };
 
-  const validateTrip = (): string[] => {
-    const errors: string[] = [];
-
-    destinations.forEach((dest, index) => {
-      const label = `Destination ${index + 1}`;
-      if (!dest.addressData?.fullName)
-        errors.push(`${label}: address is required.`);
-      if (!dest.arrivalDate) errors.push(`${label}: arrival date is required.`);
-      if (!dest.departureDate)
-        errors.push(`${label}: departure date is required.`);
-    });
-
-    return errors;
-  };
-
   const handleSave = async () => {
     setIsSaving(true);
-    const errors = validateTrip();
+    const errors = validateTrip(destinations);
     if (errors.length > 0) {
       setSaveError(
         `Please fix the following errors:\n- ${errors.join("\n- ")}`,
@@ -122,35 +110,28 @@ export default function TripPlanner() {
       return;
     }
 
-    const destinationsPayload = destinations.map((dest) => ({
+    const destinationsPayload = destinations.map((dest, index: number) => ({
+      user_id: 2, // TODO: get actual user ID from auth context
       destination_name: dest.label,
       arrival_date: dest.arrivalDate,
       departure_date: dest.departureDate,
       nights: dest.nights,
       has_laundry: false, // TODO: add laundry option to UI
-      address_data: {
-        latitude: dest.addressData?.latitude,
-        longitude: dest.addressData?.longitude,
-        mapbox_id: dest.addressData?.mapboxId,
-        full_name: dest.addressData?.fullName,
-        countryCode: dest.addressData?.countryCode,
-        region: dest.addressData?.region,
-        district: dest.addressData?.district,
-        place: dest.addressData?.place,
-        locality: dest.addressData?.locality,
-        neighborhood: dest.addressData?.neighborhood,
-        street: dest.addressData?.street,
-        address: dest.addressData?.address,
-        addressNumber: dest.addressData?.addressNumber,
-        addressID: dest.addressData?.addressID,
-      },
+      label: dest.label,
+      address_data: dest.addressData,
+      order: index,
     }));
 
     const payload = {
-      name: tripName,
-      user_id: 1, // TODO: get actual user ID from auth context
+      name:
+        tripName !== ""
+          ? tripName
+          : `My Trip - ${new Date().toLocaleDateString()}`,
+      user_id: 2, // TODO: get actual user ID from auth context
       destinations: destinationsPayload,
     };
+    console.log("payload", payload);
+    console.log("JSON.stringify(payload)", JSON.stringify(payload));
 
     try {
       // TODO: wire to actual API
