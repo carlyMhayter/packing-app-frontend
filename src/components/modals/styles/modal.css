@@ -1,0 +1,132 @@
+/*  Modal */
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  background: rgba(25, 25, 25, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  animation: modal-fade-in 0.2s ease;
+}
+
+.modal-overlay-dark {
+  background: rgba(25, 25, 25, 0.55);
+}
+
+@keyframes modal-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.modal-content {
+  background: var(--steelBlueVVLt);
+  border: 1px solid var(--steelBlue);
+  border-radius: 12px;
+  padding: 28px 32px;
+  max-width: 500px;
+  width: 100%;
+  box-shadow: var(--shadow);
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  animation: modal-scale-in 0.2s ease;
+}
+
+.modal-scrollable {
+  max-width: 650px;
+  max-height: 80vh;
+  padding: 0;
+  overflow: hidden;
+}
+
+@keyframes modal-scale-in {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24px 28px 0;
+  gap: 16px;
+}
+
+.modal-title {
+  font-family: var(--heading);
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--mahogany);
+  margin: 0;
+}
+
+.modal-close-btn {
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: transparent;
+  color: var(--carbon);
+  opacity: 0.4;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  transition:
+    opacity 0.2s ease,
+    background 0.2s ease;
+  padding: 0;
+  flex-shrink: 0;
+}
+
+.modal-close-btn:hover {
+  opacity: 0.8;
+  background: var(--ltMahogany);
+}
+
+.modal-body {
+  padding: 16px 28px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* ── Slide Panels ── */
+
+.modal-slide-container {
+  overflow: hidden;
+  width: 100%;
+}
+
+.modal-slide-track {
+  display: flex;
+  width: 200%;
+  transition: transform 0.35s cubic-bezier(0.25, 0.1, 0.25, 1);
+}
+
+.modal-slide-track.is-shifted {
+  transform: translateX(-50%);
+}
+
+.modal-slide-panel {
+  width: 50%;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  box-sizing: border-box;
+}

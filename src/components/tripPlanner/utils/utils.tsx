@@ -1,11 +1,11 @@
 import { type CreateDestinationData } from "../../../types/trip";
 
-export function nightsBetween(departure: string, arrival: string): number {
-  if (!departure || !arrival) return 1;
-  const d1 = new Date(departure);
-  const d2 = new Date(arrival);
+export function nightsBetween(arrival: string, departure: string): number {
+  if (!arrival || !departure) return 0;
+  const d1 = new Date(arrival);
+  const d2 = new Date(departure);
   const diff = Math.ceil((d2.getTime() - d1.getTime()) / (1000 * 60 * 60 * 24));
-  return Math.max(1, diff);
+  return Math.max(0, diff);
 }
 
 export function addDays(dateStr: string, days: number): string {
@@ -23,9 +23,9 @@ export function formatDisplayDate(dateStr: string): string {
   const [y, m, d] = dateStr.split("-").map(Number);
   const date = new Date(y, m - 1, d);
   return date.toLocaleDateString("en-US", {
+    weekday: "short",
     month: "short",
     day: "numeric",
-    year: "numeric",
   });
 }
 

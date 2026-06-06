@@ -1,8 +1,8 @@
 import { useState, useEffect, useRef } from "react";
-import ConfirmationModal from "../basic/confirmationModal";
 import Calendar from "../basic/calendar";
+import Tooltip from "../basic/tooltip";
 import { SearchBox } from "@mapbox/search-js-react";
-import { formatDisplayDate, nightsBetween } from "./utils/utils";
+import { formatDisplayDate, nightsBetween, addDays } from "./utils/utils";
 import {
   type DestinationCardProps,
   type DestinationResponse,
@@ -20,20 +20,20 @@ export default function DestinationCard({
   isDragging,
 }: DestinationCardProps) {
   const dragHandleActive = useRef(false);
-  const [isUserOverride, setIsUserOverride] = useState(false);
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [editValue, setEditValue] = useState(data.label || "");
   const [isEditing, setIsEditing] = useState(false);
   const [showCalendar, setShowCalendar] = useState(false);
 
   useEffect(() => {
-    // TODO: more date validation needed here
-    // Recalculate nights from dates unless user has manually overridden
-    if (!isUserOverride && (data.departureDate || data.arrivalDate)) {
-      const calc = nightsBetween(data.departureDate, data.arrivalDate);
-      onChange(data.id, { nights: calc });
+    // Recalculate nights from dates whenever they change
+    if (data.departureDate || data.arrivalDate) {
+      const calc = nightsBetween(data.arrivalDate, data.departureDate);
+      if (calc !== data.nights) {
+        onChange(data.id, { nights: calc });
+      }
     }
-  }, [data.departureDate, data.arrivalDate, isUserOverride]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [data.departureDate, data.arrivalDate]);
 
   const handleFocus = () => {
     setEditValue(data.label);
@@ -43,7 +43,6 @@ export default function DestinationCard({
   const handleBlur = () => {
     setIsEditing(false);
     const trimmed = editValue.trim();
-    console.log("Handling blur with value:", trimmed);
     if (trimmed === "") {
       onChange(data.id, { label: "" });
     } else {
@@ -57,48 +56,15 @@ export default function DestinationCard({
     }
   };
 
-  const handleNightsChange = (delta: number) => {
-    setIsUserOverride(true);
-    const next = data.nights + delta;
-    if (next <= 0) {
-      setShowDeleteModal(true);
-      return;
-    }
-    onChange(data.id, { nights: next });
-
-    // Adjust dates based on the new night count
-    // Arrival (left) -> ... nights ... -> Departure (right)
-    if (data.arrivalDate) {
-      // Fix arrival, push departure forward/backward
-    } else if (data.departureDate) {
-      // Fix departure, pull arrival forward/backward
-    }
-  };
-
-  const handleConfirmDelete = () => {
-    setShowDeleteModal(false);
-    onRemove(data.id);
-  };
-
-  const handleCancelDelete = () => {
-    setShowDeleteModal(false);
-  };
-
   const handleRangeSelect = (start: string, end: string) => {
-    setIsUserOverride(false);
-    onChange(data.id, { departureDate: start, arrivalDate: end });
+    onChange(data.id, { arrivalDate: start, departureDate: end });
   };
 
   const handleSearchBoxRetrieve = (response: DestinationResponse) => {
-    console.log("Autofill response:", response);
-
-    console.log("First feature properties:", response.features[0].properties);
     const properties = response.features[0].properties;
     const context = response.features[0].properties.context;
     const country = context.country?.country_code_alpha_3 || "UNK";
 
-    console.log("Extracted country code:", country);
-    console.log("Extracted properties name:", properties.name);
     const updatedData = {
       label: properties.name || data.label || "",
       addressData: {
@@ -119,16 +85,11 @@ export default function DestinationCard({
         street: context.street?.name || "",
         address: context.address?.name || "",
         postcode: context.postcode?.name || "",
-        // TODO: accomodate when a user has selected a pre-existing address with an id
-        // addressID: properties.context.address_id || "",
       },
     };
-    console.log("Updating destination with data:", updatedData);
     onChange(data.id, updatedData);
   };
-  // console.log("Rendering data:", data);
 
-  // console.log("Rendering address:", data.addressData?.fullName);
   const openCalendar = () => {
     setShowCalendar(true);
   };
@@ -144,6 +105,20 @@ export default function DestinationCard({
   const handleDragEndLocal = () => {
     dragHandleActive.current = false;
     onDragEnd();
+  };
+
+  const handleLaundryChange = (value: "yes" | "no" | "maybe") => {
+    onChange(data.id, { laundry: value });
+  };
+
+  const handleNudgeDate = (
+    field: "arrivalDate" | "departureDate",
+    delta: number,
+  ) => {
+    const current =
+      field === "arrivalDate" ? data.arrivalDate : data.departureDate;
+    if (!current) return;
+    onChange(data.id, { [field]: addDays(current, delta) });
   };
 
   return (
@@ -191,25 +166,27 @@ export default function DestinationCard({
             aria-label="Destination name"
             placeholder="New Destination"
           />
-          <button
-            className="destination-card-remove"
-            onClick={() => onRemove(data.id)}
-            type="button"
-            aria-label="Remove destination"
-          >
-            <svg
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2.5"
-              strokeLinecap="round"
-              width="14"
-              height="14"
+          <Tooltip content="Delete destination" position="bottom">
+            <button
+              className="destination-card-remove"
+              onClick={() => onRemove(data.id)}
+              type="button"
+              aria-label="Remove destination"
             >
-              <line x1="18" y1="6" x2="6" y2="18" />
-              <line x1="6" y1="6" x2="18" y2="18" />
-            </svg>
-          </button>
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2.5"
+                strokeLinecap="round"
+                width="14"
+                height="14"
+              >
+                <line x1="18" y1="6" x2="6" y2="18" />
+                <line x1="6" y1="6" x2="18" y2="18" />
+              </svg>
+            </button>
+          </Tooltip>
         </div>
         <div className="destination-card-address">
           <SearchBox
@@ -221,95 +198,223 @@ export default function DestinationCard({
           />
         </div>
 
-        <div className="destination-card-dates">
-          <div className="destination-date-field">
-            <label className="destination-date-label">Arrival</label>
-            <button
-              className="destination-date-trigger"
-              onClick={openCalendar}
-              type="button"
-            >
-              {data.arrivalDate
-                ? formatDisplayDate(data.arrivalDate)
-                : "Select date..."}
-            </button>
-          </div>
-          <div className="destination-date-divider" />
-          <div className="destination-date-field">
-            <label className="destination-date-label">Departure</label>
-            <button
-              className="destination-date-trigger"
-              onClick={openCalendar}
-              type="button"
-            >
-              {data.departureDate
-                ? formatDisplayDate(data.departureDate)
-                : "Select date..."}
-            </button>
+        <div className="destination-dates-row">
+          <div className="destination-nights">
+            <span className="destination-nights-label">Nights</span>
+            <span className="destination-nights-value">{data.nights}</span>
           </div>
 
-          {showCalendar && (
-            <Calendar
-              mode="range"
-              rangeStart={data.arrivalDate || null}
-              rangeEnd={data.departureDate || null}
-              onSelectRange={handleRangeSelect}
-              onClose={() => setShowCalendar(false)}
-            />
-          )}
-        </div>
+          <div className="destination-card-dates">
+            <div className="destination-date-trigger-row">
+              {/* Left half — Arrival */}
+              <div className="destination-date-half" onClick={openCalendar}>
+                <span className="destination-date-icon">
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    width="16"
+                    height="16"
+                  >
+                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+                    <line x1="16" y1="2" x2="16" y2="6" />
+                    <line x1="8" y1="2" x2="8" y2="6" />
+                    <line x1="3" y1="10" x2="21" y2="10" />
+                  </svg>
+                </span>
+                <span
+                  className={`destination-date-text ${!data.arrivalDate ? "is-placeholder" : ""}`}
+                >
+                  {data.arrivalDate
+                    ? formatDisplayDate(data.arrivalDate)
+                    : "Arrival"}
+                </span>
+                {data.arrivalDate && (
+                  <div className="date-chevron-group">
+                    <button
+                      className="date-chevron"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleNudgeDate("arrivalDate", -1);
+                      }}
+                      type="button"
+                      aria-label="Previous day"
+                    >
+                      <svg
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        width="12"
+                        height="12"
+                      >
+                        <polyline points="15 18 9 12 15 6" />
+                      </svg>
+                    </button>
+                    <button
+                      className="date-chevron"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleNudgeDate("arrivalDate", 1);
+                      }}
+                      type="button"
+                      aria-label="Next day"
+                    >
+                      <svg
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        width="12"
+                        height="12"
+                      >
+                        <polyline points="9 18 15 12 9 6" />
+                      </svg>
+                    </button>
+                  </div>
+                )}
+              </div>
 
-        <div className="destination-nights">
-          <span className="destination-nights-label">No. of nights:</span>
-          <button
-            className="destination-nights-btn"
-            onClick={() => handleNightsChange(-1)}
-            type="button"
-            aria-label="Decrease nights"
+              <div className="destination-date-divider" />
+
+              {/* Right half — Departure */}
+              <div className="destination-date-half" onClick={openCalendar}>
+                <span
+                  className={`destination-date-text ${!data.departureDate ? "is-placeholder" : ""}`}
+                >
+                  {data.departureDate
+                    ? formatDisplayDate(data.departureDate)
+                    : "Departure"}
+                </span>
+                {data.departureDate && (
+                  <div className="date-chevron-group">
+                    <button
+                      className="date-chevron"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleNudgeDate("departureDate", -1);
+                      }}
+                      type="button"
+                      aria-label="Previous day"
+                    >
+                      <svg
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        width="12"
+                        height="12"
+                      >
+                        <polyline points="15 18 9 12 15 6" />
+                      </svg>
+                    </button>
+                    <button
+                      className="date-chevron"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleNudgeDate("departureDate", 1);
+                      }}
+                      type="button"
+                      aria-label="Next day"
+                    >
+                      <svg
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        width="12"
+                        height="12"
+                      >
+                        <polyline points="9 18 15 12 9 6" />
+                      </svg>
+                    </button>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {showCalendar && (
+              <Calendar
+                mode="range"
+                rangeStart={data.arrivalDate || null}
+                rangeEnd={data.departureDate || null}
+                onSelectRange={handleRangeSelect}
+                onClose={() => setShowCalendar(false)}
+              />
+            )}
+          </div>
+          <Tooltip
+            content="Will accommodation have laundry facilities?"
+            position="top"
           >
-            <svg
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              width="14"
-              height="14"
-            >
-              <line x1="5" y1="12" x2="19" y2="12" />
-            </svg>
-          </button>
-          <span className="destination-nights-value">{data.nights}</span>
-          <button
-            className="destination-nights-btn"
-            onClick={() => handleNightsChange(1)}
-            type="button"
-            aria-label="Increase nights"
-          >
-            <svg
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              width="14"
-              height="14"
-            >
-              <line x1="12" y1="5" x2="12" y2="19" />
-              <line x1="5" y1="12" x2="19" y2="12" />
-            </svg>
-          </button>
+            <div className="destination-laundry">
+              <div className="destination-laundry-header">
+                <svg
+                  className="destination-laundry-icon"
+                  viewBox="0 0 463 463"
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="32"
+                  height="32"
+                >
+                  <path
+                    fill="currentColor"
+                    d="m367.5,0h-272c-21.78,0-39.5,17.72-39.5,39.5v368c0,10.336 6.71,19.128 16,22.266v9.734c0,12.958 10.542,23.5 23.5,23.5h272c12.958,0 23.5-10.542 23.5-23.5v-9.734c9.29-3.138 16-11.93 16-22.266v-368c0-21.78-17.72-39.5-39.5-39.5zm-272,15h272c13.51,0 24.5,10.991 24.5,24.5v56.5h-321v-56.5c0-13.509 10.99-24.5 24.5-24.5zm272,433h-272c-4.687,0-8.5-3.813-8.5-8.5v-8.5h289v8.5c0,4.687-3.813,8.5-8.5,8.5zm16-32h-304c-4.687,0-8.5-3.813-8.5-8.5v-296.5h321v296.5c0,4.687-3.813,8.5-8.5,8.5z"
+                  />
+                  <path
+                    fill="currentColor"
+                    d="M231.5,136C161.196,136,104,193.196,104,263.5S161.196,391,231.5,391S359,333.804,359,263.5S301.804,136,231.5,136z M231.5,376C169.468,376,119,325.533,119,263.5S169.468,151,231.5,151S344,201.467,344,263.5S293.532,376,231.5,376z"
+                  />
+                  <path
+                    fill="currentColor"
+                    d="m279.5,79c12.958,0 23.5-10.542 23.5-23.5s-10.542-23.5-23.5-23.5-23.5,10.542-23.5,23.5 10.542,23.5 23.5,23.5zm0-32c4.687,0 8.5,3.813 8.5,8.5s-3.813,8.5-8.5,8.5-8.5-3.813-8.5-8.5 3.813-8.5 8.5-8.5z"
+                  />
+                  <path
+                    fill="currentColor"
+                    d="m343.5,79c12.958,0 23.5-10.542 23.5-23.5s-10.542-23.5-23.5-23.5-23.5,10.542-23.5,23.5 10.542,23.5 23.5,23.5zm0-32c4.687,0 8.5,3.813 8.5,8.5s-3.813,8.5-8.5,8.5-8.5-3.813-8.5-8.5 3.813-8.5 8.5-8.5z"
+                  />
+                  <path
+                    fill="currentColor"
+                    d="m111.5,79h104c8.547,0 15.5-6.953 15.5-15.5v-16c0-8.547-6.953-15.5-15.5-15.5h-104c-8.547,0-15.5,6.953-15.5,15.5v16c0,8.547 6.953,15.5 15.5,15.5zm-.5-31.5c0-0.276 0.225-0.5 0.5-0.5h104c0.275,0 0.5,0.224 0.5,0.5v16c0,0.276-0.225,0.5-0.5,0.5h-104c-0.275,0-0.5-0.224-0.5-0.5v-16z"
+                  />
+                  <path
+                    fill="currentColor"
+                    d="m231.5,168c-52.659,0-95.5,42.841-95.5,95.5s42.841,95.5 95.5,95.5 95.5-42.841 95.5-95.5-42.841-95.5-95.5-95.5zm0,176c-44.388,0-80.5-36.112-80.5-80.5s36.112-80.5 80.5-80.5 80.5,36.112 80.5,80.5-36.112,80.5-80.5,80.5z"
+                  />
+                  <path
+                    fill="currentColor"
+                    d="m231.5,200c-4.143,0-7.5,3.358-7.5,7.5s3.357,7.5 7.5,7.5c26.743,0 48.5,21.757 48.5,48.5 0,4.142 3.357,7.5 7.5,7.5s7.5-3.358 7.5-7.5c0-35.014-28.486-63.5-63.5-63.5z"
+                  />
+                </svg>
+              </div>
+
+              <div className="options-and-disclaimer">
+                <span className="destination-laundry-label">Laundry</span>
+
+                <div className="destination-laundry-options">
+                  {(["yes", "no", "maybe"] as const).map((option) => (
+                    <button
+                      key={option}
+                      type="button"
+                      className={`destination-laundry-btn ${data.laundry === option ? "selected" : ""}`}
+                      onClick={() => handleLaundryChange(option)}
+                      aria-pressed={data.laundry === option}
+                    >
+                      {option.charAt(0).toUpperCase() + option.slice(1)}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>{" "}
+          </Tooltip>
         </div>
       </div>
-
-      <ConfirmationModal
-        open={showDeleteModal}
-        title="Delete destination?"
-        confirmLabel="Yes"
-        cancelLabel="No"
-        onConfirm={handleConfirmDelete}
-        onCancel={handleCancelDelete}
-      />
     </>
   );
 }

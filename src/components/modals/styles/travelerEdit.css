@@ -1,109 +1,34 @@
-/* Confirmation Modal */
+/* ── Scientific Button ── */
 
-.modal-overlay {
-  position: fixed;
-  inset: 0;
-  z-index: 2000;
-  background: rgba(25, 25, 25, 0.45);
-  display: flex;
+.sci-btn {
+  display: inline-flex;
   align-items: center;
-  justify-content: center;
-  padding: 24px;
-  animation: modal-fade-in 0.2s ease;
-}
-
-.modal-overlay-dark {
-  background: rgba(25, 25, 25, 0.55);
-}
-
-@keyframes modal-fade-in {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-
-.modal-content {
-  background: var(--white);
-  border: 1px solid var(--steelBlue);
-  border-radius: 12px;
-  padding: 28px 32px;
-  max-width: 360px;
-  width: 100%;
-  box-shadow: var(--shadow);
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  animation: modal-scale-in 0.2s ease;
-}
-
-.modal-scrollable {
-  max-width: 480px;
-  max-height: 80vh;
-  padding: 0;
-  overflow: hidden;
-}
-
-@keyframes modal-scale-in {
-  from {
-    opacity: 0;
-    transform: scale(0.95);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-
-.modal-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 24px 28px 0;
-  gap: 16px;
-}
-
-.modal-title {
-  font-family: var(--heading);
-  font-size: 20px;
+  gap: 6px;
+  font-family: var(--mono);
+  font-size: 12px;
   font-weight: 600;
-  color: var(--mahogany);
-  margin: 0;
-}
-
-.modal-close-btn {
-  width: 32px;
-  height: 32px;
-  border: none;
-  background: transparent;
-  color: var(--carbon);
-  opacity: 0.4;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+  color: var(--lobster);
+  background: rgba(209, 79, 70, 0.06);
+  border: 1.5px solid var(--lobster);
+  border-radius: 4px;
+  padding: 5px 12px;
   cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 6px;
-  transition:
-    opacity 0.2s ease,
-    background 0.2s ease;
-  padding: 0;
+  transition: all 0.2s ease;
   flex-shrink: 0;
 }
 
-.modal-close-btn:hover {
-  opacity: 0.8;
-  background: var(--ltMahogany);
+.sci-btn:hover {
+  background: var(--lobster);
+  color: var(--white);
 }
 
-.modal-body {
-  padding: 16px 28px;
-  overflow-y: auto;
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
+.sci-btn:active {
+  transform: scale(0.97);
 }
+
+/* ── Modal Footer (re-declared for panel override) ── */
 
 .modal-footer {
   display: flex;
@@ -141,13 +66,13 @@
 
 /* Modal sections */
 
-.modal-section {
+.trav-modal-section {
   display: flex;
   flex-direction: column;
   gap: 10px;
 }
 
-.modal-section-label {
+.trav-modal-section-label {
   font-family: var(--sans);
   font-size: 14px;
   font-weight: 600;
@@ -156,7 +81,13 @@
   letter-spacing: 0.3px;
 }
 
-.modal-section-heading {
+.trav-modal-heading-container {
+  flex-direction: row;
+  display: flex;
+  justify-content: space-between;
+}
+
+.trav-modal-section-heading {
   font-family: var(--heading);
   font-size: 16px;
   font-weight: 700;
@@ -164,16 +95,57 @@
   margin: 0;
   padding-bottom: 4px;
   border-bottom: 1px solid var(--steelBlue);
+  flex: 1;
+}
+
+.trav-modal-section-heading-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.unit-toggle {
+  display: flex;
+  border: 1.5px solid var(--steelBlue);
+  border-radius: 6px;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.unit-toggle-btn {
+  font-family: var(--sans);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--carbon);
+  opacity: 0.6;
+  background: var(--white);
+  border: none;
+  padding: 4px 10px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.unit-toggle-btn:hover {
+  opacity: 1;
+  background: var(--ltMahogany);
+}
+
+.unit-toggle-btn.selected {
+  background: var(--lobster);
+  color: var(--white);
+  opacity: 1;
 }
 
 .modal-text-input {
   font-family: var(--sans);
   font-size: 16px;
   color: var(--carbon);
-  background: transparent;
+  background: white;
+  border-radius: 2px;
   border: none;
   border-bottom: 1px solid var(--steelBlue);
-  padding: 8px 0;
+  padding: 8px;
   outline: none;
   transition: border-color 0.2s ease;
   width: 100%;
@@ -306,6 +278,26 @@
   border-radius: 20px;
   padding: 6px 12px;
   line-height: 1;
+}
+
+.routine-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--sans);
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--mahogany);
+  background: var(--ltMahogany);
+  border: 1px solid rgba(209, 79, 70, 0.2);
+  border-radius: 20px;
+  padding: 6px 12px;
+  line-height: 1;
+}
+
+.routine-button:hover {
+  background: var(--lobster);
+  color: var(--white);
 }
 
 .tag-remove {

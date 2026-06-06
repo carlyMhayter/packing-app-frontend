@@ -2,8 +2,8 @@
 
 .nav-bar {
   width: 100%;
-  background: var(--limeCreamLt);
-  border-bottom: 1px solid var(--steelBlue);
+  background: var(--vanillaCustardLt);
+  border-bottom: 1px solid var(--vanillaCustard);
 }
 
 .nav-content {
@@ -44,7 +44,7 @@
 
 .nav-user-btn:hover {
   background: var(--ltMahogany);
-  border-color: var(--ltLobster);
+  border-color: var(--lobsterLt);
 }
 
 .internal-logo-link {

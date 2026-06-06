@@ -2,24 +2,45 @@
 
 :root {
   --carbon: #191919;
-  --mahogany: #280000;
   --white: #fff;
-  --steelBlueLt: #f4fcff;
-  --steelBlue: #b5ccd3;
+
   --lobsterVLt: #fcf1f1;
   --lobsterLt: #ffe3e1;
   --lobsterMed: #f9c0bc;
   --lobster: #d14f46;
-  --ltMahogany: rgba(209, 79, 70, 0.1);
-  --ltLobster: rgba(209, 79, 70, 0.5);
-  --ltSteelBlue: rgba(149, 163, 179, 0.5);
-  --limeCream: #ebf38b;
-  --limeCreamLt: #fdffe2;
+  --lobsterDark: #ac3b33;
+  --lobsterDarker: rgb(128, 35, 29);
+
+  --mahoganyVLt: #432323;
+  --mahoganyLt: #441717;
+  --mahogany: #4b0d0d;
+  --mahoganyDark: #280000;
+  --mahoganyDarker: #1a0000;
+
+  --vanillaCustardVVLt: #fffdf1;
+  --vanillaCustardVLt: #fffced;
+  --vanillaCustardLt: #fff8d5;
   --vanillaCustard: #f1e8b8;
-  --vanillaCustardLt: #fffced;
+  --vanillaCustardDark: #d1c17a;
+  --vanillaCustardDarker: #a38c4d;
+
   --dustyGrape: #4b4e6d;
-  --darksteelBlue: #748b91;
-  --darklimeCream: #99a03e;
+
+  --steelBlueVVLt: #f4fcff;
+  --steelBlueVLt: #e0f0f4;
+  --steelBlueLt: #cadde3;
+  --steelBlue: #b5ccd3;
+  --steelBlueDark: #748b91;
+  --steelBlueDarker: #4a5e63;
+
+  --limeCreamVVLt: rgb(255, 255, 241);
+  --limeCreamVLt: #edefd2;
+  --limeCreamLt: #ecf3a6;
+  --limeCream: #ebf38b;
+  --limeCreamMed: #c2c96b;
+  --limeCreamDark: #99a03e;
+  --limeCreamDarker: #646923;
+
   --wineRed:
     #501b1b --shadow: rgba(0, 0, 0, 0.1) 0 10px 15px -3px,
     rgba(0, 0, 0, 0.05) 0 4px 6px -2px;
@@ -51,8 +72,8 @@
     --steelBlue: #b5ccd3;
     --lobster: #d14f46;
     --ltMahogany: rgba(209, 79, 70, 0.15);
-    --ltLobster: rgba(209, 79, 70, 0.5);
-    --ltSteelBlue: rgba(209, 215, 218, 0.5);
+    --lobsterLt: rgba(209, 79, 70, 0.5);
+    --steelBlueLt: rgba(209, 215, 218, 0.5);
 
     --shadow:
       rgba(0, 0, 0, 0.4) 0 10px 15px -3px, rgba(0, 0, 0, 0.25) 0 4px 6px -2px;
@@ -72,7 +93,7 @@
 
 body {
   margin: 0;
-  background-color: var(--vanillaCustardLt);
+  background-color: var(--vanillaCustardVVLt);
 }
 
 h1,
@@ -356,7 +377,7 @@ code {
 
 .btn-social:hover {
   background: var(--ltMahogany);
-  border-color: var(--ltLobster);
+  border-color: var(--lobsterLt);
 }
 
 .btn-social:active {
@@ -445,7 +466,7 @@ code {
 
 .hamburger-btn:hover {
   background: var(--ltMahogany);
-  border-color: var(--ltLobster);
+  border-color: var(--lobsterLt);
 }
 
 .hamburger-line {

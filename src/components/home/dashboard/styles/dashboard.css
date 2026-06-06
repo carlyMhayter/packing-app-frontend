@@ -194,3 +194,17 @@
   color: var(--lobster);
   flex-shrink: 0;
 }
+
+.trip-section-link {
+  font-family: var(--heading);
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--dustyGrape);
+  gap: 12px;
+  text-decoration: none;
+  transition: color 0.2s ease;
+
+  &:hover {
+    color: var(--steelBlueDark);
+  }
+}

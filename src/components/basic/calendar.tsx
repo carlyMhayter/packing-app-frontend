@@ -1,4 +1,18 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
+import {
+  format,
+  addMonths,
+  subMonths,
+  startOfMonth,
+  endOfMonth,
+  startOfWeek,
+  endOfWeek,
+  eachDayOfInterval,
+  isSameMonth,
+  isSameDay,
+  isBefore,
+  isWithinInterval,
+} from "date-fns";
 import "./styles/calendar.css";
 
 interface CalendarProps {
@@ -13,12 +27,7 @@ interface CalendarProps {
   mode?: "single" | "range";
 }
 
-const MONTHS = [
-  "January", "February", "March", "April", "May", "June",
-  "July", "August", "September", "October", "November", "December",
-];
-
-const DAYS = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"];
+const WEEKDAYS = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"];
 
 function toISODate(d: Date): string {
   const year = d.getFullYear();
@@ -27,37 +36,9 @@ function toISODate(d: Date): string {
   return `${year}-${month}-${day}`;
 }
 
-function parseDate(dateStr: string): Date {
+function parseISOSafe(dateStr: string): Date {
   const [y, m, d] = dateStr.split("-").map(Number);
   return new Date(y, m - 1, d);
-}
-
-function getCalendarDays(year: number, month: number) {
-  const firstDay = new Date(year, month, 1);
-  const lastDay = new Date(year, month + 1, 0);
-  const startOffset = firstDay.getDay();
-  const daysInMonth = lastDay.getDate();
-  const today = toISODate(new Date());
-
-  const days: { date: string; day: number; isCurrentMonth: boolean; isToday: boolean }[] = [];
-
-  const prevMonthLastDay = new Date(year, month, 0).getDate();
-  for (let i = startOffset - 1; i >= 0; i--) {
-    const d = prevMonthLastDay - i;
-    days.push({ date: toISODate(new Date(year, month - 1, d)), day: d, isCurrentMonth: false, isToday: false });
-  }
-
-  for (let d = 1; d <= daysInMonth; d++) {
-    const iso = toISODate(new Date(year, month, d));
-    days.push({ date: iso, day: d, isCurrentMonth: true, isToday: iso === today });
-  }
-
-  const remaining = 42 - days.length;
-  for (let d = 1; d <= remaining; d++) {
-    days.push({ date: toISODate(new Date(year, month + 1, d)), day: d, isCurrentMonth: false, isToday: false });
-  }
-
-  return days;
 }
 
 export default function Calendar({
@@ -71,19 +52,31 @@ export default function Calendar({
   maxDate,
   mode = "single",
 }: CalendarProps) {
-  const initialDate = selectedDate
-    ? parseDate(selectedDate)
-    : rangeStart
-      ? parseDate(rangeStart)
-      : new Date();
-  const [viewYear, setViewYear] = useState(initialDate.getFullYear());
-  const [viewMonth, setViewMonth] = useState(initialDate.getMonth());
-  const [selectingStart, setSelectingStart] = useState<string | null>(rangeStart || null);
+  const getInitialDate = useCallback(() => {
+    if (mode === "single" && selectedDate) return parseISOSafe(selectedDate);
+    if (rangeStart) return parseISOSafe(rangeStart);
+    return new Date();
+  }, [mode, selectedDate, rangeStart]);
+
+  const [baseDate, setBaseDate] = useState<Date>(getInitialDate);
+  const [tentativeStart, setTentativeStart] = useState<string | null>(
+    rangeStart || null
+  );
+  const [hoverDate, setHoverDate] = useState<string | null>(null);
+
+  useEffect(() => {
+    setTentativeStart(rangeStart || null);
+    setHoverDate(null);
+  }, [rangeStart, rangeEnd]);
+
   const calendarRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const handleClick = (e: MouseEvent) => {
-      if (calendarRef.current && !calendarRef.current.contains(e.target as Node)) {
+      if (
+        calendarRef.current &&
+        !calendarRef.current.contains(e.target as Node)
+      ) {
         onClose();
       }
     };
@@ -99,110 +92,220 @@ export default function Calendar({
     return () => document.removeEventListener("keydown", handleKey);
   }, [onClose]);
 
-  const days = getCalendarDays(viewYear, viewMonth);
+  const leftMonth = startOfMonth(baseDate);
+  const rightMonth = startOfMonth(addMonths(baseDate, 1));
 
-  const goToPrevMonth = () => {
-    if (viewMonth === 0) { setViewMonth(11); setViewYear((y) => y - 1); }
-    else { setViewMonth((m) => m - 1); }
-  };
+  const goToPrevMonth = () => setBaseDate((d) => subMonths(d, 1));
+  const goToNextMonth = () => setBaseDate((d) => addMonths(d, 1));
 
-  const goToNextMonth = () => {
-    if (viewMonth === 11) { setViewMonth(0); setViewYear((y) => y + 1); }
-    else { setViewMonth((m) => m + 1); }
-  };
-
-  const isDisabled = (date: string) => {
-    if (minDate && date < minDate) return true;
-    if (maxDate && date > maxDate) return true;
+  const isDisabled = (dateStr: string) => {
+    if (minDate && dateStr < minDate) return true;
+    if (maxDate && dateStr > maxDate) return true;
     return false;
   };
 
-  const isInRange = (date: string) => {
-    if (!selectingStart || !rangeEnd) return false;
-    const start = selectingStart < rangeEnd ? selectingStart : rangeEnd;
-    const end = selectingStart < rangeEnd ? rangeEnd : selectingStart;
-    return date > start && date < end;
+  const getMonthDays = (monthDate: Date) => {
+    const start = startOfWeek(startOfMonth(monthDate));
+    const end = endOfWeek(endOfMonth(monthDate));
+    return eachDayOfInterval({ start, end });
   };
 
-  const handleSelect = (date: string) => {
-    if (isDisabled(date)) return;
+  const computeDisplayRange = () => {
+    if (mode !== "range") return null;
+
+    if (tentativeStart && hoverDate) {
+      const s = parseISOSafe(tentativeStart);
+      const h = parseISOSafe(hoverDate);
+      const start = isBefore(h, s) ? hoverDate : tentativeStart;
+      const end = isBefore(h, s) ? tentativeStart : hoverDate;
+      return { start, end };
+    }
+
+    if (tentativeStart && !rangeEnd) {
+      return { start: tentativeStart, end: tentativeStart };
+    }
+
+    if (rangeStart && rangeEnd) {
+      return { start: rangeStart, end: rangeEnd };
+    }
+
+    if (rangeStart) {
+      return { start: rangeStart, end: rangeStart };
+    }
+
+    return null;
+  };
+
+  const displayRange = computeDisplayRange();
+
+  const handleDayClick = (dateStr: string) => {
+    if (isDisabled(dateStr)) return;
 
     if (mode === "single" && onSelect) {
-      onSelect(date);
+      onSelect(dateStr);
       onClose();
       return;
     }
 
     if (mode === "range" && onSelectRange) {
-      if (!selectingStart) {
-        setSelectingStart(date);
+      if (!tentativeStart) {
+        setTentativeStart(dateStr);
+        setHoverDate(null);
         return;
       }
 
-      const start = date < selectingStart ? date : selectingStart;
-      const end = date < selectingStart ? selectingStart : date;
+      const startDate = parseISOSafe(tentativeStart);
+      const endDate = parseISOSafe(dateStr);
+      const [start, end] = isBefore(endDate, startDate)
+        ? [dateStr, tentativeStart]
+        : [tentativeStart, dateStr];
+
       onSelectRange(start, end);
-      setSelectingStart(null);
-      onClose();
+      setTentativeStart(null);
+      setHoverDate(null);
     }
   };
 
-  const effectiveRangeStart = selectingStart || rangeStart;
-  const effectiveRangeEnd = rangeEnd;
+  const handleDayEnter = (dateStr: string) => {
+    if (mode === "range" && tentativeStart) {
+      setHoverDate(dateStr);
+    }
+  };
+
+  const handleDayLeave = () => {
+    setHoverDate(null);
+  };
+
+  const handleDone = () => {
+    if (mode === "range" && onSelectRange && tentativeStart && !rangeEnd) {
+      onSelectRange(tentativeStart, tentativeStart);
+    }
+    onClose();
+  };
+
+  const renderMonth = (monthDate: Date) => {
+    const days = getMonthDays(monthDate);
+    return (
+      <div className="calendar-month-panel">
+        <div className="calendar-month-title">
+          {format(monthDate, "MMMM yyyy")}
+        </div>
+        <div className="calendar-weekdays-row">
+          {WEEKDAYS.map((d) => (
+            <span key={d} className="calendar-weekday-name">
+              {d}
+            </span>
+          ))}
+        </div>
+        <div className="calendar-days-grid">
+          {days.map((day) => {
+            const dateStr = toISODate(day);
+            const disabled = isDisabled(dateStr);
+            const inCurrentMonth = isSameMonth(day, monthDate);
+            const isToday = isSameDay(day, new Date());
+            const isSelected =
+              mode === "single" && selectedDate === dateStr;
+
+            let isRangeStart = false;
+            let isRangeEnd = false;
+            let isInRange = false;
+
+            if (displayRange) {
+              const startDate = parseISOSafe(displayRange.start);
+              const endDate = parseISOSafe(displayRange.end);
+
+              if (isSameDay(day, startDate)) isRangeStart = true;
+              if (isSameDay(day, endDate)) isRangeEnd = true;
+              if (
+                !isRangeStart &&
+                !isRangeEnd &&
+                isWithinInterval(day, { start: startDate, end: endDate })
+              ) {
+                isInRange = true;
+              }
+            }
+
+            return (
+              <button
+                key={dateStr}
+                className={`calendar-day ${isSelected ? "is-selected" : ""} ${
+                  isToday ? "is-today" : ""
+                } ${!inCurrentMonth ? "is-other-month" : ""} ${
+                  disabled ? "is-disabled" : ""
+                } ${isRangeStart ? "is-range-start" : ""} ${
+                  isRangeEnd ? "is-range-end" : ""
+                } ${isInRange ? "is-in-range" : ""}`}
+                onClick={() => handleDayClick(dateStr)}
+                onMouseEnter={() => handleDayEnter(dateStr)}
+                onMouseLeave={handleDayLeave}
+                disabled={disabled}
+                type="button"
+              >
+                {format(day, "d")}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+    );
+  };
 
   return (
     <div className="calendar-popover" ref={calendarRef}>
       <div className="calendar-header">
-        <button className="calendar-nav-btn" onClick={goToPrevMonth} type="button" aria-label="Previous month">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" width="16" height="16">
+        <button
+          className="calendar-nav-btn"
+          onClick={goToPrevMonth}
+          type="button"
+          aria-label="Previous month"
+        >
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            width="16"
+            height="16"
+          >
             <polyline points="15 18 9 12 15 6" />
           </svg>
         </button>
-        <span className="calendar-month-year">{MONTHS[viewMonth]} {viewYear}</span>
-        <button className="calendar-nav-btn" onClick={goToNextMonth} type="button" aria-label="Next month">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" width="16" height="16">
+        <div />
+        <button
+          className="calendar-nav-btn"
+          onClick={goToNextMonth}
+          type="button"
+          aria-label="Next month"
+        >
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            width="16"
+            height="16"
+          >
             <polyline points="9 18 15 12 9 6" />
           </svg>
         </button>
       </div>
 
-      {mode === "range" && (
-        <div className="calendar-range-hint">
-          {selectingStart ? "Select end date" : "Select start date"}
-        </div>
-      )}
-
-      <div className="calendar-days-row">
-        {DAYS.map((d) => (
-          <span key={d} className="calendar-day-name">{d}</span>
-        ))}
+      <div className="calendar-body">
+        {renderMonth(leftMonth)}
+        <div className="calendar-month-divider" />
+        {renderMonth(rightMonth)}
       </div>
 
-      <div className="calendar-grid">
-        {days.map((day) => {
-          const selected = day.date === selectedDate;
-          const isStart = day.date === effectiveRangeStart;
-          const isEnd = day.date === effectiveRangeEnd;
-          const inRange = isInRange(day.date);
-          const disabled = isDisabled(day.date);
-          return (
-            <button
-              key={day.date}
-              className={`calendar-day ${selected ? "is-selected" : ""} ${
-                day.isToday ? "is-today" : ""
-              } ${!day.isCurrentMonth ? "is-other-month" : ""} ${
-                disabled ? "is-disabled" : ""
-              } ${isStart ? "is-range-start" : ""} ${isEnd ? "is-range-end" : ""} ${
-                inRange ? "is-in-range" : ""
-              }`}
-              onClick={() => handleSelect(day.date)}
-              disabled={disabled}
-              type="button"
-            >
-              {day.day}
-            </button>
-          );
-        })}
+      <div className="calendar-footer">
+        <button
+          className="calendar-done-btn"
+          onClick={handleDone}
+          type="button"
+        >
+          Done
+        </button>
       </div>
     </div>
   );

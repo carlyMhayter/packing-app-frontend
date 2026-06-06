@@ -78,7 +78,7 @@
 
 .hamburger-btn:hover {
   background: var(--ltMahogany);
-  border-color: var(--ltLobster);
+  border-color: var(--lobsterLt);
 }
 
 .hamburger-line {

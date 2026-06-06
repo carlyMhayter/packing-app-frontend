@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Link, Outlet } from "react-router";
 import { useAuth } from "../../contexts/AuthContext";
 import logoIcon from "../../assets/platy_square.png";

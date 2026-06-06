@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import TravelerEditModal from "./TravelerEditModal";
+import TravelerEditModal from "../../modals/travelerEdit/TravelerEditModal";
+import TripSection from "./TripSection";
+import DestinationsSection from "./DestinationsSection";
 import "./styles/dashboard.css";
 
 function SectionLink({ children }: { children: React.ReactNode }) {
@@ -19,6 +21,7 @@ function SectionLink({ children }: { children: React.ReactNode }) {
 export default function Dashboard() {
   const navigate = useNavigate();
   const [travelerModalOpen, setTravelerModalOpen] = useState(false);
+  const [travelerModalTitle, setTravelerModalTitle] = useState("Edit Traveler");
   const [routineModalOpen, setRoutineModalOpen] = useState(false);
 
   return (
@@ -26,30 +29,7 @@ export default function Dashboard() {
       <h1 className="dashboard-welcome">Welcome Carly!</h1>
 
       <div className="dashboard-grid">
-        {/* Trips */}
-        <div className="dashboard-section">
-          <SectionLink>Trips</SectionLink>
-          <div className="dashboard-section-body">
-            <p className="dashboard-empty-line">No trips yet!</p>
-            <p className="dashboard-empty-line">Let&apos;s get started!</p>
-            <button
-              className="dashboard-add-btn"
-              onClick={() => navigate("/trip_planner")}
-              aria-label="Plan a new trip"
-              type="button"
-            >
-              <svg
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-              >
-                <path d="M12 5v14M5 12h14" />
-              </svg>
-            </button>
-          </div>
-        </div>
+        <TripSection />
 
         {/* Travelers */}
         <div className="dashboard-section">
@@ -57,7 +37,10 @@ export default function Dashboard() {
           <div className="dashboard-section-body">
             <button
               className="dashboard-list-item dashboard-list-clickable"
-              onClick={() => setTravelerModalOpen(true)}
+              onClick={() => {
+                setTravelerModalTitle("Edit Traveler");
+                setTravelerModalOpen(true);
+              }}
               type="button"
             >
               <span className="dashboard-icon-circle">
@@ -94,7 +77,10 @@ export default function Dashboard() {
             </button>
             <button
               className="dashboard-list-add"
-              onClick={() => navigate("/dashboard")}
+              onClick={() => {
+                setTravelerModalTitle("Add Traveler");
+                setTravelerModalOpen(true);
+              }}
               type="button"
             >
               <span className="dashboard-icon-plus">
@@ -177,21 +163,12 @@ export default function Dashboard() {
             </button>
           </div>
         </div>
-
-        {/* Destinations */}
-        <div className="dashboard-section">
-          <SectionLink>Destinations</SectionLink>
-          <div className="dashboard-section-body">
-            <p className="dashboard-empty-line">No trips saved,</p>
-            <p className="dashboard-empty-line">so no destinations</p>
-            <p className="dashboard-empty-line">yet!</p>
-          </div>
-        </div>
+        <DestinationsSection />
       </div>
 
       <TravelerEditModal
         open={travelerModalOpen}
-        title="Edit Traveler"
+        title={travelerModalTitle}
         onClose={() => setTravelerModalOpen(false)}
       />
 

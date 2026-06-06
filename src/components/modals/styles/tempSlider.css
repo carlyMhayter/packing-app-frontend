@@ -1,0 +1,99 @@
+/* ── Temperature Slider ── */
+
+.temp-slider {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 8px 0;
+  user-select: none;
+  touch-action: none;
+}
+
+.temp-slider-labels {
+  position: relative;
+  height: 14px;
+  /* margin-bottom: 4px; */
+}
+
+.temp-slider-label {
+  position: absolute;
+  transform: translateX(-50%);
+  font-family: var(--sans);
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--carbon);
+  opacity: 0.7;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+}
+
+.temp-slider-track-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.temp-slider-range-labels {
+  display: flex;
+  justify-content: space-between;
+  font-family: var(--sans);
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--carbon);
+  opacity: 0.7;
+  padding: 0 4px;
+}
+
+.temp-slider-track {
+  position: relative;
+  height: 8px;
+  background: linear-gradient(to left, var(--lobster), #83cbf8);
+  border-radius: 4px;
+  margin: 0px;
+  cursor: pointer;
+}
+
+.temp-slider-handle {
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 16px;
+  height: 28px;
+  background: var(--lobsterMed);
+  border: 2px solid var(--white);
+  border-radius: 12px;
+  cursor: grab;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  transition:
+    transform 0.1s ease,
+    box-shadow 0.2s ease;
+  z-index: 2;
+}
+
+.temp-slider-handle:hover {
+  transform: translate(-50%, -50%) scale(1.15);
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+}
+
+.temp-slider-handle.is-dragging {
+  cursor: grabbing;
+  transform: translate(-50%, -50%) scale(1.25);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+  z-index: 3;
+}
+
+.temp-slider-values {
+  position: relative;
+  height: 22px;
+  margin-top: 10px;
+}
+
+.temp-slider-value {
+  position: absolute;
+  transform: translateX(-50%);
+  font-family: var(--sans);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--mahogany);
+  white-space: nowrap;
+}

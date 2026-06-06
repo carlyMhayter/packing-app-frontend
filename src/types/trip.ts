@@ -6,6 +6,7 @@ export interface CreateDestinationData {
   label: string;
   destinationID?: string;
   order: number;
+  laundry: "yes" | "no" | "maybe" | null;
 
   addressData?: {
     latitude: number;
@@ -66,3 +67,54 @@ export type DestinationResponseFeature = {
 export type DestinationResponse = {
   features: DestinationResponseFeature[];
 };
+
+export type Trip = {
+  id: string;
+  name: string;
+  start_date: string; // YYYY-MM-DD
+  end_date: string; // YYYY-MM-DD
+  updated_at: string; // ISO 8601 timestamp
+  created_at: string; // ISO 8601 timestamp
+};
+
+export type WeatherCondition = "sunny" | "partly_cloudy" | "cloudy" | "rainy" | "stormy" | "snowy" | "clear";
+
+export interface WeatherData {
+  highTemp: number;
+  lowTemp: number;
+  conditions: WeatherCondition[];
+}
+
+export interface DailyWeather {
+  date: string; // YYYY-MM-DD
+  highTemp: number;
+  lowTemp: number;
+  conditions: WeatherCondition[];
+}
+
+export interface DestinationSummary {
+  id: string;
+  name: string;
+  location: string;
+  arrivalDate: string; // YYYY-MM-DD
+  departureDate: string; // YYYY-MM-DD
+  dayWeather: WeatherData;
+  nightWeather: WeatherData;
+  sunrise: string;
+  sunset: string;
+  dailyWeather: DailyWeather[];
+}
+
+export interface Traveler {
+  id: string;
+  name: string;
+  avatar?: string;
+}
+
+export interface TripDetailData {
+  trip: Trip;
+  overallDayWeather: WeatherData;
+  overallNightWeather: WeatherData;
+  destinations: DestinationSummary[];
+  travelers: Traveler[];
+}

@@ -12,6 +12,8 @@ import Dashboard from "../components/home/dashboard/dashboard";
 import TripPlanner from "../components/tripPlanner/tripPlanner";
 import PackingPlanner from "../components/packingPlanner/packingPlanner.tsx";
 import TravelerPlanner from "../components/travelerPlanner/travelerPlanner.tsx";
+import TripDetailPage from "../components/trips/TripDetailPage.tsx";
+
 const router = createBrowserRouter([
   {
     path: "/",
@@ -40,6 +42,11 @@ const router = createBrowserRouter([
         children: [{ index: true, Component: TripPlanner }],
       },
       {
+        path: "trip_summary",
+        Component: InternalLayout,
+        children: [{ index: true, Component: TripPlanner }],
+      },
+      {
         path: "packing_planner",
         Component: InternalLayout,
         children: [{ index: true, Component: PackingPlanner }],
@@ -48,6 +55,11 @@ const router = createBrowserRouter([
         path: "traveler_planner",
         Component: InternalLayout,
         children: [{ index: true, Component: TravelerPlanner }],
+      },
+      {
+        path: "trips/:tripId",
+        Component: InternalLayout,
+        children: [{ index: true, Component: TripDetailPage }],
       },
     ],
   },

@@ -32,6 +32,8 @@ export default function TripPlanner() {
       nights: 1,
       id,
       label: "",
+      order: destinations.length,
+      laundry: null,
     };
     setDestinations((prev) => [...prev, newDestination]);
   };
@@ -116,17 +118,19 @@ export default function TripPlanner() {
       arrival_date: dest.arrivalDate,
       departure_date: dest.departureDate,
       nights: dest.nights,
-      has_laundry: false, // TODO: add laundry option to UI
+      has_laundry: dest.laundry === "yes" ? true : false,
       label: dest.label,
-      address_data: dest.addressData,
+      address: dest.addressData,
       order: index,
     }));
 
+    const tripNameToUse =
+      tripName !== ""
+        ? tripName
+        : `My Trip - ${new Date().toLocaleDateString()}`;
+
     const payload = {
-      name:
-        tripName !== ""
-          ? tripName
-          : `My Trip - ${new Date().toLocaleDateString()}`,
+      name: tripNameToUse,
       user_id: 2, // TODO: get actual user ID from auth context
       destinations: destinationsPayload,
     };
