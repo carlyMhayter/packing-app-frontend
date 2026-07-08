@@ -1,10 +1,21 @@
 import { useState } from "react";
-import { type DestinationSummary, type WeatherCondition } from "../../types/trip";
+import {
+  type DestinationSummary,
+  type WeatherCondition,
+} from "../../types/trip";
+import "./styles/destinationSummary.css";
 
 function WeatherIcon({ condition }: { condition: WeatherCondition }) {
   const icons: Record<WeatherCondition, React.ReactNode> = {
     sunny: (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="22" height="22">
+      <svg
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        width="22"
+        height="22"
+      >
         <circle cx="12" cy="12" r="5" />
         <line x1="12" y1="1" x2="12" y2="3" />
         <line x1="12" y1="21" x2="12" y2="23" />
@@ -17,17 +28,38 @@ function WeatherIcon({ condition }: { condition: WeatherCondition }) {
       </svg>
     ),
     partly_cloudy: (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="22" height="22">
+      <svg
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        width="22"
+        height="22"
+      >
         <path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z" />
       </svg>
     ),
     cloudy: (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="22" height="22">
+      <svg
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        width="22"
+        height="22"
+      >
         <path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z" />
       </svg>
     ),
     rainy: (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="22" height="22">
+      <svg
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        width="22"
+        height="22"
+      >
         <path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z" />
         <line x1="8" y1="22" x2="8" y2="24" />
         <line x1="12" y1="22" x2="12" y2="24" />
@@ -35,13 +67,27 @@ function WeatherIcon({ condition }: { condition: WeatherCondition }) {
       </svg>
     ),
     stormy: (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="22" height="22">
+      <svg
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        width="22"
+        height="22"
+      >
         <path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z" />
         <polyline points="13 16 11 20 15 20 13 24" />
       </svg>
     ),
     snowy: (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="22" height="22">
+      <svg
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        width="22"
+        height="22"
+      >
         <path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z" />
         <line x1="8" y1="22" x2="8.01" y2="22" />
         <line x1="12" y1="22" x2="12.01" y2="22" />
@@ -49,7 +95,14 @@ function WeatherIcon({ condition }: { condition: WeatherCondition }) {
       </svg>
     ),
     clear: (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="22" height="22">
+      <svg
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        width="22"
+        height="22"
+      >
         <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
       </svg>
     ),
@@ -93,7 +146,9 @@ export default function DestinationSummaryCard({
   };
 
   return (
-    <div className={`destination-summary-card ${expanded ? "is-expanded" : ""}`}>
+    <div
+      className={`destination-summary-card ${expanded ? "is-expanded" : ""}`}
+    >
       <div className="destination-summary-main">
         <div className="destination-summary-info">
           <h3 className="destination-summary-name">

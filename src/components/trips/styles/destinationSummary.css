@@ -1,0 +1,226 @@
+/* ── Destinations Section ── */
+
+.destinations-section {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.section-title {
+  font-family: var(--heading);
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--mahogany);
+  margin: 0;
+}
+
+.destinations-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.destination-summary-card {
+  background: var(--white);
+  border: 1px solid var(--steelBlue);
+  border-radius: 16px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  box-shadow: var(--shadow);
+  transition: gap 0.2s ease;
+}
+
+.destination-summary-card.is-expanded {
+  gap: 20px;
+}
+
+.destination-summary-main {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.destination-summary-info {
+  flex: 1;
+  min-width: 200px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.destination-summary-name {
+  font-family: var(--sans);
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--mahogany);
+  margin: 0;
+}
+
+.destination-summary-location {
+  font-family: var(--sans);
+  font-size: 14px;
+  color: var(--carbon);
+  opacity: 0.6;
+  margin: 0;
+}
+
+.destination-summary-weather {
+  display: flex;
+  gap: 24px;
+}
+
+.destination-weather-block {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 100px;
+}
+
+.destination-weather-label {
+  font-family: var(--sans);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--carbon);
+  opacity: 0.5;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.destination-weather-temps {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-family: var(--sans);
+  font-size: 14px;
+  color: var(--carbon);
+}
+
+.destination-summary-sun {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 120px;
+}
+
+.sun-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.sun-label {
+  font-family: var(--sans);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--carbon);
+  opacity: 0.5;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  min-width: 52px;
+}
+
+.sun-time {
+  font-family: var(--sans);
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--carbon);
+}
+
+.destination-summary-toggle {
+  width: 36px;
+  height: 36px;
+  border: none;
+  background: transparent;
+  color: var(--carbon);
+  opacity: 0.4;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  padding: 0;
+  margin-left: auto;
+  transition:
+    opacity 0.2s ease,
+    background 0.2s ease,
+    transform 0.2s ease;
+  flex-shrink: 0;
+}
+
+.destination-summary-toggle:hover {
+  opacity: 0.8;
+  background: rgba(0, 0, 0, 0.04);
+}
+
+.destination-summary-toggle.is-expanded {
+  transform: rotate(180deg);
+}
+
+/* ── Daily Cards (expanded) ── */
+
+.destination-daily-cards {
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  padding: 4px 4px 12px;
+  scroll-snap-type: x mandatory;
+}
+
+.destination-daily-card {
+  flex-shrink: 0;
+  width: 140px;
+  background: var(--vanillaCustardVLt);
+  border: 1px solid var(--vanillaCustard);
+  border-radius: 12px;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  scroll-snap-align: start;
+}
+
+.daily-card-date {
+  font-family: var(--sans);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--carbon);
+  opacity: 0.7;
+  text-align: center;
+}
+
+.daily-card-temps {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.daily-card-hi {
+  font-family: var(--sans);
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--mahogany);
+}
+
+.daily-card-low {
+  font-family: var(--sans);
+  font-size: 13px;
+  color: var(--carbon);
+  opacity: 0.6;
+}
+
+.daily-card-conditions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.daily-weather-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

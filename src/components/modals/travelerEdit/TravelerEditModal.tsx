@@ -1,8 +1,14 @@
 import { useState } from "react";
-import "../styles/travelerEdit.css";
-import RoutineEditSlidePanel from "../routineEdit/RoutineEditSlidePanel";
 import TravelerEditSlidePanel from "./TravelerEditSlidePanel";
+import RoutineEditSlidePanel from "../routineEdit/RoutineEditSlidePanel";
 import SlideModal from "../modal/SlideModal";
+import ModalSlidePanel from "../modal/ModalSlidePanel";
+
+interface RoutineItem {
+  id: string;
+  name: string;
+  items: string[];
+}
 
 interface TravelerEditModalProps {
   open: boolean;
@@ -15,31 +21,80 @@ export default function TravelerEditModal({
   title,
   onClose,
 }: TravelerEditModalProps) {
-  const [view, setView] = useState<"traveler" | "createRoutine">("traveler");
-
-  const panels = [
+  const [activePanel, setActivePanel] = useState(0);
+  const [routines, setRoutines] = useState<RoutineItem[]>([
     {
-      name: "traveler",
-      component: <TravelerEditSlidePanel setView={setView} />,
+      id: "routine-1",
+      name: "Standard Hygiene Routine",
+      items: [
+        "Toothbrush",
+        "Toothpaste",
+        "Dental floss",
+        "Deodorant",
+        "Shampoo",
+        "Conditioner",
+        "Body wash",
+        "Face wash",
+        "Moisturizer",
+        "Razor",
+        "Shaving cream",
+      ],
     },
-    {
-      name: "createRoutine",
-      component: <RoutineEditSlidePanel setView={setView} />,
-    },
-  ];
+  ]);
+  const [editingRoutineId, setEditingRoutineId] = useState<string | null>(null);
 
-  if (!open) return null;
+  const routineToEdit = editingRoutineId
+    ? routines.find((r) => r.id === editingRoutineId) ?? null
+    : null;
 
   return (
-    <SlideModal open={open} title={title} onClose={onClose} view={view}>
-      {panels.map((panel) => (
-        <div
-          key={panel.name}
-          className={`modal-slide ${view === panel.name ? "is-active" : ""}`}
-        >
-          {panel.component}
-        </div>
-      ))}
+    <SlideModal
+      open={open}
+      title={title}
+      onClose={onClose}
+      activePanel={activePanel}
+    >
+      <ModalSlidePanel>
+        <TravelerEditSlidePanel
+          routines={routines}
+          onRoutinesChange={setRoutines}
+          onNavigateNext={() => {
+            setEditingRoutineId(null);
+            setActivePanel(1);
+          }}
+          onEditRoutine={(id) => {
+            setEditingRoutineId(id);
+            setActivePanel(1);
+          }}
+        />
+      </ModalSlidePanel>
+
+      <ModalSlidePanel>
+        <RoutineEditSlidePanel
+          onNavigateBack={() => {
+            setEditingRoutineId(null);
+            setActivePanel(0);
+          }}
+          onSave={(routine) => {
+            if (editingRoutineId) {
+              setRoutines((prev) =>
+                prev.map((r) =>
+                  r.id === editingRoutineId
+                    ? { ...routine, id: editingRoutineId }
+                    : r
+                )
+              );
+            } else {
+              setRoutines((prev) => [
+                ...prev,
+                { ...routine, id: `routine-${Date.now()}` },
+              ]);
+            }
+            setEditingRoutineId(null);
+          }}
+          initialRoutine={routineToEdit}
+        />
+      </ModalSlidePanel>
     </SlideModal>
   );
 }

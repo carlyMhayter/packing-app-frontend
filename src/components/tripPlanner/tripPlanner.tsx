@@ -14,6 +14,7 @@ function getAutoLabel(index: number, total: number): string {
   return "Destination";
 }
 import { api } from "../../services/api";
+import LoadingDots from "../basic/loading";
 
 export default function TripPlanner() {
   const [tripName, setTripName] = useState("");
@@ -185,15 +186,7 @@ export default function TripPlanner() {
           disabled={isSaving}
           type="button"
         >
-          {isSaving ? (
-            <span className="loading-dots">
-              <span className="loading-dot" />
-              <span className="loading-dot" />
-              <span className="loading-dot" />
-            </span>
-          ) : (
-            "Next >>"
-          )}
+          {isSaving ? <LoadingDots /> : "Next >>"}
         </button>
       </div>
       {saveError && (

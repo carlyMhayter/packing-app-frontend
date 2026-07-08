@@ -1,25 +1,40 @@
 import { useState } from "react";
 import TempSlider from "./TempSlider";
-import ModalSlidePanel from "../modal/ModalSlidePanel";
+import Tooltip from "../../basic/tooltip";
 import "../styles/travelerEdit.css";
-import "../styles/modal.css";
-
-interface TravelerEditSlidePanelProps {
-  setView: React.Dispatch<React.SetStateAction<"traveler" | "createRoutine">>;
-}
 
 interface ClothingPrefs {
-  shoes: string;
-  underwear: string;
-  socks: string;
-  pants: string;
-  shirts: string;
+  topsPerDay: string;
+  bottomsPerDay: string;
+  underwearPerDay: string;
+  pajamasSeparate: boolean;
+  socksPerDay: string;
+  workoutDaysPerWeek: string;
+}
+
+interface RoutineItem {
+  id: string;
+  name: string;
+  items: string[];
+}
+
+interface TravelerEditSlidePanelProps {
+  routines: RoutineItem[];
+  onRoutinesChange: React.Dispatch<React.SetStateAction<RoutineItem[]>>;
+  onNavigateNext: () => void;
+  onEditRoutine: (id: string) => void;
 }
 
 export default function TravelerEditSlidePanel({
-  setView,
+  routines,
+  onRoutinesChange,
+  onNavigateNext,
+  onEditRoutine,
 }: TravelerEditSlidePanelProps) {
   const [name, setName] = useState("Carly");
+  const [travelerType, setTravelerType] = useState<
+    "adult" | "child" | "infant" | "pet"
+  >("adult");
   const [unit, setUnit] = useState<"F" | "C">("F");
   const [temps, setTemps] = useState({
     hot: 90,
@@ -27,12 +42,14 @@ export default function TravelerEditSlidePanel({
     cool: 55,
     cold: 32,
   });
+
   const [clothing, setClothing] = useState<ClothingPrefs>({
-    shoes: "3",
-    underwear: "7",
-    socks: "7",
-    pants: "4",
-    shirts: "5",
+    topsPerDay: "1",
+    bottomsPerDay: "1",
+    underwearPerDay: "1",
+    pajamasSeparate: true,
+    socksPerDay: "1",
+    workoutDaysPerWeek: "3",
   });
 
   const [medications, setMedications] = useState<string[]>([
@@ -40,11 +57,6 @@ export default function TravelerEditSlidePanel({
     "Ibuprofen",
   ]);
   const [newMed, setNewMed] = useState("");
-
-  const [routines, setRoutines] = useState<string[]>([
-    "Standard Hygiene Routine",
-  ]);
-  const [newRoutine, setNewRoutine] = useState("");
 
   const convertTemps = (toUnit: "F" | "C") => {
     if (toUnit === unit) return;
@@ -78,24 +90,20 @@ export default function TravelerEditSlidePanel({
     setMedications((prev) => prev.filter((_, i) => i !== index));
   };
 
-  const addRoutine = () => {
-    const trimmed = newRoutine.trim();
-    if (!trimmed) return;
-    setRoutines((prev) => [...prev, trimmed]);
-    setNewRoutine("");
-  };
-
   const removeRoutine = (index: number) => {
-    setRoutines((prev) => prev.filter((_, i) => i !== index));
+    onRoutinesChange((prev) => prev.filter((_, i) => i !== index));
   };
 
   return (
-    <ModalSlidePanel>
+    <>
       {/* Name */}
       <section className="trav-modal-section">
         <label className="trav-modal-section-label" htmlFor="traveler-name">
           Name
         </label>
+        <p className="trav-modal-section-desc">
+          Enter the full name of this traveler.
+        </p>
         <input
           id="traveler-name"
           type="text"
@@ -103,6 +111,27 @@ export default function TravelerEditSlidePanel({
           onChange={(e) => setName(e.target.value)}
           className="modal-text-input"
         />
+      </section>
+
+      {/* Traveler Type */}
+      <section className="trav-modal-section">
+        <h4 className="trav-modal-section-heading">Traveler Type</h4>
+        <p className="trav-modal-section-desc">
+          Select what kind of traveler this is so we can pack accordingly.
+        </p>
+        <div className="traveler-type-options">
+          {(["adult", "child", "infant", "pet"] as const).map((type) => (
+            <button
+              key={type}
+              type="button"
+              className={`traveler-type-btn ${travelerType === type ? "selected" : ""}`}
+              onClick={() => setTravelerType(type)}
+              aria-pressed={travelerType === type}
+            >
+              {type.charAt(0).toUpperCase() + type.slice(1)}
+            </button>
+          ))}
+        </div>
       </section>
 
       {/* Temperature Preferences */}
@@ -130,6 +159,10 @@ export default function TravelerEditSlidePanel({
             </button>
           </div>
         </div>
+        <p className="trav-modal-section-desc">
+          Set the temperature ranges this traveler considers cold, cool, warm,
+          and hot.
+        </p>
         <TempSlider
           values={temps}
           unit={unit}
@@ -140,14 +173,20 @@ export default function TravelerEditSlidePanel({
       {/* Clothing Preferences */}
       <section className="trav-modal-section">
         <h4 className="trav-modal-section-heading">Clothing Preferences</h4>
+        <p className="trav-modal-section-desc">
+          How many clothing items does this traveler typically use each day?
+        </p>
         <div className="clothing-preferences-list">
           {(
             [
-              { key: "shoes", label: "Pairs of shoes" },
-              { key: "underwear", label: "Pairs of underwear" },
-              { key: "socks", label: "Pairs of socks" },
-              { key: "pants", label: "Pairs of pants" },
-              { key: "shirts", label: "Shirts" },
+              { key: "topsPerDay", label: "Tops per day" },
+              { key: "bottomsPerDay", label: "Bottoms per day" },
+              { key: "underwearPerDay", label: "Pairs of underwear per day" },
+              { key: "socksPerDay", label: "Pairs of socks per day" },
+              {
+                key: "workoutDaysPerWeek",
+                label: "Workout clothing days per week",
+              },
             ] as { key: keyof ClothingPrefs; label: string }[]
           ).map(({ key, label }) => (
             <div key={key} className="clothing-preference-row">
@@ -155,7 +194,7 @@ export default function TravelerEditSlidePanel({
               <input
                 type="text"
                 inputMode="numeric"
-                value={clothing[key]}
+                value={clothing[key] as string}
                 onChange={(e) =>
                   setClothing((prev) => ({
                     ...prev,
@@ -166,12 +205,49 @@ export default function TravelerEditSlidePanel({
               />
             </div>
           ))}
+          <div className="clothing-preference-toggle-row">
+            <span className="clothing-preference-label">
+              Wear pajamas separate from normal clothing?
+            </span>
+            <div className="clothing-preference-toggle">
+              <button
+                type="button"
+                className={clothing.pajamasSeparate ? "selected" : ""}
+                onClick={() =>
+                  setClothing((prev) => ({
+                    ...prev,
+                    pajamasSeparate: true,
+                  }))
+                }
+                aria-pressed={clothing.pajamasSeparate}
+              >
+                Yes
+              </button>
+              <button
+                type="button"
+                className={!clothing.pajamasSeparate ? "selected" : ""}
+                onClick={() =>
+                  setClothing((prev) => ({
+                    ...prev,
+                    pajamasSeparate: false,
+                  }))
+                }
+                aria-pressed={!clothing.pajamasSeparate}
+              >
+                No
+              </button>
+            </div>
+          </div>
         </div>
       </section>
 
       {/* Medications */}
       <section className="trav-modal-section">
         <h4 className="trav-modal-section-heading">Medications</h4>
+        <p className="trav-modal-section-desc">
+          List any medications this traveler needs to bring so they don&apos;t
+          get forgotten.
+        </p>
         <div className="tag-list">
           {medications.map((med, i) => (
             <span key={i} className="tag-item">
@@ -235,11 +311,7 @@ export default function TravelerEditSlidePanel({
       <section className="trav-modal-section">
         <div className="trav-modal-section-heading-row">
           <h4 className="trav-modal-section-heading">Current Routines</h4>
-          <button
-            className="sci-btn"
-            onClick={() => setView("createRoutine")}
-            type="button"
-          >
+          <button className="sci-btn" onClick={onNavigateNext} type="button">
             <svg
               viewBox="0 0 24 24"
               fill="none"
@@ -255,16 +327,42 @@ export default function TravelerEditSlidePanel({
             New Routine
           </button>
         </div>
+        <p className="trav-modal-section-desc">
+          Daily routines (like morning or evening hygiene) so we can pack the
+          right items for each day.
+        </p>
 
         <div className="tag-list">
           {routines.map((routine, i) => (
-            <button key={i} className="routine-button">
-              {routine}
+            <div key={routine.id} className="routine-button">
+              <span>{routine.name}</span>
+              <Tooltip content="Edit routine">
+                <button
+                  className="tag-edit"
+                  onClick={() => onEditRoutine(routine.id)}
+                  type="button"
+                  aria-label={`Edit ${routine.name}`}
+                >
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    width="10"
+                    height="10"
+                  >
+                    <path d="M12 20h9" />
+                    <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
+                  </svg>
+                </button>
+              </Tooltip>
               <button
                 className="tag-remove"
                 onClick={() => removeRoutine(i)}
                 type="button"
-                aria-label={`Remove ${routine}`}
+                aria-label={`Remove ${routine.name}`}
               >
                 <svg
                   viewBox="0 0 24 24"
@@ -279,45 +377,18 @@ export default function TravelerEditSlidePanel({
                   <line x1="6" y1="6" x2="18" y2="18" />
                 </svg>
               </button>
-            </button>
+            </div>
           ))}
-        </div>
-        <div className="tag-add-row">
-          <input
-            type="text"
-            value={newRoutine}
-            onChange={(e) => setNewRoutine(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === "Enter") addRoutine();
-            }}
-            placeholder="Add routine..."
-            className="tag-add-input"
-          />
-          <button
-            className="tag-add-btn"
-            onClick={addRoutine}
-            type="button"
-            aria-label="Add routine"
-          >
-            <svg
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              width="14"
-              height="14"
-            >
-              <line x1="12" y1="5" x2="12" y2="19" />
-              <line x1="5" y1="12" x2="19" y2="12" />
-            </svg>
-          </button>
         </div>
       </section>
 
       {/* Previous Trips */}
       <section className="trav-modal-section">
         <h4 className="trav-modal-section-heading">Previous Trips</h4>
+        <p className="trav-modal-section-desc">
+          Trips this traveler has been on before, so you can reuse their packing
+          list for similar destinations.
+        </p>
         <div className="previous-trips-list">
           {previousTrips.map((trip, i) => (
             <div key={i} className="previous-trip-item">
@@ -327,6 +398,6 @@ export default function TravelerEditSlidePanel({
           ))}
         </div>
       </section>
-    </ModalSlidePanel>
+    </>
   );
 }

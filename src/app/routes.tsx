@@ -12,7 +12,9 @@ import Dashboard from "../components/home/dashboard/dashboard";
 import TripPlanner from "../components/tripPlanner/tripPlanner";
 import PackingPlanner from "../components/packingPlanner/packingPlanner.tsx";
 import TravelerPlanner from "../components/travelerPlanner/travelerPlanner.tsx";
-import TripDetailPage from "../components/trips/TripDetailPage.tsx";
+import TripPage from "../components/trips/TripPage.tsx";
+import AccountSettings from "../components/accountSettings/accountSettings.tsx";
+import TripsListPage from "../components/trips/TripsListPage.tsx";
 
 const router = createBrowserRouter([
   {
@@ -57,9 +59,19 @@ const router = createBrowserRouter([
         children: [{ index: true, Component: TravelerPlanner }],
       },
       {
+        path: "trips",
+        Component: InternalLayout,
+        children: [{ index: true, Component: TripsListPage }],
+      },
+      {
         path: "trips/:tripId",
         Component: InternalLayout,
-        children: [{ index: true, Component: TripDetailPage }],
+        children: [{ index: true, Component: TripPage }],
+      },
+      {
+        path: "account_settings",
+        Component: InternalLayout,
+        children: [{ index: true, Component: AccountSettings }],
       },
     ],
   },

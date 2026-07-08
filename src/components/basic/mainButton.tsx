@@ -1,5 +1,5 @@
 import type { ButtonHTMLAttributes } from "react";
-
+import LoadingDots from "./loading";
 interface MainButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   color?: string;
   loading?: boolean;
@@ -25,15 +25,7 @@ export default function MainButton({
       }
       {...props}
     >
-      {loading ? (
-        <span className="loading-dots" aria-label="Loading">
-          <span className="loading-dot" />
-          <span className="loading-dot" />
-          <span className="loading-dot" />
-        </span>
-      ) : (
-        children
-      )}
+      {loading ? <LoadingDots /> : children}
     </button>
   );
 }

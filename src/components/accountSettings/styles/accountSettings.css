@@ -1,0 +1,312 @@
+.account-settings-page {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.account-settings-header {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--steelBlue);
+}
+
+.account-settings-title {
+  font-family: var(--heading);
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--mahogany);
+  margin: 0;
+}
+
+.account-settings-subtitle {
+  font-family: var(--sans);
+  font-size: 15px;
+  color: var(--carbon);
+  opacity: 0.6;
+  margin: 0;
+}
+
+.account-settings-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.account-settings-card {
+  background: var(--white);
+  border: 1px solid var(--steelBlue);
+  border-radius: 12px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.account-settings-card-danger {
+  border-color: var(--lobster);
+  background: rgba(209, 79, 70, 0.03);
+}
+
+.account-settings-card-header {
+  padding: 20px 24px 16px;
+  border-bottom: 1px solid var(--steelBlue);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.account-settings-card-title {
+  font-family: var(--heading);
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--mahogany);
+  margin: 0;
+}
+
+.account-settings-card-desc {
+  font-family: var(--sans);
+  font-size: 13px;
+  color: var(--carbon);
+  opacity: 0.55;
+  margin: 0;
+}
+
+.account-settings-card-body {
+  padding: 20px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.account-settings-card-footer {
+  padding: 0 24px 20px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.account-settings-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.account-settings-label {
+  font-family: var(--sans);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--carbon);
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.account-settings-input {
+  font-family: var(--sans);
+  font-size: 15px;
+  color: var(--carbon);
+  background: var(--white);
+  border: 1.5px solid var(--steelBlue);
+  border-radius: 8px;
+  padding: 10px 12px;
+  outline: none;
+  transition: border-color 0.2s ease;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.account-settings-input:focus {
+  border-color: var(--lobster);
+}
+
+.account-settings-select {
+  font-family: var(--sans);
+  font-size: 15px;
+  color: var(--carbon);
+  background: var(--white);
+  border: 1.5px solid var(--steelBlue);
+  border-radius: 8px;
+  padding: 10px 12px;
+  outline: none;
+  transition: border-color 0.2s ease;
+  cursor: pointer;
+  width: 100%;
+  box-sizing: border-box;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23666' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  padding-right: 32px;
+}
+
+.account-settings-select:focus {
+  border-color: var(--lobster);
+}
+
+.account-settings-unit-toggle {
+  display: flex;
+  border: 1.5px solid var(--steelBlue);
+  border-radius: 8px;
+  overflow: hidden;
+  width: fit-content;
+}
+
+.account-settings-unit-toggle button {
+  font-family: var(--sans);
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--carbon);
+  opacity: 0.6;
+  background: var(--white);
+  border: none;
+  padding: 8px 16px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.account-settings-unit-toggle button:hover {
+  opacity: 1;
+  background: var(--ltMahogany);
+}
+
+.account-settings-unit-toggle button.selected {
+  background: var(--lobster);
+  color: var(--white);
+  opacity: 1;
+}
+
+/* Toggle buttons */
+
+.account-settings-toggle-field {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--steelBlue);
+}
+
+.account-settings-toggle-field:last-child {
+  border-bottom: none;
+}
+
+.account-settings-toggle-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.account-settings-toggle-label {
+  font-family: var(--sans);
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--carbon);
+}
+
+.account-settings-toggle-desc {
+  font-family: var(--sans);
+  font-size: 13px;
+  color: var(--carbon);
+  opacity: 0.5;
+}
+
+.account-settings-toggle-btn {
+  width: 44px;
+  height: 24px;
+  border-radius: 12px;
+  border: none;
+  cursor: pointer;
+  position: relative;
+  transition: background-color 0.2s ease;
+  flex-shrink: 0;
+  background: var(--steelBlue);
+}
+
+.account-settings-toggle-btn.on {
+  background: var(--lobster);
+}
+
+.account-settings-toggle-knob {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--white);
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  transition: transform 0.2s ease;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+}
+
+.account-settings-toggle-btn.on .account-settings-toggle-knob {
+  transform: translateX(20px);
+}
+
+/* Buttons */
+
+.account-settings-btn-primary {
+  font-family: var(--sans);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--white);
+  background: var(--lobster);
+  border: none;
+  border-radius: 8px;
+  padding: 10px 20px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.account-settings-btn-primary:hover {
+  background: var(--mahogany);
+}
+
+.account-settings-btn-danger {
+  font-family: var(--sans);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--lobster);
+  background: transparent;
+  border: 1.5px solid var(--lobster);
+  border-radius: 8px;
+  padding: 8px 16px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.account-settings-btn-danger:hover {
+  background: var(--lobster);
+  color: var(--white);
+}
+
+/* Danger zone */
+
+.account-settings-danger-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 12px 0;
+}
+
+.account-settings-danger-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.account-settings-danger-label {
+  font-family: var(--sans);
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--lobster);
+}
+
+.account-settings-danger-desc {
+  font-family: var(--sans);
+  font-size: 13px;
+  color: var(--carbon);
+  opacity: 0.5;
+}

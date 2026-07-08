@@ -1,4 +1,5 @@
 import { type Traveler } from "../../types/trip";
+import "./styles/travelerSummary.css";
 
 interface TravelersSectionProps {
   travelers: Traveler[];

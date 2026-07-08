@@ -1,11 +1,8 @@
 import { type TripPublic } from "../../types/trip";
 import OverallConditions from "./OverallConditions";
 import { formatShortDate } from "../../utils/trips";
-import TravelersSection from "./TravelerSection";
 
-import "./styles/tripSummary.css";
-
-export default function TripSummary({
+export default function TravelerSection({
   createdAt,
   destinations,
   forecastTrip,
@@ -18,8 +15,6 @@ export default function TripSummary({
       <div className="trip-summary-header">
         <h1 className="trip-summary-title">{name}</h1>
         <span> Last updated: {updatedAt}</span>
-        <span> Created at: {createdAt}</span>
-
         <span> </span>
         <div className="trip-summary-meta">
           <span className="trip-summary-nights">100 nights</span>
@@ -44,10 +39,7 @@ export default function TripSummary({
       </div>
       <div>
         <OverallConditions forecastTrip={forecastTrip} />{" "}
-        {/* <TravelersSection
-          travelers={tripData.travelers}
-          onAddTraveler={handleAddTraveler}
-        /> */}
+        <div>Traveler Section</div>
       </div>
     </div>
   );

@@ -17,14 +17,12 @@
   --mahoganyDark: #280000;
   --mahoganyDarker: #1a0000;
 
-  --vanillaCustardVVLt: #fffdf1;
-  --vanillaCustardVLt: #fffced;
-  --vanillaCustardLt: #fff8d5;
-  --vanillaCustard: #f1e8b8;
-  --vanillaCustardDark: #d1c17a;
-  --vanillaCustardDarker: #a38c4d;
-
+  --dustyGrapeVVLt: #f7f6fa;
+  --dustyGrapeVLt: #e8e7f2;
+  --dustyGrapeLt: #c9c7d8;
   --dustyGrape: #4b4e6d;
+  --dustyGrapeDark: #2e3045;
+  --dustyGrapeDarker: #1a1c2b;
 
   --steelBlueVVLt: #f4fcff;
   --steelBlueVLt: #e0f0f4;
@@ -33,6 +31,13 @@
   --steelBlueDark: #748b91;
   --steelBlueDarker: #4a5e63;
 
+  --oceanBlueVVLt: #dffffb;
+  --oceanBlueVLt: #cdf5f1;
+  --oceanBlueLt: #bae5e3;
+  --oceanBlue: #a4d0ce;
+  --oceanBlueDark: #87b1ae;
+  --oceanBlueDarker: #65918d;
+
   --limeCreamVVLt: rgb(255, 255, 241);
   --limeCreamVLt: #edefd2;
   --limeCreamLt: #ecf3a6;
@@ -40,6 +45,13 @@
   --limeCreamMed: #c2c96b;
   --limeCreamDark: #99a03e;
   --limeCreamDarker: #646923;
+
+  --vanillaCustardVVLt: #fffdf1;
+  --vanillaCustardVLt: #fffced;
+  --vanillaCustardLt: #fff8d5;
+  --vanillaCustard: #f1e8b8;
+  --vanillaCustardDark: #d1c17a;
+  --vanillaCustardDarker: #a38c4d;
 
   --wineRed:
     #501b1b --shadow: rgba(0, 0, 0, 0.1) 0 10px 15px -3px,
@@ -207,46 +219,6 @@ code {
 
 .btn-text:hover {
   background: var(--ltMahogany);
-}
-
-/* ── Loading dots animation ── */
-
-@keyframes bounce {
-  0%,
-  80%,
-  100% {
-    transform: translateY(0);
-  }
-  40% {
-    transform: translateY(-6px);
-  }
-}
-
-.loading-dots {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-}
-
-.loading-dot {
-  display: inline-block;
-  width: 6px;
-  height: 6px;
-  background: currentColor;
-  border-radius: 50%;
-  animation: bounce 1.4s infinite ease-in-out both;
-}
-
-.loading-dot:nth-child(1) {
-  animation-delay: -0.32s;
-}
-
-.loading-dot:nth-child(2) {
-  animation-delay: -0.16s;
-}
-
-.loading-dot:nth-child(3) {
-  animation-delay: 0s;
 }
 
 /* ── Form utilities ── */

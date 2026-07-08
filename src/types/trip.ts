@@ -77,7 +77,14 @@ export type Trip = {
   created_at: string; // ISO 8601 timestamp
 };
 
-export type WeatherCondition = "sunny" | "partly_cloudy" | "cloudy" | "rainy" | "stormy" | "snowy" | "clear";
+export type WeatherCondition =
+  | "sunny"
+  | "partly_cloudy"
+  | "cloudy"
+  | "rainy"
+  | "stormy"
+  | "snowy"
+  | "clear";
 
 export interface WeatherData {
   highTemp: number;
@@ -117,4 +124,30 @@ export interface TripDetailData {
   overallNightWeather: WeatherData;
   destinations: DestinationSummary[];
   travelers: Traveler[];
+}
+
+//TODO: create type for DestinationPublic
+export interface TripPublic {
+  forecastTrip: TripForecastPublic;
+  id: number;
+  name: string;
+  updatedAt: string;
+  departDate: string;
+  arrivalDate: string;
+  destinations: any[];
+  createdAt: string;
+}
+
+//TODO: types for conditions, forecastDestination
+export interface TripForecastPublic {
+  cachedAt: string;
+  dayConditions: string[];
+  dayHigh: number;
+  dayLow: number;
+  forecastDestinations: any;
+  id: number;
+  nightConditions: string[];
+  nightHigh: number;
+  nightLow: number;
+  tripId: number;
 }

@@ -1,18 +1,26 @@
-import { useState } from "react";
-import ModalSlidePanel from "../modal/ModalSlidePanel";
+import { useState, useEffect } from "react";
 import "../styles/travelerEdit.css";
 
 interface RoutineEditSlidePanelProps {
-  setView: React.Dispatch<React.SetStateAction<"traveler" | "createRoutine">>;
+  onNavigateBack: () => void;
+  onSave: (routine: { name: string; items: string[] }) => void;
+  initialRoutine?: { name: string; items: string[] } | null;
 }
 
 export default function RoutineEditSlidePanel({
-  setView,
+  onNavigateBack,
+  onSave,
+  initialRoutine,
 }: RoutineEditSlidePanelProps) {
   // Create New Routine state
   const [routineName, setRoutineName] = useState("");
   const [routineItems, setRoutineItems] = useState<string[]>([]);
   const [newItem, setNewItem] = useState("");
+
+  useEffect(() => {
+    setRoutineName(initialRoutine?.name ?? "");
+    setRoutineItems(initialRoutine?.items ?? []);
+  }, [initialRoutine]);
 
   // Create New Routine handlers
   const addRoutineItem = () => {
@@ -30,19 +38,18 @@ export default function RoutineEditSlidePanel({
     const trimmed = routineName.trim();
     if (!trimmed) return;
     if (routineItems.length === 0) return;
+    onSave({ name: trimmed, items: routineItems });
     setRoutineName("");
     setRoutineItems([]);
-    setView("traveler");
+    onNavigateBack();
   };
 
-  if (!open) return null;
-
   return (
-    <ModalSlidePanel>
+    <>
       <div className="routine-panel-header">
         <button
           className="routine-back-btn"
-          onClick={() => setView("traveler")}
+          onClick={onNavigateBack}
           type="button"
         >
           <svg
@@ -59,7 +66,9 @@ export default function RoutineEditSlidePanel({
           </svg>
           Back to Traveler
         </button>
-        <h3 className="routine-panel-title">Create New Routine</h3>
+        <h3 className="routine-panel-title">
+          {initialRoutine ? "Edit Routine" : "Create New Routine"}
+        </h3>
       </div>
 
       <section className="trav-modal-section">
@@ -149,12 +158,12 @@ export default function RoutineEditSlidePanel({
         </button>
         <button
           className="btn-text"
-          onClick={() => setView("traveler")}
+          onClick={onNavigateBack}
           type="button"
         >
           Cancel
         </button>
       </div>
-    </ModalSlidePanel>
+    </>
   );
 }

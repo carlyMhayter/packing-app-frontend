@@ -14,7 +14,7 @@ interface TempSliderProps {
   onChange: (values: TempSliderValues) => void;
 }
 
-const CONFIG = {
+const START_VALUES = {
   F: { min: 20, max: 100 },
   C: { min: -7, max: 38 },
 };
@@ -34,7 +34,7 @@ export default function TempSlider({
   const trackRef = useRef<HTMLDivElement>(null);
   const [dragging, setDragging] = useState<keyof TempSliderValues | null>(null);
 
-  const { min, max } = CONFIG[unit];
+  const { min, max } = START_VALUES[unit];
   const range = max - min;
 
   const tempToPercent = (temp: number) => ((temp - min) / range) * 100;

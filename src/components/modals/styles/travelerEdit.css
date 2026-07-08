@@ -105,6 +105,51 @@
   gap: 12px;
 }
 
+.trav-modal-section-desc {
+  font-family: var(--sans);
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--carbon);
+  opacity: 0.6;
+  margin: 0;
+  line-height: 1.4;
+}
+
+/* Traveler Type */
+
+.traveler-type-options {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.traveler-type-btn {
+  font-family: var(--sans);
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--carbon);
+  background: var(--white);
+  border: 1.5px solid var(--steelBlue);
+  border-radius: 8px;
+  padding: 8px 16px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex: 1;
+  min-width: 60px;
+  text-align: center;
+}
+
+.traveler-type-btn:hover {
+  border-color: var(--lobster);
+  color: var(--lobster);
+}
+
+.traveler-type-btn.selected {
+  background: var(--lobster);
+  border-color: var(--lobster);
+  color: var(--white);
+}
+
 .unit-toggle {
   display: flex;
   border: 1.5px solid var(--steelBlue);
@@ -219,23 +264,27 @@
 /* Clothing Preferences */
 
 .clothing-preferences-list {
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
 }
 
 .clothing-preference-row {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: space-between;
-  gap: 16px;
+  gap: 6px;
+  background-color: white;
+  border-radius: 8px;
+  padding: 4px;
 }
 
 .clothing-preference-label {
   font-family: var(--sans);
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 500;
   color: var(--carbon);
+  line-height: 1.3;
 }
 
 .clothing-preference-input {
@@ -248,13 +297,54 @@
   border-bottom: 2px solid var(--steelBlue);
   padding: 2px 4px;
   outline: none;
-  width: 40px;
+  width: 80%;
   text-align: center;
   transition: border-color 0.2s ease;
 }
 
 .clothing-preference-input:focus {
   border-color: var(--lobster);
+}
+
+.clothing-preference-toggle-row {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding-top: 4px;
+}
+
+.clothing-preference-toggle {
+  display: flex;
+  border: 1.5px solid var(--steelBlue);
+  border-radius: 6px;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.clothing-preference-toggle button {
+  font-family: var(--sans);
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--carbon);
+  opacity: 0.6;
+  background: var(--white);
+  border: none;
+  padding: 4px 12px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.clothing-preference-toggle button:hover {
+  opacity: 1;
+  background: var(--ltMahogany);
+}
+
+.clothing-preference-toggle button.selected {
+  background: var(--lobster);
+  color: var(--white);
+  opacity: 1;
 }
 
 /* Tag Lists (Medications / Routines) */
@@ -314,6 +404,27 @@
   border-radius: 50%;
   padding: 0;
   transition: opacity 0.2s ease;
+}
+
+.tag-edit {
+  width: 18px;
+  height: 18px;
+  border: none;
+  background: transparent;
+  color: var(--carbon);
+  opacity: 0.5;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  padding: 0;
+  transition: opacity 0.2s ease;
+}
+
+.tag-edit:hover {
+  opacity: 1;
+  color: var(--lobster);
 }
 
 .tag-remove:hover {

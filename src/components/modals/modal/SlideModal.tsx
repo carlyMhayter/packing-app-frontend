@@ -1,18 +1,17 @@
 import Modal from "./Modal";
-import "../styles/travelerEdit.css";
 import "../styles/modal.css";
 
 interface SlideModalProps {
   open: boolean;
   title: string;
   onClose: () => void;
-  view: "traveler" | "createRoutine";
-  children?: React.ReactNode;
+  activePanel: number;
+  children: React.ReactNode;
 }
 
 export default function SlideModal({
   open,
-  view,
+  activePanel,
   title,
   onClose,
   children,
@@ -23,7 +22,8 @@ export default function SlideModal({
     <Modal open={open} title={title} onClose={onClose}>
       <div className="modal-slide-container">
         <div
-          className={`modal-slide-track ${view === "createRoutine" ? "is-shifted" : ""}`}
+          className="modal-slide-track"
+          style={{ transform: `translateX(-${activePanel * 100}%)` }}
         >
           {children}
         </div>

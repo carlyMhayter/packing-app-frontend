@@ -1,18 +1,18 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "./styles/dashboard.css";
-import { SectionLink } from "./SectionLink";
 import { fetchRecentTrips } from "../../../services/trips";
 import { type Trip } from "../../../types/trip";
+import DashboardSection from "./DashboardSection";
 
 export default function TripSection() {
-  const navigate = useNavigate();
   const [trips, setTrips] = useState<Trip[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    fetchRecentTrips(5)
-      .then((response: Any) => {
+    fetchRecentTrips(4)
+      .then((response: any) => {
         console.log("Fetched trips:", response);
         setTrips(response);
         setIsLoading(false);
@@ -22,74 +22,69 @@ export default function TripSection() {
 
   if (isLoading) {
     return (
-      <div className="dashboard-section">
-        <SectionLink>Trips</SectionLink>
+      <DashboardSection title="Trips">
         <div className="dashboard-section-body">Loading.....</div>
-      </div>
+        <div className="dashboard-section-footer">
+          <button
+            className="sci-btn"
+            onClick={() => navigate("/trip_planner")}
+            type="button"
+          >
+            + Add New Trip
+          </button>
+        </div>
+      </DashboardSection>
     );
   }
+
   console.log("Trips to display:", trips);
   console.log("Trips length:", trips.length);
   console.log("Trips isLoading:", isLoading);
 
   if (trips.length > 0) {
     return (
-      <div className="dashboard-section">
-        <SectionLink>Trips</SectionLink>
-        <div className="dashboard-section-body">
-          {trips.map((trip, index) => (
-            <a
-              key={`${index}-trip-link`}
-              href={`/trips/${trip.id}`}
-              className="trip-section-link"
-            >
-              {trip.name}
-            </a>
-          ))}
+      <DashboardSection title="Trips">
+        <h3 className="upcoming-trips">Upcoming Trips</h3>
+        {trips.map((trip, index) => (
+          <a
+            key={`${index}-trip-link`}
+            href={`/trips/${trip.id}`}
+            className="trip-section-link"
+          >
+            {trip.name}
+          </a>
+        ))}
+        <div className="dashboard-section-footer">
           <button
-            className="dashboard-add-btn"
+            className="sci-btn"
             onClick={() => navigate("/trip_planner")}
-            aria-label="Plan a new trip"
             type="button"
           >
-            <svg
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-            >
-              <path d="M12 5v14M5 12h14" />
-            </svg>
+            + Add New Trip
           </button>
+          {trips.length >= 4 && (
+            <a href="/trips" className="trip-section-see-all">
+              See Past Trips
+            </a>
+          )}
         </div>
-      </div>
+      </DashboardSection>
     );
   } else {
     return (
-      <div className="dashboard-section">
-        <SectionLink>Trips</SectionLink>
-        <div className="dashboard-section-body">
-          <p className="dashboard-empty-line">No trips yet!</p>
-          <p className="dashboard-empty-line">Let&apos;s get started!</p>
+      <DashboardSection title="Trips">
+        <p className="dashboard-empty-line">No trips yet!</p>
+        <p className="dashboard-empty-line">Let&apos;s get started!</p>
+        <div className="dashboard-section-footer">
           <button
-            className="dashboard-add-btn"
+            className="sci-btn"
             onClick={() => navigate("/trip_planner")}
-            aria-label="Plan a new trip"
             type="button"
           >
-            <svg
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-            >
-              <path d="M12 5v14M5 12h14" />
-            </svg>
+            + Add New Trip
           </button>
         </div>
-      </div>
+      </DashboardSection>
     );
   }
 }

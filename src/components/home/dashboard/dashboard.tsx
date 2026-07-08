@@ -2,8 +2,8 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import TravelerEditModal from "../../modals/travelerEdit/TravelerEditModal";
 import TripSection from "./TripSection";
-import DestinationsSection from "./DestinationsSection";
 import "./styles/dashboard.css";
+import TravelerSection from "./TravelerSection";
 
 function SectionLink({ children }: { children: React.ReactNode }) {
   const navigate = useNavigate();
@@ -21,7 +21,6 @@ function SectionLink({ children }: { children: React.ReactNode }) {
 export default function Dashboard() {
   const navigate = useNavigate();
   const [travelerModalOpen, setTravelerModalOpen] = useState(false);
-  const [travelerModalTitle, setTravelerModalTitle] = useState("Edit Traveler");
   const [routineModalOpen, setRoutineModalOpen] = useState(false);
 
   return (
@@ -32,76 +31,7 @@ export default function Dashboard() {
         <TripSection />
 
         {/* Travelers */}
-        <div className="dashboard-section">
-          <SectionLink>Travelers</SectionLink>
-          <div className="dashboard-section-body">
-            <button
-              className="dashboard-list-item dashboard-list-clickable"
-              onClick={() => {
-                setTravelerModalTitle("Edit Traveler");
-                setTravelerModalOpen(true);
-              }}
-              type="button"
-            >
-              <span className="dashboard-icon-circle">
-                <svg
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  width="16"
-                  height="16"
-                >
-                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-                  <circle cx="12" cy="7" r="4" />
-                </svg>
-              </span>
-              <span className="dashboard-list-text">
-                Carly <span className="dashboard-list-muted">(user)</span>
-              </span>
-              <span className="dashboard-edit-icon">
-                <svg
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  width="14"
-                  height="14"
-                >
-                  <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
-                  <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
-                </svg>
-              </span>
-            </button>
-            <button
-              className="dashboard-list-add"
-              onClick={() => {
-                setTravelerModalTitle("Add Traveler");
-                setTravelerModalOpen(true);
-              }}
-              type="button"
-            >
-              <span className="dashboard-icon-plus">
-                <svg
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  width="14"
-                  height="14"
-                >
-                  <path d="M12 5v14M5 12h14" />
-                </svg>
-              </span>
-              <span className="dashboard-list-text">
-                add a traveler profile
-              </span>
-            </button>
-          </div>
-        </div>
+        <TravelerSection />
 
         {/* Routines */}
         <div className="dashboard-section">
@@ -163,12 +93,12 @@ export default function Dashboard() {
             </button>
           </div>
         </div>
-        <DestinationsSection />
+        {/* <DestinationsSection /> */}
       </div>
 
       <TravelerEditModal
         open={travelerModalOpen}
-        title={travelerModalTitle}
+        title={"Edit Traveler"}
         onClose={() => setTravelerModalOpen(false)}
       />
 

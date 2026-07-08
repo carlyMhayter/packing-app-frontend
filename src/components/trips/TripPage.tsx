@@ -1,12 +1,14 @@
 import { useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
-// import { api } from "../../services/api"; // TODO: enable when backend endpoint is ready
-import { type TripDetailData } from "../../types/trip";
+import { api } from "../../services/api";
+import { type TripDetailData, type TripPublic } from "../../types/trip";
 import TripSummary from "./TripSummary";
 import DestinationSummaryCard from "./DestinationSummaryCard";
 import TravelersSection from "./TravelersSection";
 import TravelerEditModal from "../modals/travelerEdit/TravelerEditModal";
 import "./styles/tripDetail.css";
+import LoadingDots from "../basic/loading";
+import { calculateNights } from "../../utils/trips";
 
 const mockTripData: TripDetailData = {
   trip: {
@@ -98,16 +100,11 @@ const mockTripData: TripDetailData = {
   ],
 };
 
-function calculateNights(start: string, end: string): number {
-  const d1 = new Date(start);
-  const d2 = new Date(end);
-  const diff = Math.ceil((d2.getTime() - d1.getTime()) / (1000 * 60 * 60 * 24));
-  return Math.max(0, diff);
-}
-
-export default function TripDetailPage() {
+export default function TripPage() {
   const { tripId } = useParams<{ tripId: string }>();
   const [tripData, setTripData] = useState<TripDetailData | null>(null);
+  const [realData, setRealData] = useState<TripPublic | null>(null);
+
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [travelerModalOpen, setTravelerModalOpen] = useState(false);
@@ -116,9 +113,21 @@ export default function TripDetailPage() {
     const fetchTrip = async () => {
       try {
         // For now use mock data. Replace with actual API call when backend is ready.
-        // const response = await api.request(`/trips/${tripId}`);
-        // if (!response.ok) throw new Error("Failed to fetch trip");
-        // const data = await response.json();
+        const response = await api.request(`/trips/${tripId}`);
+        if (!response.ok) throw new Error("Failed to fetch trip");
+        const data = await response.json();
+        console.log("data", data);
+        const formattedData = {
+          createdAt: data.created_at,
+          destinations: data.created_at,
+          forecastTrip: data.forecast_trip,
+          id: data.id,
+          name: data.name,
+          updatedAt: data.updated_at,
+          // departDate: data.departed_date,
+          departDate: data.updated_at,
+        };
+        setRealData(formattedData);
         // setTripData(data);
 
         // Simulate API delay
@@ -142,11 +151,7 @@ export default function TripDetailPage() {
     return (
       <div className="trip-detail-page">
         <div className="trip-detail-loading">
-          <div className="loading-dots">
-            <span className="loading-dot" />
-            <span className="loading-dot" />
-            <span className="loading-dot" />
-          </div>
+          <LoadingDots />
         </div>
       </div>
     );
@@ -160,20 +165,16 @@ export default function TripDetailPage() {
     );
   }
 
-  const totalNights = calculateNights(
-    tripData.trip.start_date,
-    tripData.trip.end_date,
-  );
-
   return (
     <div className="trip-detail-page">
       <TripSummary
-        tripName={tripData.trip.name}
-        totalNights={totalNights}
-        departDate={tripData.trip.start_date}
-        returnDate={tripData.trip.end_date}
-        dayWeather={tripData.overallDayWeather}
-        nightWeather={tripData.overallNightWeather}
+        createdAt={realData?.createdAt}
+        destinations={realData?.destinations}
+        forecastTrip={realData?.forecastTrip}
+        id={realData?.id}
+        name={realData?.name}
+        updatedAt={realData?.updatedAt}
+        departDate={realData?.departDate}
       />
 
       <div className="destinations-section">
@@ -188,12 +189,6 @@ export default function TripDetailPage() {
           ))}
         </div>
       </div>
-
-      <TravelersSection
-        travelers={tripData.travelers}
-        onAddTraveler={handleAddTraveler}
-      />
-
       <TravelerEditModal
         open={travelerModalOpen}
         title="Add Traveler"
