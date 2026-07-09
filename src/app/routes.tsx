@@ -1,4 +1,7 @@
-import { createBrowserRouter } from "react-router-dom";
+import { type ReactNode } from "react";
+import { createBrowserRouter, Navigate } from "react-router-dom";
+import { useAuth } from "../contexts/AuthContext";
+import LoadingDots from "../components/basic/loading";
 import RootLayout from "../components/layouts/RootLayout";
 import AuthLayout from "../components/layouts/AuthLayout";
 import InternalLayout from "../components/layouts/InternalLayout.tsx";
@@ -15,6 +18,21 @@ import TravelerPlanner from "../components/travelerPlanner/travelerPlanner.tsx";
 import TripPage from "../components/trips/TripPage.tsx";
 import AccountSettings from "../components/accountSettings/accountSettings.tsx";
 import TripsListPage from "../components/trips/TripsListPage.tsx";
+
+function ProtectedRoute({ children }: { children: ReactNode }) {
+  const { isAuthenticated, isLoading } = useAuth();
+  if (isLoading) return <LoadingDots />;
+  if (!isAuthenticated) return <Navigate to="/auth/login" replace />;
+  return <>{children}</>;
+}
+
+function ProtectedInternalLayout() {
+  return (
+    <ProtectedRoute>
+      <InternalLayout />
+    </ProtectedRoute>
+  );
+}
 
 const router = createBrowserRouter([
   {
@@ -35,42 +53,42 @@ const router = createBrowserRouter([
       },
       {
         path: "dashboard",
-        Component: InternalLayout,
+        Component: ProtectedInternalLayout,
         children: [{ index: true, Component: Dashboard }],
       },
       {
         path: "trip_planner",
-        Component: InternalLayout,
+        Component: ProtectedInternalLayout,
         children: [{ index: true, Component: TripPlanner }],
       },
       {
         path: "trip_summary",
-        Component: InternalLayout,
+        Component: ProtectedInternalLayout,
         children: [{ index: true, Component: TripPlanner }],
       },
       {
         path: "packing_planner",
-        Component: InternalLayout,
+        Component: ProtectedInternalLayout,
         children: [{ index: true, Component: PackingPlanner }],
       },
       {
         path: "traveler_planner",
-        Component: InternalLayout,
+        Component: ProtectedInternalLayout,
         children: [{ index: true, Component: TravelerPlanner }],
       },
       {
         path: "trips",
-        Component: InternalLayout,
+        Component: ProtectedInternalLayout,
         children: [{ index: true, Component: TripsListPage }],
       },
       {
         path: "trips/:tripId",
-        Component: InternalLayout,
+        Component: ProtectedInternalLayout,
         children: [{ index: true, Component: TripPage }],
       },
       {
         path: "account_settings",
-        Component: InternalLayout,
+        Component: ProtectedInternalLayout,
         children: [{ index: true, Component: AccountSettings }],
       },
     ],
