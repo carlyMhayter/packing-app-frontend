@@ -184,12 +184,12 @@ export interface TripPublic {
 
 export interface TripForecastPublic {
   cachedAt: string;
-  dayConditions: string[];
+  dayConditions: ConditionsMap;
   dayHigh: number;
   dayLow: number;
   forecastDestinations: ForecastDestinationPublic[];
   id: number;
-  nightConditions: string[];
+  nightConditions: ConditionsMap;
   nightHigh: number;
   nightLow: number;
   tripId: number;

@@ -1,46 +1,11 @@
 import { type TripForecastPublic } from "../../types/trip";
 import WeatherIcon from "../basic/weatherIcons";
-import {
-  aggregateConditions,
-  getWeatherCondition,
-} from "../../utils/weatherCodes";
+import { aggregateConditions } from "../../utils/weatherCodes";
 import "./styles/weatherCards.css";
 
-export default function OverallConditions({
-  // dayConditions,
-  // dayHigh,
-  // dayLow,
-  // nightConditions,
-  // nightHigh,
-  // nightLow,
-  forecastTrip,
-}) {
-  // console.log("forecastTrip overallConditions", forecastTrip);
+export default function OverallConditions({ forecastTrip }: { forecastTrip: TripForecastPublic }) {
+  const { dayConditions, dayHigh, dayLow, nightConditions, nightHigh, nightLow } = forecastTrip;
 
-  const {
-    day_conditions: dayConditions,
-    day_high: dayHigh,
-    day_low: dayLow,
-    night_conditions: nightConditions,
-    night_high: nightHigh,
-    night_low: nightLow,
-  } = forecastTrip;
-
-  // console.log("dayConditions", dayConditions);
-  // console.log("dayConditions.conditions", dayConditions.conditions);
-
-  // console.log(
-  //   "Object.entries(dayConditions.conditions)",
-  //   Object.entries(dayConditions.conditions),
-  // );
-  // console.log(
-  //   "Object.keys(dayConditions.conditions)",
-  //   Object.keys(dayConditions.conditions),
-  // );
-  // console.log(
-  //   "Object.values(dayConditions.conditions)",
-  //   Object.values(dayConditions.conditions),
-  // );
   const aggregateDaytimeCondtitions = aggregateConditions(
     Object.entries(dayConditions.conditions),
   );
@@ -94,11 +59,11 @@ export default function OverallConditions({
               <div className="weather-temps">
                 <div className="weather-temp-row">
                   <span className="weather-temp-label">Highest:</span>
-                  <span className="weather-temp-value">{dayHigh}&deg;F</span>
+                  <span className="weather-temp-value">{nightHigh}&deg;F</span>
                 </div>
                 <div className="weather-temp-row">
                   <span className="weather-temp-label">Lowest:</span>
-                  <span className="weather-temp-value">{dayLow}&deg;F</span>
+                  <span className="weather-temp-value">{nightLow}&deg;F</span>
                 </div>
               </div>
             </div>
