@@ -116,7 +116,6 @@ export default function TripPage() {
         const response = await api.request(`/trips/${tripId}`);
         if (!response.ok) throw new Error("Failed to fetch trip");
         const data = await response.json();
-        console.log("data", data);
         const formattedData = {
           createdAt: data.created_at,
           destinations: data.created_at,

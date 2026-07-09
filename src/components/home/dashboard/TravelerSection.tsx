@@ -6,9 +6,6 @@ import "./styles/dashboard.css";
 import DashboardSection from "./DashboardSection";
 
 export default function TravelerSection() {
-  //   const [travelers, setTravelers] = useState<Traveler[]>([]);
-  const [travelers, setTravelers] = useState([]);
-
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
@@ -38,10 +35,6 @@ export default function TravelerSection() {
       </DashboardSection>
     );
   }
-
-  console.log("Travelers to display:", travelers);
-  console.log("Travelers length:", travelers.length);
-  console.log("Travelers isLoading:", isLoading);
 
   return (
     <DashboardSection title="Travelers">

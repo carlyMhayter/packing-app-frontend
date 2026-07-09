@@ -13,7 +13,6 @@ export default function TripSection() {
   useEffect(() => {
     fetchRecentTrips(4)
       .then((response: any) => {
-        console.log("Fetched trips:", response);
         setTrips(response);
         setIsLoading(false);
       })
@@ -36,10 +35,6 @@ export default function TripSection() {
       </DashboardSection>
     );
   }
-
-  console.log("Trips to display:", trips);
-  console.log("Trips length:", trips.length);
-  console.log("Trips isLoading:", isLoading);
 
   if (trips.length > 0) {
     return (
