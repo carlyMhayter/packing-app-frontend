@@ -23,6 +23,15 @@ interface TravelerEditSlidePanelProps {
   onRoutinesChange: React.Dispatch<React.SetStateAction<RoutineItem[]>>;
   onNavigateNext: () => void;
   onEditRoutine: (id: string) => void;
+  onSave?: (data: {
+    name: string;
+    type: "adult" | "child" | "infant" | "pet";
+    temps: { hot: number; warm: number; cool: number; cold: number };
+    unit: "F" | "C";
+    medications: string[];
+  }) => void;
+  initialName?: string;
+  initialMedications?: string[];
 }
 
 export default function TravelerEditSlidePanel({
@@ -30,8 +39,11 @@ export default function TravelerEditSlidePanel({
   onRoutinesChange,
   onNavigateNext,
   onEditRoutine,
+  onSave,
+  initialName,
+  initialMedications,
 }: TravelerEditSlidePanelProps) {
-  const [name, setName] = useState("Carly");
+  const [name, setName] = useState(initialName ?? "");
   const [travelerType, setTravelerType] = useState<
     "adult" | "child" | "infant" | "pet"
   >("adult");
@@ -52,10 +64,7 @@ export default function TravelerEditSlidePanel({
     workoutDaysPerWeek: "3",
   });
 
-  const [medications, setMedications] = useState<string[]>([
-    "Allergy pills",
-    "Ibuprofen",
-  ]);
+  const [medications, setMedications] = useState<string[]>(initialMedications ?? []);
   const [newMed, setNewMed] = useState("");
 
   const convertTemps = (toUnit: "F" | "C") => {
@@ -72,12 +81,6 @@ export default function TravelerEditSlidePanel({
     });
     setUnit(toUnit);
   };
-
-  const previousTrips = [
-    { name: "Summer in Italy", dates: "Jun 12 — Jun 26, 2025" },
-    { name: "Colorado Ski Trip", dates: "Dec 20 — Dec 27, 2024" },
-    { name: "Tokyo Weekend", dates: "Mar 8 — Mar 12, 2024" },
-  ];
 
   const addMedication = () => {
     const trimmed = newMed.trim();
@@ -385,19 +388,22 @@ export default function TravelerEditSlidePanel({
       {/* Previous Trips */}
       <section className="trav-modal-section">
         <h4 className="trav-modal-section-heading">Previous Trips</h4>
-        <p className="trav-modal-section-desc">
-          Trips this traveler has been on before, so you can reuse their packing
-          list for similar destinations.
-        </p>
-        <div className="previous-trips-list">
-          {previousTrips.map((trip, i) => (
-            <div key={i} className="previous-trip-item">
-              <span className="previous-trip-name">{trip.name}</span>
-              <span className="previous-trip-dates">{trip.dates}</span>
-            </div>
-          ))}
-        </div>
+        <p className="trav-modal-section-desc">Previous trips will appear here.</p>
       </section>
+
+      {onSave && (
+        <div className="modal-footer">
+          <button
+            className="btn-main"
+            type="button"
+            onClick={() =>
+              onSave({ name, type: travelerType, temps, unit, medications })
+            }
+          >
+            Save Traveler
+          </button>
+        </div>
+      )}
     </>
   );
 }
