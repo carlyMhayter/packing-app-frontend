@@ -112,6 +112,7 @@ export default function TravelerEditModal({
             setActivePanel(0);
           }}
           onSave={async (routine) => {
+            setError(null);
             try {
               if (editingRoutineId) {
                 const saved = await updateRoutine(editingRoutineId, routine);
@@ -130,23 +131,10 @@ export default function TravelerEditModal({
                 ]);
               }
               setEditingRoutineId(null);
-            } catch (_err) {
-              // silently fall back to local state on error (mocks will succeed)
-              if (editingRoutineId) {
-                setRoutines((prev) =>
-                  prev.map((r) =>
-                    r.id === editingRoutineId
-                      ? { ...routine, id: editingRoutineId }
-                      : r
-                  )
-                );
-              } else {
-                setRoutines((prev) => [
-                  ...prev,
-                  { ...routine, id: `routine-${Date.now()}` },
-                ]);
-              }
-              setEditingRoutineId(null);
+            } catch (err) {
+              setError(
+                err instanceof Error ? err.message : "Failed to save routine"
+              );
             }
           }}
           initialRoutine={routineToEdit}

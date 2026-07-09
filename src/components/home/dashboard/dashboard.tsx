@@ -30,7 +30,9 @@ export default function Dashboard() {
   const [editingRoutineId, setEditingRoutineId] = useState<string | null>(null);
 
   useEffect(() => {
-    listRoutines().then(setRoutines).catch(() => {});
+    listRoutines()
+      .then(setRoutines)
+      .catch((err) => console.error("Failed to load routines:", err));
   }, []);
 
   return (

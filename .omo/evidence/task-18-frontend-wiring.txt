@@ -1,0 +1,43 @@
+todos 18-21 done
+
+TODO 18 (TravelerSection.tsx):
+- Replaced commented imports with: listTravelers + TravelerProfile
+- Added travelers: TravelerProfile[] state (was missing entirely)
+- isLoading default → true
+- Added error: string | null state
+- Wired useEffect → listTravelers(4)
+- Renders traveler chips (avatar image or initial placeholder + name) when travelers.length > 0
+- Renders error message when error is set
+- grep -c listTravelers TravelerSection.tsx = 2 (import + call) ✅
+- grep -c console.log TravelerSection.tsx = 0 ✅
+
+TODO 19 (dashboard.tsx):
+- Added useEffect import
+- Added listRoutines import + Routine type
+- Added routines: Routine[] state + editingRoutineId: string|null state
+- useEffect fetches listRoutines() on mount
+- Replaced hardcoded 'Basic Routine' button with routines.map(...)
+- Fixed self-nav: add-routine button now calls setEditingRoutineId(null); setRoutineModalOpen(true) 
+- editingRoutineId used as key= on routine TravelerEditModal (forces remount on switch)
+- grep -c listRoutines dashboard.tsx = 2 (import + call) ✅
+- grep -c 'Basic Routine' dashboard.tsx = 0 ✅
+
+TODO 20 (TripsListPage.tsx):
+- Replaced 9-line stub with full 81-line implementation
+- Uses fetchRecentTrips(100) → TripPublic[] (type-safe; fetchRecentTrips returns TripPublic not Trip)
+- Loading state: LoadingDots spinner
+- Error state: error-banner + Retry button (window.location.reload)
+- Empty state: message + navigate to /trip_planner
+- List: trips.map with /trips/{id} links showing name + arrivalDate–departDate
+- wc -l TripsListPage.tsx = 81 (>40) ✅
+- grep -c fetchRecentTrips TripsListPage.tsx = 2 (import + call) ✅
+
+TODO 21 (DestinationCard.tsx):
+- No code changes needed
+- CreateDestinationData and DestinationPublic are separate types for different purposes (planner vs API response) — no conflict
+- onChange shape at line 90-91 produces Partial<CreateDestinationData> — assignable via structural subtyping (excess postcode field does not cause TS error because updatedData is an intermediate variable, not a fresh object literal passed directly)
+- npx tsc -b: zero errors in DestinationCard.tsx ✅
+
+TypeScript final state:
+- Only pre-existing errors remain: SectionLink.tsx TS6133 (AGENTS.md calls out as known), plus TS6305/TS6306/TS6310 build-mode infrastructure issues
+- All newly modified files compile cleanly ✅

@@ -2,21 +2,28 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "./styles/dashboard.css";
 import { fetchRecentTrips } from "../../../services/trips";
-import { type Trip } from "../../../types/trip";
+import { type TripPublic } from "../../../types/trip";
 import DashboardSection from "./DashboardSection";
 
 export default function TripSection() {
-  const [trips, setTrips] = useState<Trip[]>([]);
+  const [trips, setTrips] = useState<TripPublic[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
 
   useEffect(() => {
     fetchRecentTrips(4)
-      .then((response: any) => {
+      .then((response) => {
         setTrips(response);
         setIsLoading(false);
       })
-      .catch((err: Error) => console.error(err));
+      .catch((err: unknown) => {
+        if (err instanceof Error) {
+          console.error(err);
+        } else {
+          console.error(new Error("Failed to load trips."));
+        }
+        setIsLoading(false);
+      });
   }, []);
 
   if (isLoading) {
