@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../../contexts/AuthContext";
 import TravelerEditModal from "../../modals/travelerEdit/TravelerEditModal";
 import TripSection from "./TripSection";
 import "./styles/dashboard.css";
@@ -20,12 +21,14 @@ function SectionLink({ children }: { children: React.ReactNode }) {
 
 export default function Dashboard() {
   const navigate = useNavigate();
+  const { user } = useAuth();
+  const displayName = user?.name ?? user?.email?.split("@")[0] ?? "there";
   const [travelerModalOpen, setTravelerModalOpen] = useState(false);
   const [routineModalOpen, setRoutineModalOpen] = useState(false);
 
   return (
     <div className="dashboard">
-      <h1 className="dashboard-welcome">Welcome Carly!</h1>
+      <h1 className="dashboard-welcome">Welcome {displayName}!</h1>
 
       <div className="dashboard-grid">
         <TripSection />
