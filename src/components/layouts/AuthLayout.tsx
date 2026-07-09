@@ -39,11 +39,8 @@ export default function AuthLayout() {
               <Link to="/dashboard" className="dropdown-item">
                 Dashboard
               </Link>
-              <Link to="/account" className="dropdown-item">
+              <Link to="/account_settings" className="dropdown-item">
                 Account
-              </Link>
-              <Link to="/settings" className="dropdown-item">
-                Settings
               </Link>
             </div>
           )}

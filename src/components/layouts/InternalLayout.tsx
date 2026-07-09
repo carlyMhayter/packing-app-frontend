@@ -40,7 +40,7 @@ export default function InternalLayout() {
             </button>
             {dropdownOpen && (
               <div className="dropdown">
-                <Link to="/account" className="dropdown-item">
+                <Link to="/account_settings" className="dropdown-item">
                   Account Settings
                 </Link>
                 <button

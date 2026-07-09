@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../contexts/AuthContext";
 import Tooltip from "../basic/tooltip";
 import DestinationCard from "./DestinationCard";
 import "./styles/tripPlanner.css";
@@ -13,7 +15,7 @@ function getAutoLabel(index: number, total: number): string {
   if (index === total - 1) return "Ending Destination";
   return "Destination";
 }
-import { api } from "../../services/api";
+import { createTrip } from "../../services/trips";
 import LoadingDots from "../basic/loading";
 
 export default function TripPlanner() {
@@ -23,6 +25,8 @@ export default function TripPlanner() {
   const [dragOverIndex, setDragOverIndex] = useState<number | null>(null);
   const [isSaving, setIsSaving] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
+  const { user } = useAuth();
+  const navigate = useNavigate();
 
   const addDestination = () => {
     const id = `dest-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`;
@@ -104,6 +108,13 @@ export default function TripPlanner() {
 
   const handleSave = async () => {
     setIsSaving(true);
+
+    if (!user) {
+      setSaveError("You must be logged in to save a trip.");
+      setIsSaving(false);
+      return;
+    }
+
     const errors = validateTrip(destinations);
     if (errors.length > 0) {
       setSaveError(
@@ -114,12 +125,12 @@ export default function TripPlanner() {
     }
 
     const destinationsPayload = destinations.map((dest, index: number) => ({
-      user_id: 2, // TODO: get actual user ID from auth context
+      user_id: user.id,
       destination_name: dest.label,
       arrival_date: dest.arrivalDate,
       departure_date: dest.departureDate,
       nights: dest.nights,
-      has_laundry: dest.laundry === "yes" ? true : false,
+      has_laundry: dest.laundry === "yes",
       label: dest.label,
       address: dest.addressData,
       order: index,
@@ -132,22 +143,17 @@ export default function TripPlanner() {
 
     const payload = {
       name: tripNameToUse,
-      user_id: 2, // TODO: get actual user ID from auth context
+      user_id: user.id,
       destinations: destinationsPayload,
     };
-    console.log("payload", payload);
-    console.log("JSON.stringify(payload)", JSON.stringify(payload));
 
     try {
-      // TODO: wire to actual API
-      const response = await api.request("/trips/create", {
-        method: "POST",
-        body: JSON.stringify(payload),
-      });
-
-      console.log("response", response);
-    } catch {
-      setSaveError("Failed to save trip. Please try again.");
+      const created = await createTrip(payload);
+      navigate(`/trips/${created.id}`);
+    } catch (err) {
+      setSaveError(
+        err instanceof Error ? err.message : "Failed to save trip. Please try again.",
+      );
     } finally {
       setIsSaving(false);
     }
