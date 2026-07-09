@@ -1,7 +1,6 @@
 import { type TripPublic } from "../../types/trip";
 import OverallConditions from "./OverallConditions";
 import { formatShortDate } from "../../utils/trips";
-import TravelersSection from "./TravelerSection";
 
 import "./styles/tripSummary.css";
 
