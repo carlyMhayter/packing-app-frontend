@@ -1,10 +1,25 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import "./styles/accountSettings.css";
+import { useAuth } from "../../contexts/AuthContext";
+import Modal from "../modals/modal/Modal";
+import {
+  updateProfile,
+  updatePassword,
+  updatePreferences,
+  updateNotifications,
+  deleteAccount,
+} from "../../services/user";
+import type { User as FullUser } from "../../types/user";
 
 export default function AccountSettings() {
-  const [name, setName] = useState("Carly Hayter");
-  const [email, setEmail] = useState("carly@example.com");
-  const [username, setUsername] = useState("carlyh");
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
+  const fullUser = user as FullUser | null;
+
+  const [name, setName] = useState(fullUser?.name ?? "");
+  const [email, setEmail] = useState(fullUser?.email ?? "");
+  const [username, setUsername] = useState(fullUser?.username ?? "");
 
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
@@ -19,6 +34,100 @@ export default function AccountSettings() {
   const [language, setLanguage] = useState("en");
   const [timezone, setTimezone] = useState("America/New_York");
   const [unit, setUnit] = useState<"imperial" | "metric">("imperial");
+
+  useEffect(() => {
+    if (user) {
+      const fu = user as FullUser;
+      setName(fu.name ?? "");
+      setEmail(fu.email ?? "");
+      setUsername(fu.username ?? "");
+    }
+  }, [user]);
+
+  // Profile save state
+  const [profileSaving, setProfileSaving] = useState(false);
+  const [profileError, setProfileError] = useState<string | null>(null);
+  const [profileSuccess, setProfileSuccess] = useState(false);
+
+  // Password save state
+  const [passwordSaving, setPasswordSaving] = useState(false);
+  const [passwordError, setPasswordError] = useState<string | null>(null);
+  const [passwordSuccess, setPasswordSuccess] = useState(false);
+
+  // Preferences save state
+  const [preferencesSaving, setPreferencesSaving] = useState(false);
+  const [preferencesError, setPreferencesError] = useState<string | null>(null);
+  const [preferencesSuccess, setPreferencesSuccess] = useState(false);
+
+  // Notifications save state
+  const [notificationsSaving, setNotificationsSaving] = useState(false);
+  const [notificationsError, setNotificationsError] = useState<string | null>(null);
+  const [notificationsSuccess, setNotificationsSuccess] = useState(false);
+
+  // Delete account
+  const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false);
+
+  const handleSaveProfile = async () => {
+    setProfileSaving(true);
+    setProfileError(null);
+    setProfileSuccess(false);
+    try {
+      await updateProfile({ name, email, username });
+      setProfileSuccess(true);
+      setTimeout(() => setProfileSuccess(false), 3000);
+    } catch (err) {
+      setProfileError(err instanceof Error ? err.message : "Failed to save profile");
+    } finally {
+      setProfileSaving(false);
+    }
+  };
+
+  const handleUpdatePassword = async () => {
+    if (!currentPassword) { setPasswordError("Current password is required"); return; }
+    if (newPassword !== confirmPassword) { setPasswordError("Passwords do not match"); return; }
+    setPasswordSaving(true);
+    setPasswordError(null);
+    try {
+      await updatePassword({ current: currentPassword, next: newPassword });
+      setCurrentPassword(""); setNewPassword(""); setConfirmPassword("");
+      setPasswordSuccess(true);
+      setTimeout(() => setPasswordSuccess(false), 3000);
+    } catch (err) {
+      setPasswordError(err instanceof Error ? err.message : "Failed to update password");
+    } finally {
+      setPasswordSaving(false);
+    }
+  };
+
+  const handleSavePreferences = async () => {
+    setPreferencesSaving(true);
+    setPreferencesError(null);
+    setPreferencesSuccess(false);
+    try {
+      await updatePreferences({ language, timezone, unit });
+      setPreferencesSuccess(true);
+      setTimeout(() => setPreferencesSuccess(false), 3000);
+    } catch (err) {
+      setPreferencesError(err instanceof Error ? err.message : "Failed to save preferences");
+    } finally {
+      setPreferencesSaving(false);
+    }
+  };
+
+  const handleSaveNotifications = async () => {
+    setNotificationsSaving(true);
+    setNotificationsError(null);
+    setNotificationsSuccess(false);
+    try {
+      await updateNotifications(notifications);
+      setNotificationsSuccess(true);
+      setTimeout(() => setNotificationsSuccess(false), 3000);
+    } catch (err) {
+      setNotificationsError(err instanceof Error ? err.message : "Failed to save notifications");
+    } finally {
+      setNotificationsSaving(false);
+    }
+  };
 
   return (
     <div className="account-settings-page">
@@ -75,8 +184,15 @@ export default function AccountSettings() {
             </div>
           </div>
           <div className="account-settings-card-footer">
-            <button className="account-settings-btn-primary" type="button">
-              Save Profile
+            {profileError && <p className="account-settings-error">{profileError}</p>}
+            {profileSuccess && <p className="account-settings-success">Profile saved!</p>}
+            <button
+              className="account-settings-btn-primary"
+              type="button"
+              onClick={handleSaveProfile}
+              disabled={profileSaving}
+            >
+              {profileSaving ? "Saving..." : "Save Profile"}
             </button>
           </div>
         </section>
@@ -129,8 +245,15 @@ export default function AccountSettings() {
             </div>
           </div>
           <div className="account-settings-card-footer">
-            <button className="account-settings-btn-primary" type="button">
-              Update Password
+            {passwordError && <p className="account-settings-error">{passwordError}</p>}
+            {passwordSuccess && <p className="account-settings-success">Password updated!</p>}
+            <button
+              className="account-settings-btn-primary"
+              type="button"
+              onClick={handleUpdatePassword}
+              disabled={passwordSaving}
+            >
+              {passwordSaving ? "Saving..." : "Update Password"}
             </button>
           </div>
         </section>
@@ -199,8 +322,15 @@ export default function AccountSettings() {
             </div>
           </div>
           <div className="account-settings-card-footer">
-            <button className="account-settings-btn-primary" type="button">
-              Save Preferences
+            {preferencesError && <p className="account-settings-error">{preferencesError}</p>}
+            {preferencesSuccess && <p className="account-settings-success">Preferences saved!</p>}
+            <button
+              className="account-settings-btn-primary"
+              type="button"
+              onClick={handleSavePreferences}
+              disabled={preferencesSaving}
+            >
+              {preferencesSaving ? "Saving..." : "Save Preferences"}
             </button>
           </div>
         </section>
@@ -265,8 +395,15 @@ export default function AccountSettings() {
             </div>
           </div>
           <div className="account-settings-card-footer">
-            <button className="account-settings-btn-primary" type="button">
-              Save Notifications
+            {notificationsError && <p className="account-settings-error">{notificationsError}</p>}
+            {notificationsSuccess && <p className="account-settings-success">Notifications saved!</p>}
+            <button
+              className="account-settings-btn-primary"
+              type="button"
+              onClick={handleSaveNotifications}
+              disabled={notificationsSaving}
+            >
+              {notificationsSaving ? "Saving..." : "Save Notifications"}
             </button>
           </div>
         </section>
@@ -283,13 +420,49 @@ export default function AccountSettings() {
                 <span className="account-settings-danger-label">Delete Account</span>
                 <span className="account-settings-danger-desc">Permanently delete your account, trips, and all associated data.</span>
               </div>
-              <button className="account-settings-btn-danger" type="button">
+              <button
+                className="account-settings-btn-danger"
+                type="button"
+                onClick={() => setConfirmDeleteOpen(true)}
+              >
                 Delete Account
               </button>
             </div>
           </div>
         </section>
       </div>
+
+      <Modal
+        open={confirmDeleteOpen}
+        title="Delete Account"
+        onClose={() => setConfirmDeleteOpen(false)}
+      >
+        <p>This is permanent and cannot be undone. Are you sure?</p>
+        <div style={{ display: "flex", gap: "1rem", marginTop: "1rem" }}>
+          <button
+            className="account-settings-btn-danger"
+            type="button"
+            onClick={async () => {
+              try {
+                await deleteAccount();
+                logout();
+                navigate("/");
+              } catch {
+                setConfirmDeleteOpen(false);
+              }
+            }}
+          >
+            Yes, Delete My Account
+          </button>
+          <button
+            className="account-settings-btn-primary"
+            type="button"
+            onClick={() => setConfirmDeleteOpen(false)}
+          >
+            Cancel
+          </button>
+        </div>
+      </Modal>
     </div>
   );
 }
