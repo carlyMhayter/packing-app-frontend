@@ -1,6 +1,5 @@
 {
-  "require": ["ts-node/register"],
-  "spec": "test/**/*.spec.ts",
+  "spec": "test/**/*.{spec,test}.ts",
   "timeout": 5000,
   "recursive": true,
   "reporter": "spec",
