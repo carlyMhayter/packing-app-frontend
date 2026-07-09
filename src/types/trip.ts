@@ -126,7 +126,51 @@ export interface TripDetailData {
   travelers: Traveler[];
 }
 
-//TODO: create type for DestinationPublic
+export interface DestinationAddress {
+  latitude: number;
+  longitude: number;
+  mapbox_id: string;
+  full_name: string;
+  country_id: string;
+  region?: string;
+  district?: string;
+  place?: string;
+  locality?: string;
+  neighborhood?: string;
+  street?: string;
+  address?: string;
+  postcode?: string;
+}
+
+export interface DestinationPublic {
+  id: number;
+  name: string;
+  label: string;
+  arrival_date: string;
+  departure_date: string;
+  nights: number;
+  has_laundry: boolean;
+  order: number;
+  address?: DestinationAddress;
+}
+
+export interface ConditionsMap {
+  conditions: Record<string, number>;
+  total_hours: number;
+}
+
+export interface ForecastDestinationPublic {
+  destination_id: number;
+  day_conditions: ConditionsMap;
+  night_conditions: ConditionsMap;
+  day_high: number;
+  day_low: number;
+  night_high: number;
+  night_low: number;
+  sunrise: string;
+  sunset: string;
+}
+
 export interface TripPublic {
   forecastTrip: TripForecastPublic;
   id: number;
@@ -134,17 +178,16 @@ export interface TripPublic {
   updatedAt: string;
   departDate: string;
   arrivalDate: string;
-  destinations: any[];
+  destinations: DestinationPublic[];
   createdAt: string;
 }
 
-//TODO: types for conditions, forecastDestination
 export interface TripForecastPublic {
   cachedAt: string;
   dayConditions: string[];
   dayHigh: number;
   dayLow: number;
-  forecastDestinations: any;
+  forecastDestinations: ForecastDestinationPublic[];
   id: number;
   nightConditions: string[];
   nightHigh: number;
