@@ -27,4 +27,4 @@ jobs:
           PR_DIFF_URL: ${{ github.event.pull_request.diff_url }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
           GITHUB_REPOSITORY: ${{ github.repository }}
-        run: node .github/scripts/ai-review.js
+        run: node .github/scripts/ai-review.cjs
