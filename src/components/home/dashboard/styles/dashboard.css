@@ -212,11 +212,14 @@
 }
 
 .trip-section-link {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 6px 12px;
   font-family: var(--heading);
   font-size: 18px;
   font-weight: 600;
   color: var(--dustyGrape);
-  gap: 12px;
   text-decoration: none;
   transition: color 0.2s ease;
   padding-left: 1.5rem;
@@ -224,14 +227,18 @@
   &:hover {
     color: var(--steelBlueDark);
   }
+}
 
-  /* &::before {
-    content: "•";
-    padding-right: 1rem;
-    font-size: 2rem;
-    line-height: 0.5rem;
-    color: var(--lobster);
-  } */
+.trip-section-name {
+  color: inherit;
+}
+
+.trip-section-dates {
+  font-family: var(--sans);
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--carbon);
+  opacity: 0.55;
 }
 
 .trip-section-see-all {

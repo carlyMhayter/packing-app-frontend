@@ -4,6 +4,7 @@ import "./styles/dashboard.css";
 import { fetchRecentTrips } from "../../../services/trips";
 import { type TripPublic } from "../../../types/trip";
 import DashboardSection from "./DashboardSection";
+import { formatShortDate } from "../../../utils/trips";
 
 export default function TripSection() {
   const [trips, setTrips] = useState<TripPublic[]>([]);
@@ -53,7 +54,10 @@ export default function TripSection() {
             href={`/trips/${trip.id}`}
             className="trip-section-link"
           >
-            {trip.name}
+            <span className="trip-section-name">{trip.name}</span>
+            <span className="trip-section-dates">
+              {formatShortDate(trip.arrivalDate)} – {formatShortDate(trip.departDate)}
+            </span>
           </a>
         ))}
         <div className="dashboard-section-footer">

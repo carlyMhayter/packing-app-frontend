@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../../contexts/AuthContext";
+
 import Tooltip from "../basic/tooltip";
 import DestinationCard from "./DestinationCard";
 import "./styles/tripPlanner.css";
@@ -25,7 +25,6 @@ export default function TripPlanner() {
   const [dragOverIndex, setDragOverIndex] = useState<number | null>(null);
   const [isSaving, setIsSaving] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
-  const { user } = useAuth();
   const navigate = useNavigate();
 
   const addDestination = () => {
@@ -109,12 +108,6 @@ export default function TripPlanner() {
   const handleSave = async () => {
     setIsSaving(true);
 
-    if (!user) {
-      setSaveError("You must be logged in to save a trip.");
-      setIsSaving(false);
-      return;
-    }
-
     const errors = validateTrip(destinations);
     if (errors.length > 0) {
       setSaveError(
@@ -125,7 +118,7 @@ export default function TripPlanner() {
     }
 
     const destinationsPayload = destinations.map((dest, index: number) => ({
-      user_id: user.id,
+      user_id: 2,
       destination_name: dest.label,
       arrival_date: dest.arrivalDate,
       departure_date: dest.departureDate,
@@ -143,16 +136,20 @@ export default function TripPlanner() {
 
     const payload = {
       name: tripNameToUse,
-      user_id: user.id,
+      user_id: 2,
       destinations: destinationsPayload,
     };
+
+    console.log("Payload to save:", payload);
 
     try {
       const created = await createTrip(payload);
       navigate(`/trips/${created.id}`);
     } catch (err) {
       setSaveError(
-        err instanceof Error ? err.message : "Failed to save trip. Please try again.",
+        err instanceof Error
+          ? err.message
+          : "Failed to save trip. Please try again.",
       );
     } finally {
       setIsSaving(false);

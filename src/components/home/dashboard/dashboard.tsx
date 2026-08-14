@@ -35,6 +35,26 @@ export default function Dashboard() {
       .catch((err) => console.error("Failed to load routines:", err));
   }, []);
 
+  const arr1 = ["READ", "Write", "delete"];
+  const arr2 = ["write", "ADMIN", "read"];
+
+  function mergePermissions(arr1, arr2) {
+    // if (!empArray.length) {
+    //   return [];
+    // }
+
+    // should i transform both arrays first? into lowercase
+    // should i use find, for each value in the array
+
+    // I should merge arrays together, lowercase verything, and then make a set
+
+    const totalArr = [...arr1, ...arr2].map((word) => word.toLowerCase());
+    console.log(totalArr);
+    return new Set(totalArr);
+  }
+
+  console.log(mergePermissions(arr1, arr2));
+
   return (
     <div className="dashboard">
       <h1 className="dashboard-welcome">Welcome {displayName}!</h1>
