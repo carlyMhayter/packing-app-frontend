@@ -20,7 +20,7 @@ function SectionLink({ children }: { children: React.ReactNode }) {
     </button>
   );
 }
-
+// adding a comment, wow
 export default function Dashboard() {
   const { user } = useAuth();
   const displayName = user?.name ?? user?.email?.split("@")[0] ?? "there";
