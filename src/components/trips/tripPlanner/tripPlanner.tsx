@@ -1,22 +1,26 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-import Tooltip from "../basic/tooltip";
+import Tooltip from "../../basic/tooltip";
 import DestinationCard from "./DestinationCard";
 import "./styles/tripPlanner.css";
 import {
   type CreateDestinationData,
   type DestinationUpdate,
-} from "../../types/trip";
-import { getDateinYYYYMMDD, addDays, validateTrip } from "./utils/utils";
+} from "../../../types/trip";
+import {
+  getDateinYYYYMMDD,
+  addDays,
+  validateTrip,
+} from "../../../utils/trips.js";
 function getAutoLabel(index: number, total: number): string {
   if (total === 1) return "Starting Destination";
   if (index === 0) return "Starting Destination";
   if (index === total - 1) return "Ending Destination";
   return "Destination";
 }
-import { createTrip } from "../../services/trips";
-import LoadingDots from "../basic/loading";
+import { createTrip } from "../../../services/trips";
+import LoadingDots from "../../basic/loading";
 
 export default function TripPlanner() {
   const [tripName, setTripName] = useState("");

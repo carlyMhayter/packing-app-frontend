@@ -1,16 +1,8 @@
 import { useState } from "react";
-import TempSlider from "./TempSlider";
-import Tooltip from "../../basic/tooltip";
-import "../styles/travelerEdit.css";
-
-interface ClothingPrefs {
-  topsPerDay: string;
-  bottomsPerDay: string;
-  underwearPerDay: string;
-  pajamasSeparate: boolean;
-  socksPerDay: string;
-  workoutDaysPerWeek: string;
-}
+import TempSlider from "../../tempPreferences/TempSlider";
+import Tooltip from "../../../basic/tooltip";
+// import "../styles/travelerEdit.css";
+// import ClothingPreferenceSection from "../clothingPreferences /ClothingPreferenceSection";
 
 interface RoutineItem {
   id: string;
@@ -55,16 +47,9 @@ export default function TravelerEditSlidePanel({
     cold: 32,
   });
 
-  const [clothing, setClothing] = useState<ClothingPrefs>({
-    topsPerDay: "1",
-    bottomsPerDay: "1",
-    underwearPerDay: "1",
-    pajamasSeparate: true,
-    socksPerDay: "1",
-    workoutDaysPerWeek: "3",
-  });
-
-  const [medications, setMedications] = useState<string[]>(initialMedications ?? []);
+  const [medications, setMedications] = useState<string[]>(
+    initialMedications ?? [],
+  );
   const [newMed, setNewMed] = useState("");
 
   const convertTemps = (toUnit: "F" | "C") => {
@@ -172,77 +157,7 @@ export default function TravelerEditSlidePanel({
           onChange={(newTemps) => setTemps(newTemps)}
         />
       </section>
-
-      {/* Clothing Preferences */}
-      <section className="trav-modal-section">
-        <h4 className="trav-modal-section-heading">Clothing Preferences</h4>
-        <p className="trav-modal-section-desc">
-          How many clothing items does this traveler typically use each day?
-        </p>
-        <div className="clothing-preferences-list">
-          {(
-            [
-              { key: "topsPerDay", label: "Tops per day" },
-              { key: "bottomsPerDay", label: "Bottoms per day" },
-              { key: "underwearPerDay", label: "Pairs of underwear per day" },
-              { key: "socksPerDay", label: "Pairs of socks per day" },
-              {
-                key: "workoutDaysPerWeek",
-                label: "Workout clothing days per week",
-              },
-            ] as { key: keyof ClothingPrefs; label: string }[]
-          ).map(({ key, label }) => (
-            <div key={key} className="clothing-preference-row">
-              <span className="clothing-preference-label">{label}</span>
-              <input
-                type="text"
-                inputMode="numeric"
-                value={clothing[key] as string}
-                onChange={(e) =>
-                  setClothing((prev) => ({
-                    ...prev,
-                    [key]: e.target.value,
-                  }))
-                }
-                className="clothing-preference-input"
-              />
-            </div>
-          ))}
-          <div className="clothing-preference-toggle-row">
-            <span className="clothing-preference-label">
-              Wear pajamas separate from normal clothing?
-            </span>
-            <div className="clothing-preference-toggle">
-              <button
-                type="button"
-                className={clothing.pajamasSeparate ? "selected" : ""}
-                onClick={() =>
-                  setClothing((prev) => ({
-                    ...prev,
-                    pajamasSeparate: true,
-                  }))
-                }
-                aria-pressed={clothing.pajamasSeparate}
-              >
-                Yes
-              </button>
-              <button
-                type="button"
-                className={!clothing.pajamasSeparate ? "selected" : ""}
-                onClick={() =>
-                  setClothing((prev) => ({
-                    ...prev,
-                    pajamasSeparate: false,
-                  }))
-                }
-                aria-pressed={!clothing.pajamasSeparate}
-              >
-                No
-              </button>
-            </div>
-          </div>
-        </div>
-      </section>
+      {/* <ClothingPreferenceSection /> */}
 
       {/* Medications */}
       <section className="trav-modal-section">
@@ -388,7 +303,9 @@ export default function TravelerEditSlidePanel({
       {/* Previous Trips */}
       <section className="trav-modal-section">
         <h4 className="trav-modal-section-heading">Previous Trips</h4>
-        <p className="trav-modal-section-desc">Previous trips will appear here.</p>
+        <p className="trav-modal-section-desc">
+          Previous trips will appear here.
+        </p>
       </section>
 
       {onSave && (

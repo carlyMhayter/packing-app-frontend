@@ -4,9 +4,11 @@ import { mockRoutines } from "../mocks/routines";
 
 const USE_MOCKS = import.meta.env.VITE_USE_MOCKS === "true";
 
-export const listRoutines = async (limit?: number): Promise<Routine[]> => {
+export const listRoutines = async (userId: number, limit?: number): Promise<Routine[]> => {
   try {
-    const url = limit !== undefined ? `/routines?limit=${limit}` : "/routines";
+    const url = limit !== undefined
+      ? `/routines?user_id=${userId}&limit=${limit}`
+      : `/routines?user_id=${userId}`;
     const res = await api.request(url);
     if (!res.ok) throw new Error("Failed to fetch routines");
     const data: unknown = await res.json();

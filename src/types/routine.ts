@@ -4,3 +4,10 @@ export interface Routine {
   items: string[];
   travelerId?: string;
 }
+
+export interface RoutineSimple {
+  id: number;
+  updated_at: Date;
+  name: string;
+  description: string;
+}

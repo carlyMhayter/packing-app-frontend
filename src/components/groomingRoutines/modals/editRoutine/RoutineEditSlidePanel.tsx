@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import "../styles/travelerEdit.css";
+// import "../styles/travelerEdit.css";
 
 interface RoutineEditSlidePanelProps {
   onNavigateBack: () => void;
@@ -156,11 +156,7 @@ export default function RoutineEditSlidePanel({
         >
           Save Routine
         </button>
-        <button
-          className="btn-text"
-          onClick={onNavigateBack}
-          type="button"
-        >
+        <button className="btn-text" onClick={onNavigateBack} type="button">
           Cancel
         </button>
       </div>

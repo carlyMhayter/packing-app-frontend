@@ -1,11 +1,11 @@
 import { useState } from "react";
-import TravelerEditSlidePanel from "./TravelerEditSlidePanel";
-import RoutineEditSlidePanel from "../routineEdit/RoutineEditSlidePanel";
-import SlideModal from "../modal/SlideModal";
-import ModalSlidePanel from "../modal/ModalSlidePanel";
-import { createTraveler, updateTraveler } from "../../../services/travelers";
-import { createRoutine, updateRoutine } from "../../../services/routines";
-import { type TravelerProfile } from "../../../types/traveler";
+import TravelerEditSlidePanel from "../editTravelerModal/TravelerEditSlidePanel";
+import RoutineEditSlidePanel from "../../../groomingRoutines/modals/editRoutine/RoutineEditSlidePanel";
+import SlideModal from "../../../modals/modal/SlideModal";
+import ModalSlidePanel from "../../../modals/modal/ModalSlidePanel";
+import { createTraveler, updateTraveler } from "../../../../services/travelers";
+import { createRoutine, updateRoutine } from "../../../../services/routines";
+import { type TravelerProfile } from "../../../../types/traveler";
 
 interface RoutineItem {
   id: string;
@@ -52,23 +52,18 @@ export default function TravelerEditModal({
   const [error, setError] = useState<string | null>(null);
 
   const routineToEdit = editingRoutineId
-    ? routines.find((r) => r.id === editingRoutineId) ?? null
+    ? (routines.find((r) => r.id === editingRoutineId) ?? null)
     : null;
 
-  const handleSaveTraveler = async (formData: {
-    name: string;
-    type: "adult" | "child" | "infant" | "pet";
-    temps: { hot: number; warm: number; cool: number; cold: number };
-    unit: "F" | "C";
-    medications: string[];
-  }) => {
+  const handleSaveTraveler = async (formData: TravelerProfile) => {
     setError(null);
     const payload: Omit<TravelerProfile, "id"> = {
       name: formData.name,
       type: formData.type,
-      temperaturePreferences: { ...formData.temps, unit: formData.unit },
+      temperaturePreferences: { ...formData.temperaturePreferences },
       medications: formData.medications,
       routineIds: routines.map((r) => r.id),
+      clothingPreferences: { ...formData.clothingPreferences }, // Assuming you have clothing preferences in formData
     };
     try {
       const result = travelerId
@@ -88,7 +83,7 @@ export default function TravelerEditModal({
       onClose={onClose}
       activePanel={activePanel}
     >
-      <ModalSlidePanel>
+      {/* <ModalSlidePanel>
         {error && <p className="modal-error">{error}</p>}
         <TravelerEditSlidePanel
           routines={routines}
@@ -103,7 +98,7 @@ export default function TravelerEditModal({
           }}
           onSave={handleSaveTraveler}
         />
-      </ModalSlidePanel>
+      </ModalSlidePanel> */}
 
       <ModalSlidePanel>
         <RoutineEditSlidePanel
@@ -119,9 +114,13 @@ export default function TravelerEditModal({
                 setRoutines((prev) =>
                   prev.map((r) =>
                     r.id === editingRoutineId
-                      ? { id: editingRoutineId, name: saved.name, items: saved.items }
-                      : r
-                  )
+                      ? {
+                          id: editingRoutineId,
+                          name: saved.name,
+                          items: saved.items,
+                        }
+                      : r,
+                  ),
                 );
               } else {
                 const saved = await createRoutine(routine);
@@ -133,7 +132,7 @@ export default function TravelerEditModal({
               setEditingRoutineId(null);
             } catch (err) {
               setError(
-                err instanceof Error ? err.message : "Failed to save routine"
+                err instanceof Error ? err.message : "Failed to save routine",
               );
             }
           }}

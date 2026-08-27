@@ -1,19 +1,5 @@
 import { api } from "./api";
 
-export interface LoginResponse {
-  requires_2fa?: boolean;
-  temp_token?: string;
-  access_token?: string;
-  refresh_token?: string;
-  user_id?: number;
-}
-
-export interface User {
-  id: number;
-  email: string;
-  name?: string;
-}
-
 export const loginUser = async (
   email: string,
   password: string,

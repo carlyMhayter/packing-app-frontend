@@ -1,5 +1,6 @@
 import { useRef, useState, useCallback } from "react";
-import "../styles/tempSlider.css";
+import "./tempSlider.css";
+import type { TravelerTemperaturePreferences } from "../../../types/traveler.js";
 
 export interface TempSliderValues {
   cold: number;
@@ -9,8 +10,7 @@ export interface TempSliderValues {
 }
 
 interface TempSliderProps {
-  values: TempSliderValues;
-  unit: "F" | "C";
+  temperaturePreferences: TravelerTemperaturePreferences;
   onChange: (values: TempSliderValues) => void;
 }
 
@@ -27,14 +27,13 @@ const HANDLES: { key: keyof TempSliderValues; label: string }[] = [
 ];
 
 export default function TempSlider({
-  values,
-  unit,
+  temperaturePreferences,
   onChange,
 }: TempSliderProps) {
   const trackRef = useRef<HTMLDivElement>(null);
   const [dragging, setDragging] = useState<keyof TempSliderValues | null>(null);
 
-  const { min, max } = START_VALUES[unit];
+  const { min, max } = START_VALUES[temperaturePreferences.unit];
   const range = max - min;
 
   const tempToPercent = (temp: number) => ((temp - min) / range) * 100;
@@ -77,20 +76,20 @@ export default function TempSlider({
       let clamped = newTemp;
       if (idx > 0) {
         const prevKey = order[idx - 1];
-        const prevVal = values[prevKey];
+        const prevVal = temperaturePreferences[prevKey];
         clamped = Math.max(clamped, prevVal + 1);
       }
       if (idx < order.length - 1) {
         const nextKey = order[idx + 1];
-        const nextVal = values[nextKey];
+        const nextVal = temperaturePreferences[nextKey];
         clamped = Math.min(clamped, nextVal - 1);
       }
 
-      if (clamped !== values[dragging]) {
-        onChange({ ...values, [dragging]: clamped });
+      if (clamped !== temperaturePreferences[dragging]) {
+        onChange({ ...temperaturePreferences, [dragging]: clamped });
       }
     },
-    [dragging, getPointerPercent, onChange, values],
+    [dragging, getPointerPercent, onChange, temperaturePreferences],
   );
 
   const handlePointerUp = useCallback(() => {
@@ -109,7 +108,7 @@ export default function TempSlider({
           <span
             key={key}
             className="temp-slider-label"
-            style={{ left: `${tempToPercent(values[key])}%` }}
+            style={{ left: `${tempToPercent(temperaturePreferences[key])}%` }}
           >
             {label}
           </span>
@@ -119,10 +118,10 @@ export default function TempSlider({
       <div className="temp-slider-track-wrap">
         <div className="temp-slider-range-labels">
           <span>
-            {min}&deg;{unit}
+            {min}&deg;{temperaturePreferences.unit}
           </span>
           <span>
-            {max}&deg;{unit}
+            {max}&deg;{temperaturePreferences.unit}
           </span>
         </div>
         <div className="temp-slider-track" ref={trackRef}>
@@ -130,12 +129,12 @@ export default function TempSlider({
             <div
               key={key}
               className={`temp-slider-handle ${dragging === key ? "is-dragging" : ""}`}
-              style={{ left: `${tempToPercent(values[key])}%` }}
+              style={{ left: `${tempToPercent(temperaturePreferences[key])}%` }}
               onPointerDown={(e) => handlePointerDown(e, key)}
               role="slider"
               aria-valuemin={min}
               aria-valuemax={max}
-              aria-valuenow={values[key]}
+              aria-valuenow={temperaturePreferences[key]}
               aria-label={`${key} temperature`}
               tabIndex={0}
             />
@@ -148,9 +147,9 @@ export default function TempSlider({
           <span
             key={key}
             className="temp-slider-value"
-            style={{ left: `${tempToPercent(values[key])}%` }}
+            style={{ left: `${tempToPercent(temperaturePreferences[key])}%` }}
           >
-            {values[key]}&deg;{unit}
+            {temperaturePreferences[key]}&deg;{temperaturePreferences.unit}
           </span>
         ))}
       </div>

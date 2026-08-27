@@ -2,7 +2,7 @@ const OpenAI = require("openai");
 
 const openai = new OpenAI({
   apiKey: process.env.ZEN_API_KEY,
-  baseURL: "https://opencode.ai/zen/v1/chat/completions",
+  baseURL: "https://opencode.ai/zen/v1",
 });
 
 async function runReview() {
