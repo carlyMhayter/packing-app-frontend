@@ -1,14 +1,18 @@
 import { useState, useEffect, useRef } from "react";
-import Calendar from "../basic/calendar";
-import Tooltip from "../basic/tooltip";
+import Calendar from "../../basic/calendar";
+import Tooltip from "../../basic/tooltip";
 import { SearchBox } from "@mapbox/search-js-react";
-import { formatDisplayDate, nightsBetween, addDays } from "./utils/utils";
+import {
+  formatDisplayDate,
+  nightsBetween,
+  addDays,
+} from "../../../utils/trips.js";
 import {
   type DestinationCardProps,
   type DestinationResponse,
-} from "../../types/trip";
+} from "../../../types/trip";
 import "./styles/tripPlanner.css";
-import { theme } from "./styles/theming";
+import { theme } from "../../trips/styles/theming";
 
 export default function DestinationCard({
   data,

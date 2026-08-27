@@ -4,9 +4,11 @@ import { mockTravelers } from "../mocks/travelers";
 
 const USE_MOCKS = import.meta.env.VITE_USE_MOCKS === "true";
 
-export const listTravelers = async (limit?: number): Promise<TravelerProfile[]> => {
+export const listTravelers = async (userId: number, limit?: number): Promise<TravelerProfile[]> => {
   try {
-    const url = limit !== undefined ? `/travelers?limit=${limit}` : "/travelers";
+    const url = limit !== undefined
+      ? `/travelers?user_id=${userId}&limit=${limit}`
+      : `/travelers?user_id=${userId}`;
     const res = await api.request(url);
     if (!res.ok) throw new Error("Failed to fetch travelers");
     const data: unknown = await res.json();

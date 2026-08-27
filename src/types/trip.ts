@@ -68,7 +68,7 @@ export type DestinationResponse = {
   features: DestinationResponseFeature[];
 };
 
-export type Trip = {
+export type TripBasic = {
   id: string;
   name: string;
   start_date: string; // YYYY-MM-DD
@@ -119,7 +119,7 @@ export interface Traveler {
 }
 
 export interface TripDetailData {
-  trip: Trip;
+  trip: TripBasic;
   overallDayWeather: WeatherData;
   overallNightWeather: WeatherData;
   destinations: DestinationSummary[];
@@ -193,4 +193,11 @@ export interface TripForecastPublic {
   nightHigh: number;
   nightLow: number;
   tripId: number;
+}
+
+export interface TripSimple {
+  id: number;
+  created_at: Date;
+  updated_at: Date;
+  name: string;
 }

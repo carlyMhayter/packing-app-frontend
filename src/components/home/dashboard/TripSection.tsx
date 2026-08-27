@@ -5,29 +5,29 @@ import { fetchRecentTrips } from "../../../services/trips";
 import { type TripPublic } from "../../../types/trip";
 import DashboardSection from "./DashboardSection";
 import { formatShortDate } from "../../../utils/trips";
+import { useAuth } from "../../../contexts/AuthContext";
+import { useAppDispatch, useAppSelector } from "../../../hooks/reduxHooks";
+import {
+  loadRecentTrips,
+  selectRecentTrips,
+  selectTripsStatus,
+} from "../../../state/trip/tripSlice";
 
 export default function TripSection() {
-  const [trips, setTrips] = useState<TripPublic[]>([]);
+  const { user } = useAuth();
+  const userId = user?.id ?? 1;
   const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+
+  const trips = useAppSelector((state) => selectRecentTrips(state, 4));
+  const status = useAppSelector(selectTripsStatus);
 
   useEffect(() => {
-    fetchRecentTrips(4)
-      .then((response) => {
-        setTrips(response);
-        setIsLoading(false);
-      })
-      .catch((err: unknown) => {
-        if (err instanceof Error) {
-          console.error(err);
-        } else {
-          console.error(new Error("Failed to load trips."));
-        }
-        setIsLoading(false);
-      });
-  }, []);
+    dispatch(loadRecentTrips(userId));
+  }, [dispatch, userId]);
 
-  if (isLoading) {
+  if (status === "loading" && trips.length === 0) {
     return (
       <DashboardSection title="Trips">
         <div className="dashboard-section-body">Loading.....</div>
@@ -44,19 +44,41 @@ export default function TripSection() {
     );
   }
 
+  // Error state
+  if (status === "failed") {
+    return (
+      <DashboardSection title="Trips">
+        <div className="dashboard-section-body">
+          <p className="dashboard-error">Failed to load trips.</p>
+        </div>
+        <div className="dashboard-section-footer">
+          <button
+            className="sci-btn"
+            onClick={() => navigate("/trip_planner")}
+            type="button"
+          >
+            + Add New Trip
+          </button>
+        </div>
+      </DashboardSection>
+    );
+  }
+
+  // Data state
   if (trips.length > 0) {
     return (
       <DashboardSection title="Trips">
         <h3 className="upcoming-trips">Upcoming Trips</h3>
-        {trips.map((trip, index) => (
+        {trips.map((trip) => (
           <a
-            key={`${index}-trip-link`}
+            key={trip.id}
             href={`/trips/${trip.id}`}
             className="trip-section-link"
           >
             <span className="trip-section-name">{trip.name}</span>
             <span className="trip-section-dates">
-              {formatShortDate(trip.arrivalDate)} – {formatShortDate(trip.departDate)}
+              {formatShortDate(trip.arrivalDate)} –{" "}
+              {formatShortDate(trip.departDate)}
             </span>
           </a>
         ))}
@@ -76,21 +98,21 @@ export default function TripSection() {
         </div>
       </DashboardSection>
     );
-  } else {
-    return (
-      <DashboardSection title="Trips">
-        <p className="dashboard-empty-line">No trips yet!</p>
-        <p className="dashboard-empty-line">Let&apos;s get started!</p>
-        <div className="dashboard-section-footer">
-          <button
-            className="sci-btn"
-            onClick={() => navigate("/trip_planner")}
-            type="button"
-          >
-            + Add New Trip
-          </button>
-        </div>
-      </DashboardSection>
-    );
   }
+
+  return (
+    <DashboardSection title="Trips">
+      <p className="dashboard-empty-line">No trips yet!</p>
+      <p className="dashboard-empty-line">Let&apos;s get started!</p>
+      <div className="dashboard-section-footer">
+        <button
+          className="sci-btn"
+          onClick={() => navigate("/trip_planner")}
+          type="button"
+        >
+          + Add New Trip
+        </button>
+      </div>
+    </DashboardSection>
+  );
 }

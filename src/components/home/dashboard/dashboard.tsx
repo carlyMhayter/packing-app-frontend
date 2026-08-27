@@ -1,13 +1,14 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../../contexts/AuthContext";
-import { listRoutines } from "../../../services/routines";
-import { type Routine } from "../../../types/routine";
-import TravelerEditModal from "../../modals/travelerEdit/TravelerEditModal";
+import { type RoutineSimple } from "../../../types/routine";
+import type { TravelerSimple } from "../../../types/traveler";
+import type { TripSimple } from "../../../types/trip";
+import TravelerEditModal from "../../traveler/modals/editTravelerModal/TravelerEditModal";
 import TripSection from "./TripSection";
 import "./styles/dashboard.css";
 import TravelerSection from "./TravelerSection";
-
+import { getUserDashboard } from "../../../services/user";
 function SectionLink({ children }: { children: React.ReactNode }) {
   const navigate = useNavigate();
   return (
@@ -23,37 +24,31 @@ function SectionLink({ children }: { children: React.ReactNode }) {
 // adding a comment, wow
 export default function Dashboard() {
   const { user } = useAuth();
+  const userId = user?.id ?? 1;
   const displayName = user?.name ?? user?.email?.split("@")[0] ?? "there";
   const [travelerModalOpen, setTravelerModalOpen] = useState(false);
   const [routineModalOpen, setRoutineModalOpen] = useState(false);
-  const [routines, setRoutines] = useState<Routine[]>([]);
+  const [routines, setRoutines] = useState<RoutineSimple[]>([]);
+  const [travelers, setTravelers] = useState<TravelerSimple[]>([]);
+  const [trips, setTrips] = useState<TripSimple[]>([]);
+
   const [editingRoutineId, setEditingRoutineId] = useState<string | null>(null);
 
   useEffect(() => {
-    listRoutines()
-      .then(setRoutines)
-      .catch((err) => console.error("Failed to load routines:", err));
+    getUserDashboard(userId)
+      .then((data) => {
+        if (data && data.routines) {
+          setRoutines(data.routines);
+        }
+        if (data && data.travelers) {
+          setTravelers(data.travelers);
+        }
+        if (data && data.trips) {
+          setTrips(data.trips);
+        }
+      })
+      .catch((err) => console.error("Failed to load user dashboard:", err));
   }, []);
-
-  const arr1 = ["READ", "Write", "delete"];
-  const arr2 = ["write", "ADMIN", "read"];
-
-  function mergePermissions(arr1, arr2) {
-    // if (!empArray.length) {
-    //   return [];
-    // }
-
-    // should i transform both arrays first? into lowercase
-    // should i use find, for each value in the array
-
-    // I should merge arrays together, lowercase verything, and then make a set
-
-    const totalArr = [...arr1, ...arr2].map((word) => word.toLowerCase());
-    console.log(totalArr);
-    return new Set(totalArr);
-  }
-
-  console.log(mergePermissions(arr1, arr2));
 
   return (
     <div className="dashboard">

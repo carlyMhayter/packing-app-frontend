@@ -4,15 +4,18 @@ import "./styles/dashboard.css";
 import { listTravelers } from "../../../services/travelers";
 import { type TravelerProfile } from "../../../types/traveler";
 import DashboardSection from "./DashboardSection";
+import { useAuth } from "../../../contexts/AuthContext";
 
 export default function TravelerSection() {
+  const { user } = useAuth();
+  const userId = user?.id ?? 1;
   const [travelers, setTravelers] = useState<TravelerProfile[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
 
   useEffect(() => {
-    listTravelers(4)
+    listTravelers(userId, 4)
       .then((data) => {
         setTravelers(data);
         setIsLoading(false);
@@ -21,7 +24,7 @@ export default function TravelerSection() {
         setError(err.message);
         setIsLoading(false);
       });
-  }, []);
+  }, [userId]);
 
   if (isLoading) {
     return (

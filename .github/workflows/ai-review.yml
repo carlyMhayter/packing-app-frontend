@@ -28,3 +28,12 @@ jobs:
           PR_NUMBER: ${{ github.event.pull_request.number }}
           GITHUB_REPOSITORY: ${{ github.repository }}
         run: node .github/scripts/ai-review.cjs
+
+      - name: Run AI Summary
+        env:
+          ZEN_API_KEY: ${{ secrets.ZEN_API_KEY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_DIFF_URL: ${{ github.event.pull_request.diff_url }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+        run: node .github/scripts/ai-review.cjs

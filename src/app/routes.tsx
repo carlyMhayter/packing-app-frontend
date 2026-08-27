@@ -9,9 +9,9 @@ import ResetPassword from "../components/auth/resetPassword/resetPassword";
 import TwoFactorAuth from "../components/auth/twoFactorAuth/twoFactorAuth";
 import Homepage from "../components/home/homepage";
 import Dashboard from "../components/home/dashboard/dashboard";
-import TripPlanner from "../components/tripPlanner/tripPlanner";
+import TripPlanner from "../components/trips/tripPlanner/tripPlanner";
 import PackingPlanner from "../components/packingPlanner/packingPlanner.tsx";
-import TravelerPlanner from "../components/travelerPlanner/travelerPlanner.tsx";
+import TravelerPage from "../components/traveler/travelerPage.tsx";
 import TripPage from "../components/trips/TripPage.tsx";
 import AccountSettings from "../components/accountSettings/accountSettings.tsx";
 import TripsListPage from "../components/trips/TripsListPage.tsx";
@@ -69,9 +69,9 @@ const router = createBrowserRouter([
         children: [{ index: true, Component: PackingPlanner }],
       },
       {
-        path: "traveler_planner",
+        path: "travelers/:travelerId",
         Component: InternalLayout,
-        children: [{ index: true, Component: TravelerPlanner }],
+        children: [{ index: true, Component: TravelerPage }],
       },
       {
         path: "trips",

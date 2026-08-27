@@ -23,10 +23,13 @@ interface CreateTripPayload {
   destinations: CreateTripDestinationPayload[];
 }
 
-export const fetchRecentTrips = async (limit: number): Promise<TripPublic[]> => {
+export const fetchRecentTrips = async (
+  limit: number,
+  userId: number,
+): Promise<TripPublic[]> => {
   try {
     const res = await api.request(
-      `/trips?sort_field=updated_at&sort_order=desc&limit=${limit}`,
+      `/trips?sort_field=updated_at&sort_order=desc&limit=${limit}&user_id=${userId}`,
     );
     if (!res.ok) throw new Error("Failed to fetch trips");
     const data: unknown = await res.json();
@@ -40,9 +43,12 @@ export const fetchRecentTrips = async (limit: number): Promise<TripPublic[]> => 
   }
 };
 
-export const getTripById = async (tripId: string): Promise<TripPublic> => {
+export const getTripById = async (
+  tripId: string,
+  userId: number,
+): Promise<TripPublic> => {
   try {
-    const res = await api.request(`/trips/${tripId}`);
+    const res = await api.request(`/trips/${tripId}?user_id=${userId}`);
     if (!res.ok) throw new Error(`Failed to fetch trip ${tripId}`);
     const data: unknown = await res.json();
     return data as TripPublic;

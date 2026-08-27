@@ -1,5 +1,5 @@
 import { api } from "./api";
-import { type User } from "../types/user";
+import { type User, type UserWithRelationships } from "../types/user";
 import { mockUser } from "../mocks/user";
 
 const USE_MOCKS = import.meta.env.VITE_USE_MOCKS === "true";
@@ -13,6 +13,23 @@ export const getMe = async (): Promise<User> => {
   } catch (err) {
     if (USE_MOCKS) {
       console.warn("[MOCK] getMe:", err);
+      return mockUser;
+    }
+    throw err;
+  }
+};
+
+export const getUserDashboard = async (
+  user_id: number,
+): Promise<UserWithRelationships> => {
+  try {
+    const res = await api.request(`/user/${user_id}/dashboard`);
+    if (!res.ok) throw new Error("Failed to get user dashboard");
+    const data: UserWithRelationships = await res.json();
+    return data;
+  } catch (err) {
+    if (USE_MOCKS) {
+      console.warn("[MOCK] getUserDashboard:", err);
       return mockUser;
     }
     throw err;
@@ -89,37 +106,6 @@ export const updatePreferences = async (
     if (USE_MOCKS) {
       console.warn("[MOCK] updatePreferences:", err);
       return { ...mockUser, ...payload };
-    }
-    throw err;
-  }
-};
-
-interface UpdateNotificationsPayload {
-  email?: boolean;
-  weather?: boolean;
-  packing?: boolean;
-}
-
-export const updateNotifications = async (
-  payload: UpdateNotificationsPayload,
-): Promise<User> => {
-  try {
-    const res = await api.request("/user/notifications", {
-      method: "PATCH",
-      body: JSON.stringify(payload),
-    });
-    if (!res.ok) throw new Error("Failed to update notifications");
-    const data: unknown = await res.json();
-    return data as User;
-  } catch (err) {
-    if (USE_MOCKS) {
-      console.warn("[MOCK] updateNotifications:", err);
-      const currentNotifs = mockUser.notifications ?? {
-        email: false,
-        weather: false,
-        packing: false,
-      };
-      return { ...mockUser, notifications: { ...currentNotifs, ...payload } };
     }
     throw err;
   }
