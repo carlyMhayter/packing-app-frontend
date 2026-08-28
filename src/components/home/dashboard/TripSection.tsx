@@ -1,36 +1,40 @@
-import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "./styles/dashboard.css";
-import { fetchRecentTrips } from "../../../services/trips";
-import { type TripPublic } from "../../../types/trip";
 import DashboardSection from "./DashboardSection";
-import { formatShortDate } from "../../../utils/trips";
-import { useAuth } from "../../../contexts/AuthContext";
-import { useAppDispatch, useAppSelector } from "../../../hooks/reduxHooks";
+// import { formatShortDate } from "../../../utils/trips";
+import { useAppSelector } from "../../../hooks/reduxHooks";
+
 import {
-  loadRecentTrips,
-  selectRecentTrips,
-  selectTripsStatus,
-} from "../../../state/trip/tripSlice";
+  selectAuthError,
+  selectAuthLoading,
+  // selectCurrentUser,
+  selectTrips,
+} from "../../../state/appSlice";
 
 export default function TripSection() {
-  const { user } = useAuth();
-  const userId = user?.id ?? 1;
-  const [isLoading, setIsLoading] = useState(true);
+  // const user = useAppSelector(selectCurrentUser);
+  const trips = useAppSelector(selectTrips);
+  const isLoading = useAppSelector(selectAuthLoading);
+  const error = useAppSelector(selectAuthError);
   const navigate = useNavigate();
-  const dispatch = useAppDispatch();
 
-  const trips = useAppSelector((state) => selectRecentTrips(state, 4));
-  const status = useAppSelector(selectTripsStatus);
-
-  useEffect(() => {
-    dispatch(loadRecentTrips(userId));
-  }, [dispatch, userId]);
-
-  if (status === "loading" && trips.length === 0) {
+  if (isLoading) {
     return (
       <DashboardSection title="Trips">
         <div className="dashboard-section-body">Loading.....</div>
+        <div className="dashboard-section-footer"></div>
+      </DashboardSection>
+    );
+  }
+  console.log("trips:", trips);
+  if (!isLoading && trips.length === 0) {
+    return (
+      <DashboardSection title="Trips">
+        <div className="dashboard-section-body">
+          {trips.map((trip) => (
+            <p>{trip.name}</p>
+          ))}
+        </div>
         <div className="dashboard-section-footer">
           <button
             className="sci-btn"
@@ -45,7 +49,7 @@ export default function TripSection() {
   }
 
   // Error state
-  if (status === "failed") {
+  if (error) {
     return (
       <DashboardSection title="Trips">
         <div className="dashboard-section-body">
@@ -76,10 +80,10 @@ export default function TripSection() {
             className="trip-section-link"
           >
             <span className="trip-section-name">{trip.name}</span>
-            <span className="trip-section-dates">
+            {/* <span className="trip-section-dates">
               {formatShortDate(trip.arrivalDate)} –{" "}
               {formatShortDate(trip.departDate)}
-            </span>
+            </span> */}
           </a>
         ))}
         <div className="dashboard-section-footer">

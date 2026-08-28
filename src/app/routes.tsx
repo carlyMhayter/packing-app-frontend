@@ -69,7 +69,7 @@ const router = createBrowserRouter([
         children: [{ index: true, Component: PackingPlanner }],
       },
       {
-        path: "travelers/:travelerId",
+        path: "travelers/:traveler_id",
         Component: InternalLayout,
         children: [{ index: true, Component: TravelerPage }],
       },

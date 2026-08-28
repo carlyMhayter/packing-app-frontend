@@ -1,55 +1,51 @@
-import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { useAuth } from "../../../contexts/AuthContext";
-import { type RoutineSimple } from "../../../types/routine";
-import type { TravelerSimple } from "../../../types/traveler";
-import type { TripSimple } from "../../../types/trip";
-import TravelerEditModal from "../../traveler/modals/editTravelerModal/TravelerEditModal";
+import { useEffect } from "react";
+// import { useNavigate } from "react-router-dom";
+// import { type RoutineSimple } from "../../../types/routine";
+// import type { TravelerSimple } from "../../../types/traveler";
+// import type { TripSimple } from "../../../types/trip";
+// import TravelerEditModal from "../../traveler/modals/editTravelerModal/TravelerEditModal";
 import TripSection from "./TripSection";
 import "./styles/dashboard.css";
 import TravelerSection from "./TravelerSection";
-import { getUserDashboard } from "../../../services/user";
-function SectionLink({ children }: { children: React.ReactNode }) {
-  const navigate = useNavigate();
-  return (
-    <button
-      className="dashboard-section-title"
-      onClick={() => navigate("/dashboard")}
-      type="button"
-    >
-      {children}
-    </button>
-  );
-}
+import { useAppDispatch, useAppSelector } from "../../../hooks/reduxHooks";
+import {
+  selectCurrentUser,
+  fetchBasicUserDataThunk,
+  selectTravelers,
+} from "../../../state/appSlice";
+
+// function SectionLink({ children }: { children: React.ReactNode }) {
+//   const navigate = useNavigate();
+//   return (
+//     <button
+//       className="dashboard-section-title"
+//       onClick={() => navigate("/dashboard")}
+//       type="button"
+//     >
+//       {children}
+//     </button>
+//   );
+// }
 // adding a comment, wow
 export default function Dashboard() {
-  const { user } = useAuth();
-  const userId = user?.id ?? 1;
-  const displayName = user?.name ?? user?.email?.split("@")[0] ?? "there";
-  const [travelerModalOpen, setTravelerModalOpen] = useState(false);
-  const [routineModalOpen, setRoutineModalOpen] = useState(false);
-  const [routines, setRoutines] = useState<RoutineSimple[]>([]);
-  const [travelers, setTravelers] = useState<TravelerSimple[]>([]);
-  const [trips, setTrips] = useState<TripSimple[]>([]);
+  const user = useAppSelector(selectCurrentUser);
+  const displayName = user?.first_name ?? user?.email?.split("@")[0] ?? "there";
+  // const [travelerModalOpen, setTravelerModalOpen] = useState(false);
+  // const [routineModalOpen, setRoutineModalOpen] = useState(false);
+  const dispatch = useAppDispatch();
+  const travelers = useAppSelector(selectTravelers);
 
-  const [editingRoutineId, setEditingRoutineId] = useState<string | null>(null);
+  // const [editingRoutineId, setEditingRoutineId] = useState<number | null>(null);
 
   useEffect(() => {
-    getUserDashboard(userId)
-      .then((data) => {
-        if (data && data.routines) {
-          setRoutines(data.routines);
-        }
-        if (data && data.travelers) {
-          setTravelers(data.travelers);
-        }
-        if (data && data.trips) {
-          setTrips(data.trips);
-        }
-      })
-      .catch((err) => console.error("Failed to load user dashboard:", err));
-  }, []);
-
+    if (user?.id) {
+      console.log("useEffect");
+      dispatch(fetchBasicUserDataThunk({ user_id: user.id }));
+    } else {
+      return;
+    }
+  }, [user]);
+  console.log(user);
   return (
     <div className="dashboard">
       <h1 className="dashboard-welcome">Welcome {displayName}!</h1>
@@ -58,13 +54,13 @@ export default function Dashboard() {
         <TripSection />
 
         {/* Travelers */}
-        <TravelerSection />
+        <TravelerSection travelers={travelers} />
 
         {/* Routines */}
-        <div className="dashboard-section">
+        {/* <div className="dashboard-section">
           <SectionLink>Routines</SectionLink>
           <div className="dashboard-section-body">
-            {routines.map((routine) => (
+            {routines.map((routine: RoutineSimple) => (
               <button
                 key={routine.id}
                 className="dashboard-list-item dashboard-list-clickable"
@@ -74,19 +70,7 @@ export default function Dashboard() {
                 }}
                 type="button"
               >
-                <span className="dashboard-icon-star">
-                  <svg
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    width="16"
-                    height="16"
-                  >
-                    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
-                  </svg>
-                </span>
+
                 <span className="dashboard-list-text">{routine.name}</span>
               </button>
             ))}
@@ -114,22 +98,22 @@ export default function Dashboard() {
               <span className="dashboard-list-text">add a routine</span>
             </button>
           </div>
-        </div>
+        </div> */}
         {/* <DestinationsSection /> */}
       </div>
 
-      <TravelerEditModal
+      {/* <TravelerEditModal
         open={travelerModalOpen}
         title={"Edit Traveler"}
         onClose={() => setTravelerModalOpen(false)}
-      />
+      /> */}
 
-      <TravelerEditModal
+      {/* <TravelerEditModal
         key={editingRoutineId ?? "new"}
         open={routineModalOpen}
         title="Edit Routine"
         onClose={() => setRoutineModalOpen(false)}
-      />
+      /> */}
     </div>
   );
 }

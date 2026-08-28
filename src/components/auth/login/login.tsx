@@ -1,54 +1,48 @@
 import { useState } from "react";
 import MainButton from "../../basic/mainButton";
-import { loginUser, getCurrentUser } from "../../../services/auth";
-import { api } from "../../../services/api";
-import { useAuth } from "../../../contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import "./styles/login.css";
+import { useAppDispatch } from "../../../hooks/reduxHooks";
+import {
+  loginThunk,
+  selectAuthLoading,
+  selectAuthError,
+} from "../../../state/appSlice";
+import { useAppSelector } from "../../../hooks/reduxHooks";
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false);
   const [loggedIn, setLoggedIn] = useState(false);
-  const [error, setError] = useState("");
+  const loading = useAppSelector(selectAuthLoading);
+  const error = useAppSelector(selectAuthError);
   const navigate = useNavigate();
-  const { login } = useAuth();
+  const dispatch = useAppDispatch();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError("");
-    setLoading(true);
 
     try {
-      const response = await loginUser(email, password);
-      if (response.requires_2fa) {
+      await dispatch(loginThunk({ email, password })).unwrap();
+      setLoggedIn(true);
+      setTimeout(() => {
+        navigate("/dashboard");
+      }, 1500);
+    } catch (error) {
+      // if the response requires 2fa, there will be a temp token in the response,
+      // go to 2fa login
+      if (
+        error &&
+        typeof error == "object" &&
+        "requires_2fa" in error &&
+        error.requires_2fa &&
+        "temp_token" in error
+      ) {
         navigate("/auth/two_factor", {
-          state: { tempToken: response.temp_token },
+          state: { tempToken: error.temp_token },
         });
-      } else {
-        api.setTokens(response.access_token!, response.refresh_token!);
-        const user = await getCurrentUser();
-        if (user) {
-          login(user);
-        }
-        setLoggedIn(true);
-        setTimeout(() => {
-          navigate("/dashboard");
-        }, 1500);
+        return;
       }
-    } catch (err) {
-      let errorMessage = "";
-      if (typeof err === "string") {
-        errorMessage = err.toUpperCase();
-      } else if (err instanceof Error) {
-        errorMessage = err.message;
-      }
-      setError(
-        errorMessage || "An unexpected error occurred. Please try again.",
-      );
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -71,7 +65,6 @@ export default function Login() {
               value={email}
               onChange={(e) => {
                 setEmail(e.target.value);
-                setError("");
               }}
               placeholder="you@example.com"
               required
@@ -86,7 +79,6 @@ export default function Login() {
               value={password}
               onChange={(e) => {
                 setPassword(e.target.value);
-                setError("");
               }}
               placeholder="Enter your password"
               required
@@ -103,6 +95,15 @@ export default function Login() {
             Log In
           </MainButton>
         </form>
+        {loggedIn && (
+          <div className="success-message">
+            <p>
+              Welcome back!
+              <br />
+              Logging you in!
+            </p>
+          </div>
+        )}
 
         <div className="separator">
           <span className="separator-line" />

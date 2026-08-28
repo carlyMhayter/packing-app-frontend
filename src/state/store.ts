@@ -1,9 +1,13 @@
 import { configureStore } from "@reduxjs/toolkit";
-import tripsReducer from "./tripSlice.tsx";
+import appReducer from "./appSlice.ts";
+import travelerReducer from "./travelerSlice.ts";
+import tripReducer from "./tripSlice.tsx";
 
 const store = configureStore({
   reducer: {
-    trips: tripsReducer,
+    app: appReducer,
+    traveler: travelerReducer,
+    trip: tripReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

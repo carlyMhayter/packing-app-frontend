@@ -23,9 +23,10 @@ export const getUserDashboard = async (
   user_id: number,
 ): Promise<UserWithRelationships> => {
   try {
-    const res = await api.request(`/user/${user_id}/dashboard`);
+    const res = await api.request(`/user/dashboard/${user_id}`);
     if (!res.ok) throw new Error("Failed to get user dashboard");
     const data: UserWithRelationships = await res.json();
+    console.log("getUserDashboard:", data);
     return data;
   } catch (err) {
     if (USE_MOCKS) {

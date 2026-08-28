@@ -1,11 +1,12 @@
 import { api } from "./api";
+import { type LoginResponse, type User } from "../types/user";
 
+// backend needs OAuth2 Password Flow formatted login payload
 export const loginUser = async (
   email: string,
   password: string,
 ): Promise<LoginResponse> => {
   const data = new URLSearchParams({ username: email, password });
-
   const response = await api.requestForm("/auth/login", {
     method: "POST",
     body: data,

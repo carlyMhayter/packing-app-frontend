@@ -1,15 +1,17 @@
 import { useLocation } from "react-router-dom";
 import { Link, Outlet } from "react-router";
 import { useState } from "react";
-import { useAuth } from "../../contexts/AuthContext";
 import logoIcon from "../../assets/platy_square.png";
+import { useAppSelector } from "../../hooks/reduxHooks";
+import { selectCurrentUser } from "../../state/appSlice";
 
 export default function RootLayout() {
   const location = useLocation();
   const { pathname } = location;
   const [menuOpen, setMenuOpen] = useState(false);
-  const { isAuthenticated } = useAuth();
+  const user = useAppSelector(selectCurrentUser);
 
+  // TODO: how to attach an authentication tag to user in state?
   return (
     <div className="root-layout">
       {pathname === "/" && (
@@ -18,7 +20,7 @@ export default function RootLayout() {
             <img src={logoIcon} alt="Platypak" className="home-logo-icon" />
           </Link>
           <nav className="top-auth-nav">
-            {!isAuthenticated ? (
+            {!user?.id ? (
               <>
                 <Link to="/auth/login" className="top-auth-link">
                   Log In
@@ -48,7 +50,7 @@ export default function RootLayout() {
 
               {menuOpen && (
                 <div className="hamburger-dropdown">
-                  {isAuthenticated && (
+                  {user?.id && (
                     <Link to="/dashboard" className="dropdown-item">
                       Dashboard
                     </Link>

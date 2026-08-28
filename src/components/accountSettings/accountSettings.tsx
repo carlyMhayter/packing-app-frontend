@@ -1,25 +1,25 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./styles/accountSettings.css";
-import { useAuth } from "../../contexts/AuthContext";
 import Modal from "../modals/modal/Modal";
 import {
   updateProfile,
   updatePassword,
   updatePreferences,
-  updateNotifications,
   deleteAccount,
 } from "../../services/user";
 import type { User as FullUser } from "../../types/user";
+import { selectCurrentUser } from "../../state/appSlice";
+import { useAppSelector } from "../../hooks/reduxHooks";
 
 export default function AccountSettings() {
-  const { user, logout } = useAuth();
+  const user = useAppSelector(selectCurrentUser);
   const navigate = useNavigate();
   const fullUser = user as FullUser | null;
 
   const [name, setName] = useState(fullUser?.name ?? "");
   const [email, setEmail] = useState(fullUser?.email ?? "");
-  const [username, setUsername] = useState(fullUser?.username ?? "");
+  const [username, setUsername] = useState(fullUser?.first_name ?? "");
 
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
@@ -34,15 +34,6 @@ export default function AccountSettings() {
   const [language, setLanguage] = useState("en");
   const [timezone, setTimezone] = useState("America/New_York");
   const [unit, setUnit] = useState<"imperial" | "metric">("imperial");
-
-  useEffect(() => {
-    if (user) {
-      const fu = user as FullUser;
-      setName(fu.name ?? "");
-      setEmail(fu.email ?? "");
-      setUsername(fu.username ?? "");
-    }
-  }, [user]);
 
   // Profile save state
   const [profileSaving, setProfileSaving] = useState(false);
@@ -59,11 +50,6 @@ export default function AccountSettings() {
   const [preferencesError, setPreferencesError] = useState<string | null>(null);
   const [preferencesSuccess, setPreferencesSuccess] = useState(false);
 
-  // Notifications save state
-  const [notificationsSaving, setNotificationsSaving] = useState(false);
-  const [notificationsError, setNotificationsError] = useState<string | null>(null);
-  const [notificationsSuccess, setNotificationsSuccess] = useState(false);
-
   // Delete account
   const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false);
 
@@ -76,24 +62,36 @@ export default function AccountSettings() {
       setProfileSuccess(true);
       setTimeout(() => setProfileSuccess(false), 3000);
     } catch (err) {
-      setProfileError(err instanceof Error ? err.message : "Failed to save profile");
+      setProfileError(
+        err instanceof Error ? err.message : "Failed to save profile",
+      );
     } finally {
       setProfileSaving(false);
     }
   };
 
   const handleUpdatePassword = async () => {
-    if (!currentPassword) { setPasswordError("Current password is required"); return; }
-    if (newPassword !== confirmPassword) { setPasswordError("Passwords do not match"); return; }
+    if (!currentPassword) {
+      setPasswordError("Current password is required");
+      return;
+    }
+    if (newPassword !== confirmPassword) {
+      setPasswordError("Passwords do not match");
+      return;
+    }
     setPasswordSaving(true);
     setPasswordError(null);
     try {
       await updatePassword({ current: currentPassword, next: newPassword });
-      setCurrentPassword(""); setNewPassword(""); setConfirmPassword("");
+      setCurrentPassword("");
+      setNewPassword("");
+      setConfirmPassword("");
       setPasswordSuccess(true);
       setTimeout(() => setPasswordSuccess(false), 3000);
     } catch (err) {
-      setPasswordError(err instanceof Error ? err.message : "Failed to update password");
+      setPasswordError(
+        err instanceof Error ? err.message : "Failed to update password",
+      );
     } finally {
       setPasswordSaving(false);
     }
@@ -108,24 +106,11 @@ export default function AccountSettings() {
       setPreferencesSuccess(true);
       setTimeout(() => setPreferencesSuccess(false), 3000);
     } catch (err) {
-      setPreferencesError(err instanceof Error ? err.message : "Failed to save preferences");
+      setPreferencesError(
+        err instanceof Error ? err.message : "Failed to save preferences",
+      );
     } finally {
       setPreferencesSaving(false);
-    }
-  };
-
-  const handleSaveNotifications = async () => {
-    setNotificationsSaving(true);
-    setNotificationsError(null);
-    setNotificationsSuccess(false);
-    try {
-      await updateNotifications(notifications);
-      setNotificationsSuccess(true);
-      setTimeout(() => setNotificationsSuccess(false), 3000);
-    } catch (err) {
-      setNotificationsError(err instanceof Error ? err.message : "Failed to save notifications");
-    } finally {
-      setNotificationsSaving(false);
     }
   };
 
@@ -143,7 +128,9 @@ export default function AccountSettings() {
         <section className="account-settings-card">
           <div className="account-settings-card-header">
             <h2 className="account-settings-card-title">Profile</h2>
-            <p className="account-settings-card-desc">Update your personal information.</p>
+            <p className="account-settings-card-desc">
+              Update your personal information.
+            </p>
           </div>
           <div className="account-settings-card-body">
             <div className="account-settings-field">
@@ -159,7 +146,10 @@ export default function AccountSettings() {
               />
             </div>
             <div className="account-settings-field">
-              <label className="account-settings-label" htmlFor="settings-email">
+              <label
+                className="account-settings-label"
+                htmlFor="settings-email"
+              >
                 Email Address
               </label>
               <input
@@ -171,7 +161,10 @@ export default function AccountSettings() {
               />
             </div>
             <div className="account-settings-field">
-              <label className="account-settings-label" htmlFor="settings-username">
+              <label
+                className="account-settings-label"
+                htmlFor="settings-username"
+              >
                 Username
               </label>
               <input
@@ -184,8 +177,12 @@ export default function AccountSettings() {
             </div>
           </div>
           <div className="account-settings-card-footer">
-            {profileError && <p className="account-settings-error">{profileError}</p>}
-            {profileSuccess && <p className="account-settings-success">Profile saved!</p>}
+            {profileError && (
+              <p className="account-settings-error">{profileError}</p>
+            )}
+            {profileSuccess && (
+              <p className="account-settings-success">Profile saved!</p>
+            )}
             <button
               className="account-settings-btn-primary"
               type="button"
@@ -201,11 +198,16 @@ export default function AccountSettings() {
         <section className="account-settings-card">
           <div className="account-settings-card-header">
             <h2 className="account-settings-card-title">Password</h2>
-            <p className="account-settings-card-desc">Change your password to keep your account secure.</p>
+            <p className="account-settings-card-desc">
+              Change your password to keep your account secure.
+            </p>
           </div>
           <div className="account-settings-card-body">
             <div className="account-settings-field">
-              <label className="account-settings-label" htmlFor="settings-current-password">
+              <label
+                className="account-settings-label"
+                htmlFor="settings-current-password"
+              >
                 Current Password
               </label>
               <input
@@ -218,7 +220,10 @@ export default function AccountSettings() {
               />
             </div>
             <div className="account-settings-field">
-              <label className="account-settings-label" htmlFor="settings-new-password">
+              <label
+                className="account-settings-label"
+                htmlFor="settings-new-password"
+              >
                 New Password
               </label>
               <input
@@ -231,7 +236,10 @@ export default function AccountSettings() {
               />
             </div>
             <div className="account-settings-field">
-              <label className="account-settings-label" htmlFor="settings-confirm-password">
+              <label
+                className="account-settings-label"
+                htmlFor="settings-confirm-password"
+              >
                 Confirm New Password
               </label>
               <input
@@ -245,8 +253,12 @@ export default function AccountSettings() {
             </div>
           </div>
           <div className="account-settings-card-footer">
-            {passwordError && <p className="account-settings-error">{passwordError}</p>}
-            {passwordSuccess && <p className="account-settings-success">Password updated!</p>}
+            {passwordError && (
+              <p className="account-settings-error">{passwordError}</p>
+            )}
+            {passwordSuccess && (
+              <p className="account-settings-success">Password updated!</p>
+            )}
             <button
               className="account-settings-btn-primary"
               type="button"
@@ -262,11 +274,16 @@ export default function AccountSettings() {
         <section className="account-settings-card">
           <div className="account-settings-card-header">
             <h2 className="account-settings-card-title">Preferences</h2>
-            <p className="account-settings-card-desc">Customize your default settings and units.</p>
+            <p className="account-settings-card-desc">
+              Customize your default settings and units.
+            </p>
           </div>
           <div className="account-settings-card-body">
             <div className="account-settings-field">
-              <label className="account-settings-label" htmlFor="settings-language">
+              <label
+                className="account-settings-label"
+                htmlFor="settings-language"
+              >
                 Language
               </label>
               <select
@@ -283,7 +300,10 @@ export default function AccountSettings() {
               </select>
             </div>
             <div className="account-settings-field">
-              <label className="account-settings-label" htmlFor="settings-timezone">
+              <label
+                className="account-settings-label"
+                htmlFor="settings-timezone"
+              >
                 Timezone
               </label>
               <select
@@ -322,8 +342,12 @@ export default function AccountSettings() {
             </div>
           </div>
           <div className="account-settings-card-footer">
-            {preferencesError && <p className="account-settings-error">{preferencesError}</p>}
-            {preferencesSuccess && <p className="account-settings-success">Preferences saved!</p>}
+            {preferencesError && (
+              <p className="account-settings-error">{preferencesError}</p>
+            )}
+            {preferencesSuccess && (
+              <p className="account-settings-success">Preferences saved!</p>
+            )}
             <button
               className="account-settings-btn-primary"
               type="button"
@@ -339,13 +363,19 @@ export default function AccountSettings() {
         <section className="account-settings-card">
           <div className="account-settings-card-header">
             <h2 className="account-settings-card-title">Notifications</h2>
-            <p className="account-settings-card-desc">Choose which emails and alerts you would like to receive.</p>
+            <p className="account-settings-card-desc">
+              Choose which emails and alerts you would like to receive.
+            </p>
           </div>
           <div className="account-settings-card-body">
             <div className="account-settings-toggle-field">
               <div className="account-settings-toggle-info">
-                <span className="account-settings-toggle-label">Email Updates</span>
-                <span className="account-settings-toggle-desc">Receive trip reminders, packing alerts, and app news.</span>
+                <span className="account-settings-toggle-label">
+                  Email Updates
+                </span>
+                <span className="account-settings-toggle-desc">
+                  Receive trip reminders, packing alerts, and app news.
+                </span>
               </div>
               <button
                 type="button"
@@ -361,14 +391,21 @@ export default function AccountSettings() {
             </div>
             <div className="account-settings-toggle-field">
               <div className="account-settings-toggle-info">
-                <span className="account-settings-toggle-label">Weather Alerts</span>
-                <span className="account-settings-toggle-desc">Get notified of major weather changes for your trips.</span>
+                <span className="account-settings-toggle-label">
+                  Weather Alerts
+                </span>
+                <span className="account-settings-toggle-desc">
+                  Get notified of major weather changes for your trips.
+                </span>
               </div>
               <button
                 type="button"
                 className={`account-settings-toggle-btn ${notifications.weather ? "on" : "off"}`}
                 onClick={() =>
-                  setNotifications((prev) => ({ ...prev, weather: !prev.weather }))
+                  setNotifications((prev) => ({
+                    ...prev,
+                    weather: !prev.weather,
+                  }))
                 }
                 aria-pressed={notifications.weather}
                 aria-label="Toggle weather alerts"
@@ -378,14 +415,22 @@ export default function AccountSettings() {
             </div>
             <div className="account-settings-toggle-field">
               <div className="account-settings-toggle-info">
-                <span className="account-settings-toggle-label">Packing Reminders</span>
-                <span className="account-settings-toggle-desc">Receive reminders before upcoming trips to finalize your packing list.</span>
+                <span className="account-settings-toggle-label">
+                  Packing Reminders
+                </span>
+                <span className="account-settings-toggle-desc">
+                  Receive reminders before upcoming trips to finalize your
+                  packing list.
+                </span>
               </div>
               <button
                 type="button"
                 className={`account-settings-toggle-btn ${notifications.packing ? "on" : "off"}`}
                 onClick={() =>
-                  setNotifications((prev) => ({ ...prev, packing: !prev.packing }))
+                  setNotifications((prev) => ({
+                    ...prev,
+                    packing: !prev.packing,
+                  }))
                 }
                 aria-pressed={notifications.packing}
                 aria-label="Toggle packing reminders"
@@ -394,31 +439,26 @@ export default function AccountSettings() {
               </button>
             </div>
           </div>
-          <div className="account-settings-card-footer">
-            {notificationsError && <p className="account-settings-error">{notificationsError}</p>}
-            {notificationsSuccess && <p className="account-settings-success">Notifications saved!</p>}
-            <button
-              className="account-settings-btn-primary"
-              type="button"
-              onClick={handleSaveNotifications}
-              disabled={notificationsSaving}
-            >
-              {notificationsSaving ? "Saving..." : "Save Notifications"}
-            </button>
-          </div>
         </section>
 
         {/* Danger Zone */}
         <section className="account-settings-card account-settings-card-danger">
           <div className="account-settings-card-header">
             <h2 className="account-settings-card-title">Danger Zone</h2>
-            <p className="account-settings-card-desc">Be careful — these actions are permanent.</p>
+            <p className="account-settings-card-desc">
+              Be careful — these actions are permanent.
+            </p>
           </div>
           <div className="account-settings-card-body">
             <div className="account-settings-danger-row">
               <div className="account-settings-danger-info">
-                <span className="account-settings-danger-label">Delete Account</span>
-                <span className="account-settings-danger-desc">Permanently delete your account, trips, and all associated data.</span>
+                <span className="account-settings-danger-label">
+                  Delete Account
+                </span>
+                <span className="account-settings-danger-desc">
+                  Permanently delete your account, trips, and all associated
+                  data.
+                </span>
               </div>
               <button
                 className="account-settings-btn-danger"
@@ -445,7 +485,7 @@ export default function AccountSettings() {
             onClick={async () => {
               try {
                 await deleteAccount();
-                logout();
+                // logout();
                 navigate("/");
               } catch {
                 setConfirmDeleteOpen(false);

@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import "./index.css";
-import { initializeAuth } from "./state/app/authSlice.ts";
+import { initializeAuthThunk } from "./state/appSlice.ts";
 import { useAppDispatch } from "./hooks/reduxHooks.ts";
 
 export default function AppInitializer({
@@ -11,7 +11,7 @@ export default function AppInitializer({
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    dispatch(initializeAuth());
+    dispatch(initializeAuthThunk());
   }, [dispatch]);
 
   return children;

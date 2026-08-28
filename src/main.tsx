@@ -4,12 +4,12 @@ import { RouterProvider } from "react-router-dom";
 import "./index.css";
 import router from "./app/routes.tsx";
 import { Provider } from "react-redux";
-import authStore from "./state/app/authStore.ts";
+import store from "./state/store.ts";
 import AppInitializer from "./appInitializer.tsx";
 
 export const root = createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <Provider store={authStore}>
+    <Provider store={store}>
       <AppInitializer>
         <RouterProvider router={router} />
       </AppInitializer>

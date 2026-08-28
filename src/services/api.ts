@@ -42,6 +42,8 @@ class ApiClient {
     return response;
   }
 
+  // sends request in X-www-form-urlencoded form
+  // needed for Oauth login
   async requestForm(
     endpoint: string,
     options: RequestInit = {},

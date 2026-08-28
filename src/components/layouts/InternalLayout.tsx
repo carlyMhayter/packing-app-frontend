@@ -1,18 +1,17 @@
 import { useState } from "react";
 import { Link, Outlet } from "react-router";
-import { useAuth } from "../../contexts/AuthContext";
 import logoIcon from "../../assets/platy_square.png";
 import logoName from "../../assets/name-trans.png";
 import "./styles/InternalLayout.css";
-
+import { useAppSelector, useAppDispatch } from "../../hooks/reduxHooks";
+import { logoutThunk, selectCurrentUser } from "../../state/appSlice";
 export default function InternalLayout() {
   const [dropdownOpen, setDropdownOpen] = useState(false);
-  const { user, logout } = useAuth();
-
-  const displayName = user?.name || user?.email?.split("@")[0] || "User";
-
+  const user = useAppSelector(selectCurrentUser);
+  const displayName = user?.first_name || user?.email?.split("@")[0] || "User";
+  const dispatch = useAppDispatch();
   const handleLogout = () => {
-    logout();
+    dispatch(logoutThunk());
     window.location.href = "/";
   };
 

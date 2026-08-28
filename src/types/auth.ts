@@ -5,7 +5,7 @@ export interface User {
   email: string;
   first_name?: string;
   is_2fa_enabled?: boolean;
-  temperature_unit?: typeof TemperatureUnit;
+  temperature_unit?: (typeof TemperatureUnit)[keyof typeof TemperatureUnit];
   is_active?: boolean;
 }
 

@@ -1,13 +1,13 @@
 import { type TripSimple } from "./trip";
 import { type TravelerSimple } from "./traveler";
 import { type RoutineSimple } from "./routine";
-
+import { TemperatureUnit } from "../enums/enums";
 export interface User {
   id: number;
   email: string;
   first_name?: string;
   last_name?: string;
-  temperature_unit?: "fahrenheit" | "celsius";
+  temperature_unit?: (typeof TemperatureUnit)[keyof typeof TemperatureUnit];
   is_2fa_enabled?: boolean;
   created_at?: Date;
   is_active?: boolean;
@@ -22,7 +22,7 @@ export interface UserCreate {
   first_name: string;
   is_2fa_enabled: boolean;
   is_active: boolean;
-  temperature_unit: "fahrenheit" | "celsius";
+  temperature_unit: (typeof TemperatureUnit)[keyof typeof TemperatureUnit];
 }
 
 export interface UserPublic {
@@ -31,13 +31,35 @@ export interface UserPublic {
   is_2fa_enabled: boolean;
   is_active: boolean;
   created_at: Date;
-  temperature_unit: "fahrenheit" | "celsius";
+  temperature_unit: (typeof TemperatureUnit)[keyof typeof TemperatureUnit];
 }
+
+// export interface AuthState {
+//   user: User | null;
+//   isAuthenticated: boolean;
+//   isLoading: boolean;
+//   error: string | null;
+// }
 
 export interface UserWithRelationships {
   id: number;
   trips?: TripSimple[];
-  travelers?: TravelerSimple;
+  travelers?: TravelerSimple[];
+  routines?: RoutineSimple[];
+}
+
+export interface UserAppState {
+  id: number;
+  user: User | null;
+  isAuthenticated: boolean;
+  isLoading: boolean;
+  error: string | null;
+  first_name: string;
+  is_2fa_enabled: boolean;
+  is_active: boolean;
+  temperature_unit: (typeof TemperatureUnit)[keyof typeof TemperatureUnit];
+  trips?: TripSimple[];
+  travelers?: TravelerSimple[];
   routines?: RoutineSimple[];
 }
 

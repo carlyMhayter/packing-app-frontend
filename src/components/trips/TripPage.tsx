@@ -1,32 +1,28 @@
 import { useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
-import { type TripDetailData } from "../../types/trip";
 import { useAppDispatch, useAppSelector } from "../../hooks/reduxHooks";
+import { selectCurrentUser } from "../../state/appSlice";
 import {
   loadTripById,
   selectTripDetailById,
   selectTripsStatus,
-} from "../../state/trip/tripSlice";
-import { useAuth } from "../../contexts/AuthContext";
-import { getTripById, mapTripPublicToDetail } from "../../services/trips";
+} from "../../state/tripSlice";
+// import { getTripById, mapTripPublicToDetail } from "../../services/trips";
 import TripSummary from "./TripSummary";
 import DestinationSummaryCard from "./DestinationSummaryCard";
 import TravelersSection from "./TravelersSection";
 import TravelerEditModal from "../traveler/modals/editTravelerModal/TravelerEditModal";
 import "./styles/tripDetail.css";
 import LoadingDots from "../basic/loading";
-import type { RootState } from "../../state/app/authStore";
 
 export default function TripPage() {
   const { tripId } = useParams<{ tripId: string }>();
   const dispatch = useAppDispatch();
-  const { user } = useAuth();
+  const user = useAppSelector(selectCurrentUser);
   const userId = user?.id ?? 1;
   const [travelerModalOpen, setTravelerModalOpen] = useState(false);
 
-  const tripData = useAppSelector((state: RootState) =>
-    selectTripDetailById(state, Number(tripId)),
-  );
+  const tripData = {};
   const status = useAppSelector(selectTripsStatus);
 
   useEffect(() => {

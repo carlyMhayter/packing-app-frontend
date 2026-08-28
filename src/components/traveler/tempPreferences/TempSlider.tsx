@@ -1,7 +1,7 @@
 import { useRef, useState, useCallback } from "react";
 import "./tempSlider.css";
 import type { TravelerTemperaturePreferences } from "../../../types/traveler.js";
-
+import { TemperatureUnit } from "../../../enums/enums.js";
 export interface TempSliderValues {
   cold: number;
   cool: number;
@@ -12,11 +12,12 @@ export interface TempSliderValues {
 interface TempSliderProps {
   temperaturePreferences: TravelerTemperaturePreferences;
   onChange: (values: TempSliderValues) => void;
+  tempUnit: (typeof TemperatureUnit)[keyof typeof TemperatureUnit];
 }
 
 const START_VALUES = {
-  F: { min: 20, max: 100 },
-  C: { min: -7, max: 38 },
+  fahrenheit: { min: 20, max: 100 },
+  celsius: { min: -7, max: 38 },
 };
 
 const HANDLES: { key: keyof TempSliderValues; label: string }[] = [
@@ -28,12 +29,12 @@ const HANDLES: { key: keyof TempSliderValues; label: string }[] = [
 
 export default function TempSlider({
   temperaturePreferences,
+  tempUnit,
   onChange,
 }: TempSliderProps) {
   const trackRef = useRef<HTMLDivElement>(null);
   const [dragging, setDragging] = useState<keyof TempSliderValues | null>(null);
-
-  const { min, max } = START_VALUES[temperaturePreferences.unit];
+  const { min, max } = START_VALUES[tempUnit];
   const range = max - min;
 
   const tempToPercent = (temp: number) => ((temp - min) / range) * 100;

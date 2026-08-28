@@ -10,6 +10,7 @@ This repository houses the React frontend for the Packing App, a travel packing 
 - **HTTP Client**: Axios (interceptors in `src/services/api.ts`)
 - **Styling**: Plain CSS (no Tailwind, no CSS-in-JS). Global resets in `src/index.css`; component-scoped stylesheets alongside components.
 - **Date Math**: `date-fns` (installed for calendar math; no external calendar UI library).
+- **State Management**: Redux Toolkit with slices for domain state (travelers, trips, etc.). Use `useAppDispatch` and `useAppSelector` from `src/hooks/reduxHooks.ts`.
 - **Authentication**: Context-based (`AuthContext.tsx`) storing `access_token` and `refresh_token` in `localStorage`.
 
 ## Project Structure
@@ -202,7 +203,7 @@ Defined in `src/app/routes.tsx` using `createBrowserRouter`:
 3. **Do not add Material-UI / Ant Design / Bootstrap**.
 4. **Do not create ad-hoc Axios instances**. Route all HTTP through `src/services/api.ts`.
 5. **Do not store tokens in `sessionStorage` or cookies**. Use `localStorage` keys `access_token` and `refresh_token` to match the interceptor logic.
-6. **Do not mutate state directly** in React components. Follow standard React patterns; the project does not use Zustand / Redux / MobX.
+6. **Do not mutate state directly** in React components. Follow standard React patterns; use Redux for global domain state, `useState` for local UI/form draft state.
 7. **Do not use `var`**. Prefer `const`; use `let` only when reassignment is required.
 
 ## Current State (as of last update)

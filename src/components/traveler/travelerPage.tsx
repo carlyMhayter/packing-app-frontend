@@ -1,41 +1,85 @@
-import { useState } from "react";
-import type { TravelerClothingPreferences } from "../../types/clothingPreferences";
-import type { TravelerProfile } from "../../types/traveler";
-import { sampleTravelerClothingPreferences } from "./travelerData";
-import ClothingPreferenceSection from "./clothingPreferences/ClothingPreferenceSection.tsx";
-import TempSlider from "./tempPreferences/TempSlider.js";
-import { useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useAppDispatch, useAppSelector } from "../../hooks/reduxHooks.ts";
+import {
+  selectTraveler,
+  fetchTravelerThunk,
+  selectLoading,
+  selectError,
+} from "../../state/travelerSlice.ts";
+// import ClothingPreferenceSection from "./clothingPreferences/ClothingPreferenceSection.tsx";
+import { useParams } from "react-router";
+import TempSlider from "./tempPreferences/TempSlider.tsx";
+import { FormStateValues, TemperatureUnit } from "../../enums/enums.ts";
+import { type TravelerUpdateForm } from "../../types/traveler.ts";
 
 export default function TravelerPage() {
-  const { travelerId } = useParams<{ travelerId: string }>();
-  const [travelerData, setTravelerData] = useState<TravelerProfile | null>(
-    null,
-  );
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const traveler = useAppSelector(selectTraveler);
+  const dispatch = useAppDispatch();
+  const { traveler_id } = useParams<{ traveler_id: string }>();
+  const isLoading = useAppSelector(selectLoading);
+  const error = useAppSelector(selectError);
+  const unit = traveler.temp_unit;
+  const tempPrefs = JSON.parse(traveler.temp_pref);
+  const [draft, setDraft] = useState<TravelerUpdateForm | null>(null); // local form state
+  const [saveStatus, setSaveStatus] = useState<
+    (typeof FormStateValues)[keyof typeof FormStateValues]
+  >(FormStateValues.idle);
+  const [lastSaved, setLastSaved] = useState<TravelerUpdateForm | null>(null); // for dirty-checking
 
-  // const convertTemps = (toUnit: "F" | "C") => {
-  //   if (toUnit === unit) return;
-  //   const convert = (val: number) =>
-  //     toUnit === "C"
-  //       ? Math.round(((val - 32) * 5) / 9)
-  //       : Math.round((val * 9) / 5 + 32);
-  //   setTemps({
-  //     cold: convert(temps.cold),
-  //     cool: convert(temps.cool),
-  //     warm: convert(temps.warm),
-  //     hot: convert(temps.hot),
-  //   });
-  //   setUnit(toUnit);
-  // };
+  const convertTemps = (toUnit: "F" | "C") => {
+    // if (toUnit === unit) return;
+    // const convert = (val: number) =>
+    //   toUnit === "C"
+    //     ? Math.round(((val - 32) * 5) / 9)
+    //     : Math.round((val * 9) / 5 + 32);
+    // setTemps({
+    //   cold: convert(temps.cold),
+    //   cool: convert(temps.cool),
+    //   warm: convert(temps.warm),
+    //   hot: convert(temps.hot),
+    // });
+    // setUnit(toUnit);
+  };
+
+  useEffect(() => {
+    console.log("useEffect1");
+    console.log("traveler_id", traveler_id);
+    dispatch(fetchTravelerThunk({ traveler_id: Number(traveler_id) }));
+
+    if (traveler && !draft) {
+      // hydrate once on load
+      const draftData = {
+        name: traveler.name,
+        traveler_type: traveler.traveler_type,
+        is_active: traveler.is_active,
+        is_primary_for_user: traveler.is_primary_for_user,
+        updated_at: Date.now(),
+        temp_unit: unit,
+        temp_pref: tempPrefs,
+      };
+
+      setDraft(draftData);
+      setLastSaved(draftData);
+    }
+  }, []);
+
+  console.log("traveler", traveler);
+  if (isLoading) {
+    return <>loading</>;
+  }
+
+  if (error) {
+    return <>error</>;
+  }
 
   return (
     <div className="trip-planner-container">
       <>
-        {/* Name */}
+        {traveler.name}
+        Name
         <section className="trav-modal-section">
           <label className="trav-modal-section-label" htmlFor="traveler-name">
-            Name
+            {traveler.name}
           </label>
           <p className="trav-modal-section-desc">
             Enter the full name of this traveler.
@@ -43,12 +87,13 @@ export default function TravelerPage() {
           <input
             id="traveler-name"
             type="text"
-            value={travelerData?.name ?? ""}
-            onChange={(e) =>
-              setTravelerData((prev) =>
-                prev ? { ...prev, name: e.target.value } : null,
-              )
-            }
+            value={traveler.name ?? ""}
+            // onChange={(e) =>
+            //
+            // setTravelerData((prev) =>
+            //   prev ? { ...prev, name: e.target.value } : null,
+            // )
+            // }
             className="modal-text-input"
           />
         </section>
@@ -63,18 +108,18 @@ export default function TravelerPage() {
               <button
                 key={type}
                 type="button"
-                className={`traveler-type-btn ${travelerData?.type === type ? "selected" : ""}`}
-                onClick={() =>
-                  setTravelerData((prev) => (prev ? { ...prev, type } : null))
-                }
-                aria-pressed={travelerData?.type === type}
+                className={`traveler-type-btn ${traveler.traveler_type === type ? "selected" : ""}`}
+                // onClick={() =>
+                //   setTravelerData((prev) => (prev ? { ...prev, type } : null))
+                // }
+                aria-pressed={traveler.traveler_type === type}
               >
                 {type.charAt(0).toUpperCase() + type.slice(1)}
               </button>
             ))}
           </div>
         </section>
-        {/* Temperature Preferences */}
+        {/* Temperature Preferences  */}
         <section className="trav-modal-section">
           <div className="trav-modal-section-heading-row">
             <h4 className="trav-modal-section-heading">
@@ -82,18 +127,18 @@ export default function TravelerPage() {
             </h4>
             <div className="unit-toggle">
               <button
-                className={`unit-toggle-btn ${unit === "C" ? "selected" : ""}`}
-                onClick={() => convertTemps("C")}
+                className={`unit-toggle-btn ${unit === TemperatureUnit.CELSIUS ? "selected" : ""}`}
+                // onClick={() => convertTemps("C")}
                 type="button"
-                aria-pressed={unit === "C"}
+                aria-pressed={unit === TemperatureUnit.CELSIUS}
               >
                 C
               </button>
               <button
-                className={`unit-toggle-btn ${unit === "F" ? "selected" : ""}`}
+                className={`unit-toggle-btn ${unit === TemperatureUnit.FAHRENHEIT ? "selected" : ""}`}
                 onClick={() => convertTemps("F")}
                 type="button"
-                aria-pressed={unit === "F"}
+                aria-pressed={unit === TemperatureUnit.FAHRENHEIT}
               >
                 F
               </button>
@@ -103,14 +148,15 @@ export default function TravelerPage() {
             Set the temperature ranges this traveler considers cold, cool, warm,
             and hot.
           </p>
-          {/* <TempSlider
-            temperaturePreferences={travelerData?.temperaturePreferences ?? { cold: 0, cool: 0, warm: 0, hot: 0, unit: "F" }}
-            onChange={(newTemps) => setTravelerData((prev) => prev ? { ...prev, temperaturePreferences: ...newTemps } : null)}
-                        onChange={(newTemps) => setTravelerData((prev) => prev ? { ...prev, temperaturePreferences: ...newTemps } : null)}
-
-          /> */}
+          <TempSlider
+            temperaturePreferences={tempPrefs}
+            tempUnit={unit}
+            // onChange={(newTemps) => setTravelerData((prev) => prev ? { ...prev, temperaturePreferences: ...newTemps } : null)}
+            //             onChange={(newTemps) => setTravelerData((prev) => prev ? { ...prev, temperaturePreferences: ...newTemps } : null)}
+            onChange={() => {}}
+          />
         </section>
-        <ClothingPreferenceSection />
+        {/* <ClothingPreferenceSection /> */}
         Medications
         {/* <section className="trav-modal-section">
           <h4 className="trav-modal-section-heading">Medications</h4>
@@ -178,10 +224,14 @@ export default function TravelerPage() {
         </section>
 
         {/* Routines */}
-        {/* <section className="trav-modal-section">
+        <section className="trav-modal-section">
           <div className="trav-modal-section-heading-row">
             <h4 className="trav-modal-section-heading">Current Routines</h4>
-            <button className="sci-btn" onClick={onNavigateNext} type="button">
+            <button
+              className="sci-btn"
+              // onClick={onNavigateNext}
+              type="button"
+            >
               <svg
                 viewBox="0 0 24 24"
                 fill="none"
@@ -203,7 +253,7 @@ export default function TravelerPage() {
           </p>
 
           <div className="tag-list">
-            {routines.map((routine, i) => (
+            {/* {traveler.map((routine, i) => (
               <div key={routine.id} className="routine-button">
                 <span>{routine.name}</span>
                 <Tooltip content="Edit routine">
@@ -248,9 +298,9 @@ export default function TravelerPage() {
                   </svg>
                 </button>
               </div>
-            ))}
+            ))} */}
           </div>
-        </section> */}
+        </section>
         {/* Previous Trips
         <section className="trav-modal-section">
           <h4 className="trav-modal-section-heading">Previous Trips</h4>
