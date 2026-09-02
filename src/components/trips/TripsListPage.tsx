@@ -70,7 +70,7 @@ export default function TripsListPage() {
             >
               <span>{trip.name}</span>
               <span>
-                {trip.arrivalDate} – {trip.departDate}
+                {trip.arrival_date} – {trip.departure_date}
               </span>
             </a>
           ))}

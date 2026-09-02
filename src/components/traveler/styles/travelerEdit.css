@@ -482,6 +482,105 @@
   color: var(--white);
 }
 
+/* ── Clothing Preferences Table ── */
+
+.clothing-pref-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--sans);
+  font-size: 14px;
+  color: var(--carbon);
+  background: var(--white);
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.clothing-pref-header-row {
+  background: var(--steelBlueLt);
+  border-bottom: 1.5px solid var(--steelBlue);
+}
+
+.clothing-pref-header-cell {
+  padding: 10px 14px;
+  font-weight: 600;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  color: var(--mahogany);
+  text-align: left;
+}
+
+.clothing-pref-data-row {
+  border-bottom: 1px solid var(--steelBlue);
+  transition: background 0.15s ease;
+}
+
+.clothing-pref-data-row:last-child {
+  border-bottom: none;
+}
+
+.clothing-pref-data-row:hover {
+  background: rgba(209, 79, 70, 0.03);
+}
+
+.clothing-pref-type-cell {
+  padding: 12px 14px;
+  font-weight: 500;
+  color: var(--mahogany);
+  text-transform: capitalize;
+  width: 40%;
+}
+
+.clothing-pref-input-cell {
+  padding: 8px 14px;
+  width: 30%;
+}
+
+.clothing-pref-input {
+  font-family: var(--sans);
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--mahogany);
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid var(--steelBlue);
+  padding: 4px 6px;
+  outline: none;
+  width: 60px;
+  text-align: center;
+  transition: border-color 0.2s ease;
+}
+
+.clothing-pref-input:focus {
+  border-color: var(--lobster);
+}
+
+.clothing-pref-input::-webkit-outer-spin-button,
+.clothing-pref-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.clothing-pref-input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+.clothing-pref-input:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background: var(--steelBlueLt);
+}
+
+.clothing-pref-desc {
+  font-family: var(--sans);
+  font-size: 13px;
+  color: var(--carbon);
+  opacity: 0.6;
+  margin: 0 0 12px 0;
+  line-height: 1.4;
+}
+
 /* Previous Trips */
 
 .previous-trips-list {

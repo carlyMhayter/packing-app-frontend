@@ -15,7 +15,7 @@ import TravelerPage from "../components/traveler/travelerPage.tsx";
 import TripPage from "../components/trips/TripPage.tsx";
 import AccountSettings from "../components/accountSettings/accountSettings.tsx";
 import TripsListPage from "../components/trips/TripsListPage.tsx";
-
+import RoutinePage from "../components/routines/routinePage.tsx";
 // function ProtectedRoute({ children }: { children: ReactNode }) {
 //   const { isAuthenticated, isLoading } = useAuth();
 //   if (isLoading) return <LoadingDots />;
@@ -54,16 +54,6 @@ const router = createBrowserRouter([
         children: [{ index: true, Component: Dashboard }],
       },
       {
-        path: "trip_planner",
-        Component: InternalLayout,
-        children: [{ index: true, Component: TripPlanner }],
-      },
-      {
-        path: "trip_summary",
-        Component: InternalLayout,
-        children: [{ index: true, Component: TripPlanner }],
-      },
-      {
         path: "packing_planner",
         Component: InternalLayout,
         children: [{ index: true, Component: PackingPlanner }],
@@ -74,14 +64,29 @@ const router = createBrowserRouter([
         children: [{ index: true, Component: TravelerPage }],
       },
       {
+        path: "routines/:routine_id",
+        Component: InternalLayout,
+        children: [{ index: true, Component: RoutinePage }],
+      },
+      {
         path: "trips",
         Component: InternalLayout,
         children: [{ index: true, Component: TripsListPage }],
       },
       {
-        path: "trips/:tripId",
+        path: "trips/:trip_id",
         Component: InternalLayout,
         children: [{ index: true, Component: TripPage }],
+      },
+      {
+        path: "trip_planner",
+        Component: InternalLayout,
+        children: [{ index: true, Component: TripPlanner }],
+      },
+      {
+        path: "trip_summary",
+        Component: InternalLayout,
+        children: [{ index: true, Component: TripPlanner }],
       },
       {
         path: "account_settings",

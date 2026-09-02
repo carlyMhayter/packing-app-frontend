@@ -1,11 +1,10 @@
 import { useState } from "react";
-import TravelerEditSlidePanel from "../editTravelerModal/TravelerEditSlidePanel";
-import RoutineEditSlidePanel from "../../../groomingRoutines/modals/editRoutine/RoutineEditSlidePanel";
+import RoutineEditSlidePanel from "../../../routines/modals/editRoutine/RoutineEditSlidePanel";
 import SlideModal from "../../../modals/modal/SlideModal";
 import ModalSlidePanel from "../../../modals/modal/ModalSlidePanel";
 import { createTraveler, updateTraveler } from "../../../../services/travelers";
 import { createRoutine, updateRoutine } from "../../../../services/routines";
-import { type TravelerProfile } from "../../../../types/traveler";
+import { type Traveler } from "../../../../types/traveler";
 
 interface RoutineItem {
   id: string;
@@ -18,7 +17,7 @@ interface TravelerEditModalProps {
   title: string;
   onClose: () => void;
   travelerId?: string | null;
-  onSaved?: (traveler: TravelerProfile) => void;
+  onSaved?: (traveler: Traveler) => void;
 }
 
 export default function TravelerEditModal({
@@ -55,9 +54,9 @@ export default function TravelerEditModal({
     ? (routines.find((r) => r.id === editingRoutineId) ?? null)
     : null;
 
-  const handleSaveTraveler = async (formData: TravelerProfile) => {
+  const handleSaveTraveler = async (formData: Traveler) => {
     setError(null);
-    const payload: Omit<TravelerProfile, "id"> = {
+    const payload: Omit<Traveler, "id"> = {
       name: formData.name,
       type: formData.type,
       temperaturePreferences: { ...formData.temperaturePreferences },

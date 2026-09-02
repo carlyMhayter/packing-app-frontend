@@ -3,35 +3,34 @@ import { useState, useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "../../hooks/reduxHooks";
 import { selectCurrentUser } from "../../state/appSlice";
 import {
-  loadTripById,
-  selectTripDetailById,
-  selectTripsStatus,
+  loadTripThunk,
+  selectTripsIsLoading,
+  selectTrip,
+  selectTripsError,
 } from "../../state/tripSlice";
-// import { getTripById, mapTripPublicToDetail } from "../../services/trips";
 import TripSummary from "./TripSummary";
 import DestinationSummaryCard from "./DestinationSummaryCard";
 import TravelersSection from "./TravelersSection";
-import TravelerEditModal from "../traveler/modals/editTravelerModal/TravelerEditModal";
 import "./styles/tripDetail.css";
 import LoadingDots from "../basic/loading";
 
 export default function TripPage() {
-  const { tripId } = useParams<{ tripId: string }>();
+  const { trip_id } = useParams<{ trip_id: string }>();
+  const trip = useAppSelector(selectTrip);
+  const error = useAppSelector(selectTripsError);
+
   const dispatch = useAppDispatch();
   const user = useAppSelector(selectCurrentUser);
-  const userId = user?.id ?? 1;
-  const [travelerModalOpen, setTravelerModalOpen] = useState(false);
-
-  const tripData = {};
-  const status = useAppSelector(selectTripsStatus);
+  const user_id = user?.id ?? 1;
+  const isLoading = useAppSelector(selectTripsIsLoading);
 
   useEffect(() => {
-    if (tripId) {
-      dispatch(loadTripById({ tripId, userId }));
+    if (trip.id === 0) {
+      dispatch(loadTripThunk({ trip_id: Number(trip_id), user_id }));
     }
-  }, [dispatch, tripId, userId]);
+  }, []);
 
-  if (!tripData && status === "loading") {
+  if (isLoading) {
     return (
       <div className="trip-detail-page">
         <div className="trip-detail-loading">
@@ -41,8 +40,7 @@ export default function TripPage() {
     );
   }
 
-  // Show error ONLY if we have no cached data AND we failed
-  if (!tripData && status === "failed") {
+  if (!isLoading && error) {
     return (
       <div className="trip-detail-page">
         <div className="error-banner">Failed to load trip</div>
@@ -50,42 +48,27 @@ export default function TripPage() {
     );
   }
 
-  // If we have cached data, render it immediately (even if refreshing in background)
-  if (!tripData) {
-    return (
-      <div className="trip-detail-page">
-        <div className="error-banner">Trip not found</div>
-      </div>
-    );
-  }
-
   return (
     <div className="trip-detail-page">
-      <TripSummary {...tripData} />
+      <TripSummary {...trip} />
 
-      <TravelersSection
-        travelers={tripData.travelers}
-        onAddTraveler={() => setTravelerModalOpen(true)}
-      />
+      {/* <TravelersSection
+        travelers={trip.travelers}
+        onAddTraveler={() => {}}
+      /> */}
 
       <div className="destinations-section">
         <h2 className="section-title">Destinations</h2>
         <div className="destinations-list">
-          {tripData.destinations.map((destination, index) => (
-            <DestinationSummaryCard
-              key={destination.id}
-              destination={destination}
-              index={index}
-            />
-          ))}
+          {trip.destinations &&
+            trip.destinations.map((destination) => (
+              <DestinationSummaryCard
+                key={destination.id}
+                destination={destination}
+              />
+            ))}
         </div>
       </div>
-
-      <TravelerEditModal
-        open={travelerModalOpen}
-        title="Add Traveler"
-        onClose={() => setTravelerModalOpen(false)}
-      />
     </div>
   );
 }

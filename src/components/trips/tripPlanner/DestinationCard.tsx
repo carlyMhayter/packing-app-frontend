@@ -30,14 +30,14 @@ export default function DestinationCard({
 
   useEffect(() => {
     // Recalculate nights from dates whenever they change
-    if (data.departureDate || data.arrivalDate) {
-      const calc = nightsBetween(data.arrivalDate, data.departureDate);
+    if (data.departureDate || data.arrival_date) {
+      const calc = nightsBetween(data.arrival_date, data.departureDate);
       if (calc !== data.nights) {
         onChange(data.id, { nights: calc });
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [data.departureDate, data.arrivalDate]);
+  }, [data.departureDate, data.arrival_date]);
 
   const handleFocus = () => {
     setEditValue(data.label);
@@ -61,7 +61,7 @@ export default function DestinationCard({
   };
 
   const handleRangeSelect = (start: string, end: string) => {
-    onChange(data.id, { arrivalDate: start, departureDate: end });
+    onChange(data.id, { arrival_date: start, departureDate: end });
   };
 
   const handleSearchBoxRetrieve = (response: DestinationResponse) => {
@@ -116,11 +116,11 @@ export default function DestinationCard({
   };
 
   const handleNudgeDate = (
-    field: "arrivalDate" | "departureDate",
+    field: "arrival_date" | "departureDate",
     delta: number,
   ) => {
     const current =
-      field === "arrivalDate" ? data.arrivalDate : data.departureDate;
+      field === "arrival_date" ? data.arrival_date : data.departureDate;
     if (!current) return;
     onChange(data.id, { [field]: addDays(current, delta) });
   };
@@ -230,19 +230,19 @@ export default function DestinationCard({
                   </svg>
                 </span>
                 <span
-                  className={`destination-date-text ${!data.arrivalDate ? "is-placeholder" : ""}`}
+                  className={`destination-date-text ${!data.arrival_date ? "is-placeholder" : ""}`}
                 >
-                  {data.arrivalDate
-                    ? formatDisplayDate(data.arrivalDate)
+                  {data.arrival_date
+                    ? formatDisplayDate(data.arrival_date)
                     : "Arrival"}
                 </span>
-                {data.arrivalDate && (
+                {data.arrival_date && (
                   <div className="date-chevron-group">
                     <button
                       className="date-chevron"
                       onClick={(e) => {
                         e.stopPropagation();
-                        handleNudgeDate("arrivalDate", -1);
+                        handleNudgeDate("arrival_date", -1);
                       }}
                       type="button"
                       aria-label="Previous day"
@@ -263,7 +263,7 @@ export default function DestinationCard({
                       className="date-chevron"
                       onClick={(e) => {
                         e.stopPropagation();
-                        handleNudgeDate("arrivalDate", 1);
+                        handleNudgeDate("arrival_date", 1);
                       }}
                       type="button"
                       aria-label="Next day"
@@ -347,7 +347,7 @@ export default function DestinationCard({
             {showCalendar && (
               <Calendar
                 mode="range"
-                rangeStart={data.arrivalDate || null}
+                rangeStart={data.arrival_date || null}
                 rangeEnd={data.departureDate || null}
                 onSelectRange={handleRangeSelect}
                 onClose={() => setShowCalendar(false)}

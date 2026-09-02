@@ -187,7 +187,7 @@ Defined in `src/app/routes.tsx` using `createBrowserRouter`:
 | `/trip_summary`           | InternalLayout | TripPlanner      |
 | `/packing_planner`        | InternalLayout | PackingPlanner   |
 | `/traveler_planner`       | InternalLayout | TravelerPlanner  |
-| `/trips/:tripId`          | InternalLayout | TripPage         |
+| `/trips/:trip_id`         | InternalLayout | TripPage         |
 | `/account_settings`       | InternalLayout | AccountSettings  |
 
 ## Build / Type Checking
@@ -221,7 +221,7 @@ Defined in `src/app/routes.tsx` using `createBrowserRouter`:
 
 ### In Progress
 
-- Connecting `TripPage` to the real backend endpoint (`GET /trips/{tripId}`) once the backend API is ready.
+- Connecting `TripPage` to the real backend endpoint (`GET /trips/{trip_id}`) once the backend API is ready.
 
 ### Known Issues
 

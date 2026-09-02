@@ -44,21 +44,18 @@ export const fetchRecentTrips = async (
 };
 
 export const getTripById = async (
-  tripId: string,
+  trip_id: number,
   userId: number,
 ): Promise<TripPublic> => {
-  try {
-    const res = await api.request(`/trips/${tripId}?user_id=${userId}`);
-    if (!res.ok) throw new Error(`Failed to fetch trip ${tripId}`);
-    const data: unknown = await res.json();
-    return data as TripPublic;
-  } catch (err) {
-    if (USE_MOCKS) {
-      console.warn("[MOCK] getTripById:", err);
-      return mockTripDetail;
-    }
-    throw err;
-  }
+  console.log("getTripById");
+  const res = await api.request(`/trips/${trip_id}?user_id=${userId}`);
+  console.log("res", res);
+
+  if (!res.ok) throw new Error(`Failed to fetch trip ${trip_id}`);
+  const data: unknown = await res.json();
+  console.log("data", data);
+
+  return data as TripPublic;
 };
 
 export const createTrip = async (
@@ -82,15 +79,15 @@ export const createTrip = async (
 };
 
 export const updateTrip = async (
-  tripId: string,
+  trip_id: string,
   payload: Partial<Pick<TripPublic, "name">>,
 ): Promise<TripPublic> => {
   try {
-    const res = await api.request(`/trips/${tripId}`, {
+    const res = await api.request(`/trips/${trip_id}`, {
       method: "PATCH",
       body: JSON.stringify(payload),
     });
-    if (!res.ok) throw new Error(`Failed to update trip ${tripId}`);
+    if (!res.ok) throw new Error(`Failed to update trip ${trip_id}`);
     const data: unknown = await res.json();
     return data as TripPublic;
   } catch (err) {
@@ -102,10 +99,10 @@ export const updateTrip = async (
   }
 };
 
-export const deleteTrip = async (tripId: string): Promise<void> => {
+export const deleteTrip = async (trip_id: string): Promise<void> => {
   try {
-    const res = await api.request(`/trips/${tripId}`, { method: "DELETE" });
-    if (!res.ok) throw new Error(`Failed to delete trip ${tripId}`);
+    const res = await api.request(`/trips/${trip_id}`, { method: "DELETE" });
+    if (!res.ok) throw new Error(`Failed to delete trip ${trip_id}`);
   } catch (err) {
     if (USE_MOCKS) {
       console.warn("[MOCK] deleteTrip:", err);

@@ -1,19 +1,54 @@
 import { useNavigate } from "react-router-dom";
 import "./styles/dashboard.css";
 import DashboardSection from "./DashboardSection";
-import { type TravelerSimple } from "../../../types/traveler";
 import Tooltip from "../../basic/tooltip";
-export default function TravelerSection({
-  travelers,
-}: {
-  travelers: TravelerSimple[];
-}) {
+import {
+  selectAuthError,
+  selectAuthLoading,
+  selectTravelers,
+} from "../../../state/appSlice";
+import type { TravelerSimple } from "../../../types/traveler";
+import { useAppSelector } from "../../../hooks/reduxHooks";
+
+export default function TravelerSection() {
+  const travelers = useAppSelector(selectTravelers);
+  const isLoading = useAppSelector(selectAuthLoading);
+  const error = useAppSelector(selectAuthError);
   const navigate = useNavigate();
+
+  if (isLoading) {
+    return (
+      <DashboardSection title="Travelers">
+        <div className="dashboard-section-body">Loading.....</div>
+        <div className="dashboard-section-footer"></div>
+      </DashboardSection>
+    );
+  }
+
+  // Error state
+  if (error) {
+    return (
+      <DashboardSection title="Travelers">
+        <div className="dashboard-section-body">
+          <p className="dashboard-error">Failed to load travelers.</p>
+        </div>
+        <div className="dashboard-section-footer">
+          <button
+            className="sci-btn"
+            onClick={() => navigate("/traveler_planner")}
+            type="button"
+          >
+            + Create New Traveler
+          </button>
+        </div>
+      </DashboardSection>
+    );
+  }
 
   return (
     <DashboardSection title="Travelers">
       <div className="travelers-list">
-        {travelers.map((traveler) => (
+        {travelers.map((traveler: TravelerSimple) => (
           <Tooltip content="Edit traveler profile" position="top">
             <button
               key={traveler.id}

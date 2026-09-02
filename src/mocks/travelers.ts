@@ -1,6 +1,6 @@
-import { type TravelerProfile } from "../types/traveler";
+import { type Traveler } from "../types/traveler";
 
-export const mockTravelers: TravelerProfile[] = [
+export const mockTravelers: Traveler[] = [
   {
     id: "traveler-1",
     name: "Alice",

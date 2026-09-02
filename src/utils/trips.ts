@@ -75,7 +75,7 @@ export const validateTrip = (
     const label = `Destination ${index + 1}`;
     if (!dest.addressData?.full_name)
       errors.push(`${label}: address is required.`);
-    if (!dest.arrivalDate) errors.push(`${label}: arrival date is required.`);
+    if (!dest.arrival_date) errors.push(`${label}: arrival date is required.`);
     if (!dest.departureDate)
       errors.push(`${label}: departure date is required.`);
   });

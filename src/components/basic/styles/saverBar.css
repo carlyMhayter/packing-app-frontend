@@ -1,0 +1,36 @@
+.saverbar-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: end;
+  font-size: 14px;
+  min-height: 24px;
+  color: var(--dustyGrape);
+}
+
+.status-detail {
+  padding: 4px 12px;
+  border-radius: 4px;
+
+  transition: 0.5s;
+  background-color: transparent;
+}
+
+.saving {
+  color: var(--dustyGrape);
+  background-color: var(--dustyGrapeVVLt);
+}
+
+.idle {
+  background-color: transparent;
+  color: transparent;
+}
+
+.error {
+  color: var(--lobsterDarker);
+  background-color: var(--lobsterVLt);
+}
+
+.saved {
+  color: var(--limeCreamDarker);
+  background-color: var(--limeCreamVLt);
+}

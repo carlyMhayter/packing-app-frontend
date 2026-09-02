@@ -3,15 +3,26 @@ import WeatherIcon from "../basic/weatherIcons";
 import { aggregateConditions } from "../../utils/weatherCodes";
 import "./styles/weatherCards.css";
 
-export default function OverallConditions({ forecastTrip }: { forecastTrip: TripForecastPublic }) {
-  const { dayConditions, dayHigh, dayLow, nightConditions, nightHigh, nightLow } = forecastTrip;
+export default function OverallConditions({
+  forecastTrip,
+}: {
+  forecastTrip: TripForecastPublic;
+}) {
+  const {
+    day_conditions,
+    day_high,
+    day_low,
+    night_conditions,
+    night_high,
+    night_low,
+  } = forecastTrip;
 
   const aggregateDaytimeCondtitions = aggregateConditions(
-    Object.entries(dayConditions.conditions),
+    Object.entries(day_conditions.conditions),
   );
 
   const aggregateNighttimeCondtitions = aggregateConditions(
-    Object.entries(nightConditions.conditions),
+    Object.entries(night_conditions.conditions),
   );
 
   return (
@@ -25,18 +36,18 @@ export default function OverallConditions({ forecastTrip }: { forecastTrip: Trip
               <div className="weather-temps">
                 <div className="weather-temp-row">
                   <span className="weather-temp-label">Highest:</span>
-                  <span className="weather-temp-value">{dayHigh}&deg;F</span>
+                  <span className="weather-temp-value">{day_high}&deg;F</span>
                 </div>
                 <div className="weather-temp-row">
                   <span className="weather-temp-label">Lowest:</span>
-                  <span className="weather-temp-value">{dayLow}&deg;F</span>
+                  <span className="weather-temp-value">{day_low}&deg;F</span>
                 </div>
               </div>
             </div>
             <div className="common-conditions-stack">
               {aggregateDaytimeCondtitions.map((element: [string, number]) => {
                 const percentage = Math.round(
-                  (element[1] / dayConditions.total_hours) * 100,
+                  (element[1] / day_conditions.total_hours) * 100,
                 );
 
                 return (
@@ -59,11 +70,11 @@ export default function OverallConditions({ forecastTrip }: { forecastTrip: Trip
               <div className="weather-temps">
                 <div className="weather-temp-row">
                   <span className="weather-temp-label">Highest:</span>
-                  <span className="weather-temp-value">{nightHigh}&deg;F</span>
+                  <span className="weather-temp-value">{night_high}&deg;F</span>
                 </div>
                 <div className="weather-temp-row">
                   <span className="weather-temp-label">Lowest:</span>
-                  <span className="weather-temp-value">{nightLow}&deg;F</span>
+                  <span className="weather-temp-value">{night_low}&deg;F</span>
                 </div>
               </div>
             </div>
@@ -71,7 +82,7 @@ export default function OverallConditions({ forecastTrip }: { forecastTrip: Trip
               {aggregateNighttimeCondtitions.map(
                 (element: [string, number]) => {
                   const percentage = Math.round(
-                    (element[1] / nightConditions.total_hours) * 100,
+                    (element[1] / night_conditions.total_hours) * 100,
                   );
 
                   return (

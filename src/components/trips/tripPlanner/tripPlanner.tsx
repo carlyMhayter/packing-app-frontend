@@ -35,7 +35,7 @@ export default function TripPlanner() {
     const id = `dest-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`;
     const currentDate = getDateinYYYYMMDD(new Date());
     const newDestination: CreateDestinationData = {
-      arrivalDate: currentDate,
+      arrival_date: currentDate,
       departureDate: addDays(currentDate, 1),
       nights: 1,
       id,
@@ -124,7 +124,7 @@ export default function TripPlanner() {
     const destinationsPayload = destinations.map((dest, index: number) => ({
       user_id: 2,
       destination_name: dest.label,
-      arrival_date: dest.arrivalDate,
+      arrival_date: dest.arrival_date,
       departure_date: dest.departureDate,
       nights: dest.nights,
       has_laundry: dest.laundry === "yes",

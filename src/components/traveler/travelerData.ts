@@ -1,4 +1,4 @@
-import type { TravelerProfile } from "../../types/traveler";
+import type { Traveler } from "../../types/traveler";
 
 export const sampleTravelerClothingPreferences = {
   name: "Sample Clothing Preferences",
@@ -20,7 +20,7 @@ export const sampleTravelerClothingPreferences = {
   },
 };
 
-export const sampleTravelerProfile: TravelerProfile = {
+export const sampleTravelerProfile: Traveler = {
   id: "7",
   name: "John Doe",
   type: "adult",

@@ -12,7 +12,6 @@ import {
 } from "../../../state/appSlice";
 
 export default function TripSection() {
-  // const user = useAppSelector(selectCurrentUser);
   const trips = useAppSelector(selectTrips);
   const isLoading = useAppSelector(selectAuthLoading);
   const error = useAppSelector(selectAuthError);
@@ -26,7 +25,7 @@ export default function TripSection() {
       </DashboardSection>
     );
   }
-  console.log("trips:", trips);
+  // console.log("trips:", trips);
   if (!isLoading && trips.length === 0) {
     return (
       <DashboardSection title="Trips">
@@ -41,7 +40,7 @@ export default function TripSection() {
             onClick={() => navigate("/trip_planner")}
             type="button"
           >
-            + Add New Trip
+            + Create New Trip
           </button>
         </div>
       </DashboardSection>
@@ -61,7 +60,7 @@ export default function TripSection() {
             onClick={() => navigate("/trip_planner")}
             type="button"
           >
-            + Add New Trip
+            + Create New Trip
           </button>
         </div>
       </DashboardSection>
@@ -81,8 +80,8 @@ export default function TripSection() {
           >
             <span className="trip-section-name">{trip.name}</span>
             {/* <span className="trip-section-dates">
-              {formatShortDate(trip.arrivalDate)} –{" "}
-              {formatShortDate(trip.departDate)}
+              {formatShortDate(trip.arrival_date)} –{" "}
+              {formatShortDate(trip.departure_date)}
             </span> */}
           </a>
         ))}
@@ -92,7 +91,7 @@ export default function TripSection() {
             onClick={() => navigate("/trip_planner")}
             type="button"
           >
-            + Add New Trip
+            + Create New Trip
           </button>
           {trips.length >= 4 && (
             <a href="/trips" className="trip-section-see-all">
@@ -114,7 +113,7 @@ export default function TripSection() {
           onClick={() => navigate("/trip_planner")}
           type="button"
         >
-          + Add New Trip
+          + Create New Trip
         </button>
       </div>
     </DashboardSection>

@@ -1,6 +1,8 @@
 import { type TripSimple } from "./trip";
 import { type TravelerSimple } from "./traveler";
 import { type RoutineSimple } from "./routine";
+import { type ClothingPrefSimple } from "./clothingPrefs";
+
 import { TemperatureUnit } from "../enums/enums";
 export interface User {
   id: number;
@@ -46,6 +48,7 @@ export interface UserWithRelationships {
   trips?: TripSimple[];
   travelers?: TravelerSimple[];
   routines?: RoutineSimple[];
+  preferences?: ClothingPrefSimple[];
 }
 
 export interface UserAppState {
@@ -61,6 +64,7 @@ export interface UserAppState {
   trips?: TripSimple[];
   travelers?: TravelerSimple[];
   routines?: RoutineSimple[];
+  preferences?: ClothingPrefSimple[];
 }
 
 export interface LoginResponse {

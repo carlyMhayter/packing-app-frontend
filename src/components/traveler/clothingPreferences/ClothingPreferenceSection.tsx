@@ -1,5 +1,5 @@
 import { useState } from "react";
-import type { TravelerClothingPreferences } from "../../../types/clothingPreferences.js";
+import type { TravelerClothingPreferences } from "../../../types/clothingPrefs.js";
 import { sampleTravelerClothingPreferences } from "../travelerData.js";
 
 export default function ClothingPreferenceSection() {

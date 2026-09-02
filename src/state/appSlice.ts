@@ -222,5 +222,7 @@ export const selectAuthError = (state: RootState) => state.app.error;
 export const selectUserId = (state: RootState) => state.app.user?.id ?? 1;
 export const selectTrips = (state: RootState) => state.app.trips ?? [];
 export const selectTravelers = (state: RootState) => state.app.travelers ?? [];
+export const selectRoutines = (state: RootState) => state.app.routines ?? [];
+export const selectPrefs = (state: RootState) => state.app.preferences ?? [];
 
 export default appSlice.reducer;

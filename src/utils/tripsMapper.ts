@@ -22,33 +22,33 @@ function toWeatherConditions(strs: string[]): WeatherCondition[] {
   );
 }
 
-export function mapTripPublicToDetail(t: TripPublic): TripDetailData {
-  const destinations: DestinationSummary[] = t.destinations.map((dest) => {
-    const forecast = t.forecastTrip.forecastDestinations.find(
+export function mapTripPublicToDetail(trip: TripPublic): TripDetailData {
+  const destinations: DestinationSummary[] = trip.destinations.map((dest) => {
+    const forecast = trip.forecastTrip.forecast_destinations.find(
       (f) => f.destination_id === dest.id,
     );
     return {
       id: String(dest.id),
       name: dest.name,
       location: dest.address?.full_name ?? dest.name,
-      arrivalDate: dest.arrival_date,
+      arrival_date: dest.arrival_date,
       departureDate: dest.departure_date,
       dayWeather: {
-        highTemp: forecast?.day_high ?? t.forecastTrip.dayHigh,
-        lowTemp: forecast?.day_low ?? t.forecastTrip.dayLow,
+        highTemp: forecast?.day_high ?? trip.forecastTrip.day_high,
+        lowTemp: forecast?.day_low ?? trip.forecastTrip.day_low,
         conditions: toWeatherConditions(
           forecast
             ? Object.keys(forecast.day_conditions.conditions)
-            : Object.keys(t.forecastTrip.dayConditions.conditions),
+            : Object.keys(trip.forecastTrip.day_conditions.conditions),
         ),
       },
       nightWeather: {
-        highTemp: forecast?.night_high ?? t.forecastTrip.nightHigh,
-        lowTemp: forecast?.night_low ?? t.forecastTrip.nightLow,
+        highTemp: forecast?.night_high ?? trip.forecastTrip.night_high,
+        lowTemp: forecast?.night_low ?? trip.forecastTrip.night_low,
         conditions: toWeatherConditions(
           forecast
             ? Object.keys(forecast.night_conditions.conditions)
-            : Object.keys(t.forecastTrip.nightConditions.conditions),
+            : Object.keys(trip.forecastTrip.night_conditions.conditions),
         ),
       },
       sunrise: forecast?.sunrise ?? "",
@@ -61,25 +61,25 @@ export function mapTripPublicToDetail(t: TripPublic): TripDetailData {
 
   return {
     trip: {
-      id: String(t.id),
-      name: t.name,
-      start_date: t.arrivalDate,
-      end_date: t.departDate,
-      updated_at: t.updatedAt,
-      created_at: t.createdAt,
+      id: String(trip.id),
+      name: trip.name,
+      start_date: trip.arrival_date,
+      end_date: trip.departure_date,
+      updated_at: trip.updated_at,
+      created_at: trip.created_at,
     },
     overallDayWeather: {
-      highTemp: t.forecastTrip.dayHigh,
-      lowTemp: t.forecastTrip.dayLow,
+      highTemp: trip.forecastTrip.day_high,
+      lowTemp: trip.forecastTrip.day_low,
       conditions: toWeatherConditions(
-        Object.keys(t.forecastTrip.dayConditions.conditions),
+        Object.keys(trip.forecastTrip.day_conditions.conditions),
       ),
     },
     overallNightWeather: {
-      highTemp: t.forecastTrip.nightHigh,
-      lowTemp: t.forecastTrip.nightLow,
+      highTemp: trip.forecastTrip.night_high,
+      lowTemp: trip.forecastTrip.night_low,
       conditions: toWeatherConditions(
-        Object.keys(t.forecastTrip.nightConditions.conditions),
+        Object.keys(trip.forecastTrip.night_conditions.conditions),
       ),
     },
     destinations,
