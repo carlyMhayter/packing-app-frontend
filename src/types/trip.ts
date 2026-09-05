@@ -1,39 +1,73 @@
-import { type Traveler } from "./traveler";
-import type { WeatherData } from "./weather";
-import type { DestinationPublic, DestinationCreate } from "./destinations";
-import type { DestinationSummary } from "./destinations";
-import type { TripForecastPublic } from "./forecasts";
+import { type WeatherData, type WeatherCondition } from "./weather";
+import type { DestinationPublic, DestinationSummary } from "./destinations";
+import type { ForecastTripPublic } from "./forecasts";
+import type { TravelerPublic, TravelerBase } from "./travelers";
+
+export type { WeatherCondition };
+export type { Traveler } from "./travelers";
+
+// Re-export destination types for backward compatibility
+export type {
+  DestinationCardProps,
+  DestinationResponse,
+  CreateDestinationData,
+  DestinationFormUpdate as DestinationUpdate,
+  DestinationSummary,
+} from "./destinations";
 
 export interface Trip {
   name: string;
+  arrival_date?: string;
+  departure_date?: string;
 }
 
 export interface TripCreate extends Trip {
-  destinations: DestinationCreate[];
+  destinations: DestinationPublic[];
 }
 
 export interface TripDetailData {
-  trip: Trip;
+  trip: TripSimple & {
+    start_date?: string;
+    end_date?: string;
+  };
   overallDayWeather: WeatherData;
   overallNightWeather: WeatherData;
   destinations: DestinationSummary[];
-  travelers: Traveler[];
+  travelers: TravelerBase[];
 }
 
 export interface TripPublic {
-  forecastTrip: TripForecastPublic;
   id: number;
   name: string;
-  updated_at: string;
-  departure_date: string;
-  arrival_date: string;
-  destinations: DestinationPublic[];
   created_at: string;
+  updated_at: string;
+  arrival_date?: string;
+  departure_date?: string;
+  destinations: DestinationPublic[];
+  forecast_trip?: ForecastTripPublic | null;
+  travelers?: TravelerPublic[];
 }
+
+export interface TripUpdate {
+  name?: string;
+  arrival_date?: string;
+  departure_date?: string;
+  destinations?: DestinationPublic[];
+  forecast_trip?: ForecastTripPublic | null;
+}
+
+export interface TripCreateResponse {
+  trip_id: number;
+  forecast_available: boolean;
+  forecast?: ForecastTripPublic | null;
+  data?: TripPublic | null;
+  error?: string | null;
+}
+
 export interface TripPublicState {
   isLoading: boolean;
   error: string | null;
-  forecastTrip?: TripForecastPublic | null;
+  forecastTrip?: ForecastTripPublic | null;
   id: number;
   name?: string | null;
   updated_at?: string | null;
@@ -41,11 +75,12 @@ export interface TripPublicState {
   arrival_date?: string | null;
   destinations?: DestinationPublic[] | null;
   created_at: string | null;
+  travelers?: TravelerPublic[];
 }
 
 export interface TripSimple {
   id: number;
-  created_at: Date;
-  updated_at: Date;
+  created_at: string;
+  updated_at: string;
   name: string;
 }

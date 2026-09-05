@@ -4,15 +4,19 @@ import { fetchRecentTrips } from "../../services/trips";
 import { type TripPublic } from "../../types/trip";
 import LoadingDots from "../basic/loading";
 import "./styles/tripDetail.css";
+import { useAppSelector } from "../../hooks/reduxHooks";
+import { selectCurrentUser } from "../../state/appSlice";
 
 export default function TripsListPage() {
   const [trips, setTrips] = useState<TripPublic[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
+  const user = useAppSelector(selectCurrentUser);
+  const userId = user?.id ?? 1;
 
   useEffect(() => {
-    fetchRecentTrips(100)
+    fetchRecentTrips(100, userId)
       .then((data) => {
         setTrips(data);
         setIsLoading(false);

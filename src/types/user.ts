@@ -1,12 +1,13 @@
 import { type TripSimple } from "./trip";
-import { type TravelerSimple } from "./traveler";
+import { type TravelerSimple } from "./travelers";
 import { type RoutineSimple } from "./routine";
 import { type ClothingPrefSimple } from "./clothingPrefs";
-
 import { TemperatureUnit } from "../enums/enums";
+
 export interface User {
   id: number;
   email: string;
+  name?: string; // Backward-compatible alias for display purposes
   first_name?: string;
   last_name?: string;
   temperature_unit?: (typeof TemperatureUnit)[keyof typeof TemperatureUnit];
@@ -16,6 +17,7 @@ export interface User {
   oauth_provider?: string;
   oauth_provider_id?: string;
   is_oauth_user?: boolean;
+  oauth_profile_picture?: string;
 }
 
 export interface UserCreate {
@@ -34,14 +36,24 @@ export interface UserPublic {
   is_active: boolean;
   created_at: Date;
   temperature_unit: (typeof TemperatureUnit)[keyof typeof TemperatureUnit];
+  oauth_provider?: string;
+  oauth_provider_id?: string;
+  oauth_profile_picture?: string;
+  is_oauth_user?: boolean;
 }
 
-// export interface AuthState {
-//   user: User | null;
-//   isAuthenticated: boolean;
-//   isLoading: boolean;
-//   error: string | null;
-// }
+export interface UserUpdate {
+  email?: string;
+  first_name?: string;
+  last_name?: string;
+  is_2fa_enabled?: boolean;
+  is_active?: boolean;
+  temperature_unit?: (typeof TemperatureUnit)[keyof typeof TemperatureUnit];
+  oauth_provider?: string;
+  oauth_provider_id?: string;
+  oauth_profile_picture?: string;
+  is_oauth_user?: boolean;
+}
 
 export interface UserWithRelationships {
   id: number;
@@ -73,10 +85,4 @@ export interface LoginResponse {
   access_token?: string;
   refresh_token?: string;
   user_id?: number;
-}
-
-export interface User {
-  id: number;
-  email: string;
-  name?: string;
 }

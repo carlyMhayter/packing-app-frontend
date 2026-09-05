@@ -1,17 +1,30 @@
-import { type TripPublic } from "../../types/trip";
 import { formatShortDate, calculateNights } from "../../utils/trips";
 
 import "./styles/tripSummary.css";
 
-export default function TripSummary({ ...trip }: TripPublic) {
-  const nights = calculateNights(trip.arrival_date, trip.departure_date);
+type TripSummaryProps = {
+  name: string;
+  arrival_date?: string | null;
+  departure_date?: string | null;
+  updated_at?: string | null;
+  created_at?: string | null;
+};
+
+export default function TripSummary({
+  name,
+  arrival_date,
+  departure_date,
+  updated_at,
+  created_at,
+}: TripSummaryProps) {
+  const nights = calculateNights(arrival_date, departure_date);
 
   return (
     <div className="trip-summary">
       <div className="trip-summary-header">
-        <h1 className="trip-summary-title">{trip.name}</h1>
-        <span> Last updated: {trip.updated_at}</span>
-        <span> Created at: {trip.created_at}</span>
+        <h1 className="trip-summary-title">{name}</h1>
+        <span> Last updated: {updated_at}</span>
+        <span> Created at: {created_at}</span>
 
         <span> </span>
         <div className="trip-summary-meta">
@@ -20,14 +33,14 @@ export default function TripSummary({ ...trip }: TripPublic) {
             <span className="trip-summary-date">
               <span className="trip-summary-date-label">Depart</span>
               <span className="trip-summary-date-value">
-                {formatShortDate(trip.arrival_date)}
+                {formatShortDate(arrival_date)}
               </span>
             </span>
             <span className="trip-summary-date-separator">–</span>
             <span className="trip-summary-date">
               <span className="trip-summary-date-label">Return</span>
               <span className="trip-summary-date-value">
-                {formatShortDate(trip.departure_date)}
+                {formatShortDate(departure_date)}
               </span>
             </span>
           </div>

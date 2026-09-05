@@ -1,18 +1,16 @@
 import { useState, useEffect } from "react";
-// import "../styles/travelerEdit.css";
 
-interface RoutineEditSlidePanelProps {
-  onNavigateBack: () => void;
+interface RoutineEditSectionProps {
   onSave: (routine: { name: string; items: string[] }) => void;
+  onCancel: () => void;
   initialRoutine?: { name: string; items: string[] } | null;
 }
 
-export default function RoutineEditSlidePanel({
-  onNavigateBack,
+export default function RoutineEditSection({
   onSave,
+  onCancel,
   initialRoutine,
-}: RoutineEditSlidePanelProps) {
-  // Create New Routine state
+}: RoutineEditSectionProps) {
   const [routineName, setRoutineName] = useState("");
   const [routineItems, setRoutineItems] = useState<string[]>([]);
   const [newItem, setNewItem] = useState("");
@@ -22,7 +20,6 @@ export default function RoutineEditSlidePanel({
     setRoutineItems(initialRoutine?.items ?? []);
   }, [initialRoutine]);
 
-  // Create New Routine handlers
   const addRoutineItem = () => {
     const trimmed = newItem.trim();
     if (!trimmed) return;
@@ -34,38 +31,18 @@ export default function RoutineEditSlidePanel({
     setRoutineItems((prev) => prev.filter((_, i) => i !== index));
   };
 
-  const saveNewRoutine = () => {
+  const handleSave = () => {
     const trimmed = routineName.trim();
     if (!trimmed) return;
     if (routineItems.length === 0) return;
     onSave({ name: trimmed, items: routineItems });
     setRoutineName("");
     setRoutineItems([]);
-    onNavigateBack();
   };
 
   return (
-    <>
+    <div className="modal-wizard-section">
       <div className="routine-panel-header">
-        <button
-          className="routine-back-btn"
-          onClick={onNavigateBack}
-          type="button"
-        >
-          <svg
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            width="18"
-            height="18"
-          >
-            <polyline points="15 18 9 12 15 6" />
-          </svg>
-          Back to Traveler
-        </button>
         <h3 className="routine-panel-title">
           {initialRoutine ? "Edit Routine" : "Create New Routine"}
         </h3>
@@ -150,16 +127,16 @@ export default function RoutineEditSlidePanel({
       <div className="modal-footer">
         <button
           className="btn-main"
-          onClick={saveNewRoutine}
+          onClick={handleSave}
           type="button"
           disabled={!routineName.trim() || routineItems.length === 0}
         >
           Save Routine
         </button>
-        <button className="btn-text" onClick={onNavigateBack} type="button">
+        <button className="btn-text" onClick={onCancel} type="button">
           Cancel
         </button>
       </div>
-    </>
+    </div>
   );
 }

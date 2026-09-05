@@ -7,7 +7,7 @@ import {
   selectAuthLoading,
   selectTravelers,
 } from "../../../state/appSlice";
-import type { TravelerSimple } from "../../../types/traveler";
+import type { TravelerSimple } from "../../../types/travelers";
 import { useAppSelector } from "../../../hooks/reduxHooks";
 
 export default function TravelerSection() {

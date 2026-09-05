@@ -2,6 +2,12 @@ import { api } from "./api";
 import { type TripPublic } from "../types/trip";
 import { mockTripDetail, mockTripList } from "../mocks/trips";
 export { mapTripPublicToDetail } from "../utils/tripsMapper";
+import {
+  type TravelerCreate,
+  type TravelerPublic,
+  type TravelerUpdate,
+} from "../types/travelers";
+import type { Address } from "../types/addresses";
 
 const USE_MOCKS = import.meta.env.VITE_USE_MOCKS === "true";
 
@@ -13,7 +19,7 @@ interface CreateTripDestinationPayload {
   nights: number;
   has_laundry: boolean;
   label: string;
-  address?: Record<string, unknown>;
+  address?: Address;
   order: number;
 }
 
@@ -49,11 +55,11 @@ export const getTripById = async (
 ): Promise<TripPublic> => {
   console.log("getTripById");
   const res = await api.request(`/trips/${trip_id}?user_id=${userId}`);
-  console.log("res", res);
+  // console.log("res", res);
 
   if (!res.ok) throw new Error(`Failed to fetch trip ${trip_id}`);
   const data: unknown = await res.json();
-  console.log("data", data);
+  console.log("getTripById data", data);
 
   return data as TripPublic;
 };
@@ -110,4 +116,45 @@ export const deleteTrip = async (trip_id: string): Promise<void> => {
     }
     throw err;
   }
+};
+
+export const fetchTravelersForTrip = async (
+  trip_id: number,
+): Promise<TravelerPublic[]> => {
+  const res = await api.request(`/travelers/trip/${trip_id}`, {
+    method: "GET",
+  });
+  if (!res.ok) throw new Error(`Failed to fetch travelers for trip ${trip_id}`);
+  const data = await res.json();
+  console.log("getTravelersForTrip data", data);
+
+  return data;
+};
+
+export const addTravelerToTrip = async (
+  trip_id: number,
+  traveler_id: number,
+): Promise<void> => {
+  const res = await api.request(`/trips/${trip_id}/travelers`, {
+    method: "POST",
+    body: JSON.stringify({ traveler_id }),
+  });
+  if (!res.ok)
+    throw new Error(`Failed to add traveler ${traveler_id} to trip ${trip_id}`);
+};
+
+export const addNewTravelerToTrip = async (
+  payload: TravelerCreate,
+  trip_id: number,
+): Promise<TravelerPublic> => {
+  const res = await api.request(`/travelers/create`, {
+    method: "POST",
+    body: JSON.stringify(payload),
+  });
+  if (!res.ok)
+    throw new Error(
+      `Failed to add traveler ${payload.name} to trip ${trip_id}`,
+    );
+  const data = await res.json();
+  return data;
 };

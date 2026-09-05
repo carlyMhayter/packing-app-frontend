@@ -3,14 +3,7 @@ import { fetchRecentTrips } from "../services/trips";
 import type { TripPublicState } from "../types/trip";
 import type { RootState } from "./store";
 import { getTripById } from "../services/trips";
-
-// maintains trip ids in sorted order
-// by last updated date, most recent first
-// normalizes trip data
-// const tripsAdapter = createEntityAdapter<TripPublic>({
-//   sortComparer: (a, b) =>
-//     new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime(),
-// });
+import { fetchTravelersForTrip } from "../services/trips";
 
 // fetches the 4 most recent trips for a given userId
 export const loadRecentTrips = createAsyncThunk(
@@ -29,6 +22,15 @@ export const loadTripThunk = createAsyncThunk(
   },
 );
 
+// fetches a trip by its ID
+export const loadTripTravelersThunk = createAsyncThunk(
+  "trips/loadTripTravelers",
+  async ({ trip_id }: { trip_id: number }) => {
+    console.log("loadTripTravelersThunk");
+    return fetchTravelersForTrip(trip_id); //
+  },
+);
+
 const intialState: TripPublicState = {
   isLoading: false,
   error: null,
@@ -40,6 +42,7 @@ const intialState: TripPublicState = {
   arrival_date: null,
   destinations: [],
   created_at: null,
+  travelers: [],
 };
 
 const tripSlice = createSlice({
@@ -55,7 +58,7 @@ const tripSlice = createSlice({
       .addCase(loadTripThunk.fulfilled, (state, action) => {
         const data = action.payload;
         state.isLoading = false;
-        state.forecastTrip = data.forecastTrip;
+        state.forecastTrip = data.forecast_trip;
         state.id = data.id;
         state.name = data.name;
         state.updated_at = data.updated_at;
@@ -63,6 +66,7 @@ const tripSlice = createSlice({
         state.arrival_date = data.arrival_date;
         state.destinations = data.destinations;
         state.created_at = data.created_at;
+        state.travelers = data.travelers;
       })
       .addCase(loadTripThunk.rejected, (state, action) => {
         state.isLoading = false;
@@ -71,32 +75,12 @@ const tripSlice = createSlice({
   },
 });
 
-// Adapter selectors
-// export const {
-//   selectById: selectTripById,
-//   selectIds: selecttrip_ids,
-//   selectEntities: selectTripEntities,
-//   selectAll: selectAllTrips,
-//   selectTotal: selectTotalTrips,
-// } = tripsAdapter.getSelectors<RootState>((state) => state.trip);
-
-// Mapped selector for trip detail page
-// export const selectTripDetailById = (
-//   state: RootState,
-//   trip_id: string,
-// ): TripDetailData | null => {
-//   const numericId = Number(trip_id);
-//   const tripPublic = selectTripById(state, numericId);
-//   console.log("tripPublic", tripPublic);
-//   if (!tripPublic) return null;
-//   return mapTripPublicToDetail(tripPublic);
-// };
-
 // Status selectors
 export const selectTripsIsLoading = (state: RootState) => state.trip.isLoading;
 export const selectTripsError = (state: RootState) => state.trip.error;
 export const selectTrip = (state: RootState) => state.trip;
 export const selectTripDestinations = (state: RootState) =>
   state.trip.destinations;
+export const selectTripTravelers = (state: RootState) => state.trip.travelers;
 
 export default tripSlice.reducer;

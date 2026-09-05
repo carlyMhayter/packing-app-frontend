@@ -1,22 +1,21 @@
-import { type Routine } from "../types/routine";
+import { type RoutinePublic } from "../types/routine";
 
-export const mockRoutines: Routine[] = [
+export const mockRoutines: RoutinePublic[] = [
   {
-    id: "routine-1",
+    id: 1,
     name: "Standard Hygiene Routine",
-    items: [
-      "Toothbrush",
-      "Toothpaste",
-      "Dental floss",
-      "Deodorant",
-      "Shampoo",
-      "Conditioner",
-      "Body wash",
-      "Face wash",
-      "Moisturizer",
-      "Razor",
-      "Shaving cream",
-    ],
-    travelerId: "traveler-1",
+    description: "Daily hygiene essentials",
+    includes_hair_care: true,
+    includes_skin_care: true,
+    includes_body_care: true,
+    includes_hygiene: true,
+    includes_nail_care: false,
+    includes_makeup: false,
+    includes_makeup_tools: false,
+    includes_fragrance: false,
+    includes_feminine_hygiene: false,
+    is_master_from_template: false,
+    created_at: new Date(),
+    updated_at: new Date(),
   },
 ];

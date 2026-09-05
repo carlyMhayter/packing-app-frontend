@@ -39,7 +39,7 @@ const initialClothingPrefState: ClothingPrefPublicState = {
   name: "",
   id: 0,
   description: "",
-  preferences: "",
+  preferences: {},
   creator_id: 0,
   parent_preference_id: 0,
   traveler_id: 0,
@@ -73,6 +73,7 @@ const clothingPrefSlice = createSlice({
         state.creator_id = data.creator_id;
         state.traveler_id = data.traveler_id;
         state.parent_preference_id = data.parent_preference_id;
+        state.trip_traveler_id = data.trip_traveler_id;
       })
       .addCase(fetchClothingPrefThunk.rejected, (state, action) => {
         state.isLoading = false;
@@ -87,22 +88,12 @@ const clothingPrefSlice = createSlice({
         state.created_at = data.created_at;
         state.updated_at = data.updated_at;
         state.description = data.description;
-        state.includes_hair_care = data.includes_hair_care;
-        state.includes_skin_care = data.includes_skin_care;
-        state.includes_body_care = data.includes_body_care;
-        state.includes_hygiene = data.includes_hygiene;
-        state.includes_nail_care = data.includes_nail_care;
-        state.includes_makeup = data.includes_makeup;
-        state.includes_makeup_tools = data.includes_makeup_tools;
-        state.includes_fragrance = data.includes_fragrance;
-        state.includes_feminine_hygiene = data.includes_feminine_hygiene;
+        state.preferences = data.preferences;
         state.is_master_from_template = data.is_master_from_template;
         state.creator_id = data.creator_id;
-        state.parent_clothingPref_id = data.parent_clothingPref_id;
-        state.clothingPref_steps = data.clothingPref_steps;
-        state.travelers = data.travelers;
+        state.parent_preference_id = data.parent_preference_id;
         state.traveler_id = data.traveler_id;
-        state.trip_travelers = data.trip_travelers;
+        state.trip_traveler_id = data.trip_traveler_id;
       })
       .addCase(updateClothingPrefThunk.rejected, (state, action) => {
         state.isLoading = false;
@@ -115,11 +106,5 @@ const clothingPrefSlice = createSlice({
 export const selectClothingPref = (state: RootState) => state.clothingPref;
 export const selectLoading = (state: RootState) => state.clothingPref.isLoading;
 export const selectError = (state: RootState) => state.clothingPref.error;
-export const selectTravelers = (state: RootState) =>
-  state.clothingPref.travelers ?? [];
-export const selectTripTravelers = (state: RootState) =>
-  state.clothingPref.trip_travelers ?? [];
-export const selectSteps = (state: RootState) =>
-  state.clothingPref.clothingPref_steps ?? [];
 
 export default clothingPrefSlice.reducer;

@@ -1,7 +1,7 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useId, useCallback } from "react";
 import "../styles/modal.css";
 
-interface ModalProps {
+export interface ModalProps {
   open: boolean;
   title: string;
   onClose: () => void;
@@ -9,41 +9,107 @@ interface ModalProps {
 }
 
 export default function Modal({ open, title, onClose, children }: ModalProps) {
+  const titleId = useId();
   const closeRef = useRef<HTMLButtonElement>(null);
+  const overlayRef = useRef<HTMLDivElement>(null);
+  const previousActiveElement = useRef<Element | null>(null);
 
+  const handleClose = useCallback(() => {
+    onClose();
+  }, [onClose]);
+
+  // Save previous focus and lock body scroll
   useEffect(() => {
     if (open) {
+      previousActiveElement.current = document.activeElement;
       document.body.style.overflow = "hidden";
-      setTimeout(() => closeRef.current?.focus(), 50);
+      // Focus close button after animation starts
+      const timer = setTimeout(() => {
+        closeRef.current?.focus();
+      }, 50);
+      return () => clearTimeout(timer);
     } else {
       document.body.style.overflow = "";
     }
+  }, [open]);
+
+  // Return focus on unmount or close
+  useEffect(() => {
     return () => {
-      document.body.style.overflow = "";
+      if (previousActiveElement.current instanceof HTMLElement) {
+        previousActiveElement.current.focus();
+      }
     };
+  }, []);
+
+  // Escape key handler
+  useEffect(() => {
+    if (!open) return;
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        e.preventDefault();
+        handleClose();
+      }
+    };
+
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, [open, handleClose]);
+
+  // Focus trap
+  useEffect(() => {
+    if (!open || !overlayRef.current) return;
+
+    const element = overlayRef.current;
+    const focusable = element.querySelectorAll<HTMLElement>(
+      'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
+    );
+    if (focusable.length === 0) return;
+
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+
+    const handleTab = (e: KeyboardEvent) => {
+      if (e.key !== "Tab") return;
+
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault();
+        first.focus();
+      }
+    };
+
+    document.addEventListener("keydown", handleTab);
+    return () => document.removeEventListener("keydown", handleTab);
   }, [open]);
 
   if (!open) return null;
 
   return (
     <div
+      ref={overlayRef}
       className="modal-overlay modal-overlay-dark"
       onClick={(e) => {
-        if (e.target === e.currentTarget) onClose();
+        if (e.target === overlayRef.current) {
+          handleClose();
+        }
       }}
       role="dialog"
       aria-modal="true"
-      aria-labelledby="traveler-modal-title"
+      aria-labelledby={titleId}
     >
       <div className="modal-content modal-scrollable">
         <div className="modal-header">
-          <h3 id="traveler-modal-title" className="modal-title">
+          <h3 id={titleId} className="modal-title">
             {title}
           </h3>
           <button
             ref={closeRef}
             className="modal-close-btn"
-            onClick={onClose}
+            onClick={handleClose}
             type="button"
             aria-label="Close modal"
           >

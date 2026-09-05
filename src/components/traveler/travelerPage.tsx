@@ -12,7 +12,7 @@ import {
 import { useParams } from "react-router";
 import TempSlider from "./tempPreferences/TempSlider.tsx";
 import { TemperatureUnit } from "../../enums/enums.ts";
-import { type TravelerPublic } from "../../types/traveler.ts";
+import { type TravelerPublic } from "../../types/travelers.ts";
 import { useAutoSave } from "../../hooks/useAutoSave.ts";
 import SaverBar from "../basic/saverBar.tsx";
 import { convertTemperatures } from "../../utils/tempConversion.ts";
@@ -31,15 +31,14 @@ export default function TravelerPage() {
     async (submittedData: TravelerPublic) => {
       console.log("saveTravelerData:", submittedData);
       const dataToSubmit = {
-        id: Number(traveler_id),
         payload: {
+          id: Number(traveler_id),
           name: submittedData.name,
           traveler_type: submittedData.traveler_type,
           temp_unit: submittedData.temp_unit,
           temp_pref: submittedData.temp_pref,
           is_active: submittedData.is_active,
           user_id: submittedData.user_id,
-          id: Number(traveler_id),
           trip_ids: submittedData.trip_ids,
           is_primary_for_user: submittedData.is_primary_for_user,
           clothing_preference: submittedData.clothing_preference,
@@ -86,7 +85,7 @@ export default function TravelerPage() {
         user_id: traveler.user_id,
         id: traveler.id,
         trip_ids: traveler.trip_ids,
-        is_primary_for_user: traveler.is_primary_for_user,
+        is_primary_for_user: traveler.is_primary_for_user ?? false,
         clothing_preference: traveler.clothing_preference,
         trip_travelers: traveler.trip_travelers,
       };
@@ -131,6 +130,7 @@ export default function TravelerPage() {
       hot: convertTemperatures(hot, toUnit),
     });
     // set state
+    if (!draft) return;
     const newData = { ...draft, temp_unit: toUnit, temp_pref: newJSON };
     setDraft(newData);
   };

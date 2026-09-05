@@ -1,0 +1,358 @@
+/* Add Traveler Modal Specific Styles */
+
+.traveler-list-panel,
+.traveler-create-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.panel-heading {
+  font-family: var(--heading);
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--mahogany);
+  margin: 0;
+}
+
+/* Loading & Empty States */
+.loading-state,
+.error-state,
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  text-align: center;
+  gap: 16px;
+  min-height: 200px;
+}
+
+.empty-icon {
+  font-size: 48px;
+  line-height: 1;
+}
+
+.empty-state h3 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--mahogany);
+}
+
+.empty-state p {
+  margin: 0;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  max-width: 280px;
+}
+
+.panel-error-text {
+  color: var(--error-color, #991b1b);
+  font-size: 14px;
+}
+
+/* Traveler List */
+.traveler-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.traveler-list-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  border: 1px solid var(--steelBlue);
+  border-radius: 10px;
+  background: var(--white);
+  cursor: pointer;
+  transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.15s ease;
+  text-align: left;
+  width: 100%;
+}
+
+.traveler-list-item:hover {
+  background: var(--steelBlueVVLt);
+  border-color: var(--steelBlueLt);
+  transform: translateY(-1px);
+}
+
+.traveler-list-item:active {
+  transform: translateY(0);
+}
+
+.traveler-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--steelBlue);
+  color: var(--white);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 16px;
+  flex-shrink: 0;
+}
+
+.traveler-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+}
+
+.traveler-name {
+  font-weight: 500;
+  font-size: 15px;
+  color: var(--carbon);
+}
+
+.traveler-type {
+  font-size: 13px;
+  color: var(--text-secondary);
+  text-transform: capitalize;
+}
+
+.traveler-add-icon {
+  font-size: 24px;
+  color: var(--steelBlue);
+  font-weight: 300;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+/* Divider */
+.panel-divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--text-secondary);
+  font-size: 14px;
+  margin: 4px 0;
+}
+
+.panel-divider::before,
+.panel-divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--steelBlue);
+  opacity: 0.4;
+}
+
+/* Form Sections */
+.form-section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.form-label {
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--carbon);
+  margin: 0;
+}
+
+.form-label-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.form-desc {
+  margin: 0;
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 1.4;
+}
+
+.modal-text-input {
+  padding: 10px 12px;
+  border: 1px solid var(--steelBlue);
+  border-radius: 8px;
+  font-size: 15px;
+  background: var(--white);
+  color: var(--carbon);
+  transition: border-color 0.2s ease;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.modal-text-input:focus {
+  outline: none;
+  border-color: var(--steelBlueLt);
+  box-shadow: 0 0 0 2px rgba(120, 160, 190, 0.15);
+}
+
+.modal-text-input:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Type Options */
+.type-options {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.type-btn {
+  padding: 8px 16px;
+  border: 1px solid var(--steelBlue);
+  border-radius: 8px;
+  background: var(--white);
+  color: var(--carbon);
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex: 1;
+  min-width: 80px;
+}
+
+.type-btn:hover {
+  background: var(--steelBlueVVLt);
+  border-color: var(--steelBlueLt);
+}
+
+.type-btn.selected {
+  background: var(--steelBlue);
+  color: var(--white);
+  border-color: var(--steelBlue);
+}
+
+.type-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Unit Toggle */
+.unit-toggle {
+  display: flex;
+  gap: 4px;
+}
+
+.unit-toggle-btn {
+  width: 32px;
+  height: 32px;
+  border: 1px solid var(--steelBlue);
+  border-radius: 6px;
+  background: var(--white);
+  color: var(--carbon);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  padding: 0;
+}
+
+.unit-toggle-btn:hover {
+  background: var(--steelBlueVVLt);
+}
+
+.unit-toggle-btn.selected {
+  background: var(--steelBlue);
+  color: var(--white);
+  border-color: var(--steelBlue);
+}
+
+.unit-toggle-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Panel Error */
+.panel-error {
+  padding: 12px 16px;
+  background: var(--error-bg, #fee2e2);
+  color: var(--error-color, #991b1b);
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+/* Panel Actions */
+.panel-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.panel-actions .btn-primary,
+.panel-actions .btn-text {
+  flex: 1;
+}
+
+/* Buttons */
+.btn-primary,
+.btn-secondary,
+.btn-text {
+  padding: 12px 16px;
+  border-radius: 8px;
+  border: none;
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: opacity 0.2s ease, background-color 0.2s ease;
+  text-align: center;
+}
+
+.btn-primary {
+  background: var(--steelBlue);
+  color: var(--white);
+}
+
+.btn-primary:hover {
+  background: var(--steelBlueLt);
+}
+
+.btn-primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn-secondary {
+  background: var(--white);
+  color: var(--carbon);
+  border: 1px solid var(--steelBlue);
+}
+
+.btn-secondary:hover {
+  background: var(--steelBlueVVLt);
+}
+
+.btn-text {
+  background: transparent;
+  color: var(--text-secondary);
+}
+
+.btn-text:hover {
+  background: var(--steelBlueVVLt);
+  color: var(--carbon);
+}
+
+.btn-text:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Mobile */
+@media (max-width: 640px) {
+  .traveler-list-item {
+    padding: 10px 12px;
+  }
+
+  .type-btn {
+    padding: 6px 12px;
+    font-size: 13px;
+  }
+
+  .panel-actions {
+    flex-direction: column;
+  }
+}

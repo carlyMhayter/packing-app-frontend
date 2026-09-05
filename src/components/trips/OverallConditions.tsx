@@ -1,12 +1,15 @@
-import { type TripForecastPublic } from "../../types/trip";
-import WeatherIcon from "../basic/weatherIcons";
+import { type ForecastTripPublic } from "../../types/forecasts";
 import { aggregateConditions } from "../../utils/weatherCodes";
+
+function WeatherIcon({ condition }: { condition: string }) {
+  return <span>{condition}</span>;
+}
 import "./styles/weatherCards.css";
 
 export default function OverallConditions({
   forecastTrip,
 }: {
-  forecastTrip: TripForecastPublic;
+  forecastTrip: ForecastTripPublic;
 }) {
   const {
     day_conditions,

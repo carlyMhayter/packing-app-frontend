@@ -9,20 +9,10 @@
   align-items: center;
   justify-content: center;
   padding: 24px;
-  animation: modal-fade-in 0.2s ease;
 }
 
 .modal-overlay-dark {
   background: rgba(25, 25, 25, 0.55);
-}
-
-@keyframes modal-fade-in {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
 }
 
 .modal-content {
@@ -36,7 +26,6 @@
   display: flex;
   flex-direction: column;
   gap: 20px;
-  animation: modal-scale-in 0.2s ease;
 }
 
 .modal-scrollable {
@@ -44,17 +33,6 @@
   max-height: 80vh;
   padding: 0;
   overflow: hidden;
-}
-
-@keyframes modal-scale-in {
-  from {
-    opacity: 0;
-    transform: scale(0.95);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
 }
 
 .modal-header {
@@ -107,24 +85,157 @@
   min-height: 0;
 }
 
-/* ── Slide Panels (generic, supports any number of panels) ── */
+/* ── Wizard / Fade Sections ── */
 
-.modal-slide-container {
-  overflow: hidden;
-  overflow-y: scroll;
-  width: 100%;
+.modal-wizard-section {
+  animation: modal-section-fade-in 0.25s ease-out;
 }
 
-.modal-slide-track {
-  display: flex;
-  transition: transform 0.35s cubic-bezier(0.25, 0.1, 0.25, 1);
+@keyframes modal-section-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-.modal-slide-panel {
-  flex: 0 0 100%;
-  width: 100%;
+/* Back button for drill-down flows */
+.modal-back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: none;
+  border: none;
+  color: var(--steelBlue);
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  padding: 4px 0;
+  margin-bottom: 8px;
+  transition: color 0.2s ease;
+}
+
+.modal-back-btn:hover {
+  color: var(--mahogany);
+}
+
+/* Wizard step indicator */
+.modal-wizard-steps {
   display: flex;
-  flex-direction: column;
-  gap: 24px;
-  box-sizing: border-box;
+  align-items: center;
+  gap: 8px;
+  padding: 0 28px;
+  margin-top: 8px;
+}
+
+.modal-wizard-step {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--steelBlue);
+  opacity: 0.3;
+  transition: opacity 0.2s ease;
+}
+
+.modal-wizard-step.active {
+  opacity: 1;
+  background: var(--mahogany);
+}
+
+/* Modal footer for actions */
+.modal-footer {
+  display: flex;
+  gap: 12px;
+  padding: 0 28px 28px;
+  margin-top: auto;
+}
+
+.modal-footer .btn-main,
+.modal-footer .btn-text {
+  flex: 1;
+}
+
+/* Error banner */
+.modal-error {
+  padding: 12px 16px;
+  background: var(--error-bg, #fee2e2);
+  color: var(--error-color, #991b1b);
+  border-radius: 8px;
+  font-size: 14px;
+  margin: 0 28px;
+}
+
+/* Animations (respect prefers-reduced-motion) */
+@media (prefers-reduced-motion: no-preference) {
+  .modal-overlay {
+    animation: modal-fade-in 0.2s ease;
+  }
+
+  .modal-content {
+    animation: modal-scale-in 0.2s ease;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .modal-wizard-section {
+    animation: none;
+  }
+}
+
+@keyframes modal-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes modal-scale-in {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Mobile responsiveness */
+@media (max-width: 640px) {
+  .modal-overlay {
+    padding: 0;
+    align-items: flex-end;
+  }
+
+  .modal-content {
+    border-radius: 12px 12px 0 0;
+    max-height: 90vh;
+    max-width: 100%;
+    padding: 20px 0 0;
+  }
+
+  .modal-header {
+    padding: 20px 20px 0;
+  }
+
+  .modal-body {
+    padding: 12px 20px 20px;
+  }
+
+  .modal-footer {
+    padding: 0 20px 20px;
+  }
+
+  .modal-wizard-steps {
+    padding: 0 20px;
+  }
+
+  .modal-error {
+    margin: 0 20px;
+  }
 }

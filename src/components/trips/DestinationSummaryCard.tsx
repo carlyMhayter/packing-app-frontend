@@ -1,6 +1,5 @@
 import { useState } from "react";
 import "./styles/destinationSummary.css";
-import WeatherIcon from "../../assets/icons/WeatherIcons";
 import type { DestinationPublic } from "../../types/destinations";
 interface DestinationSummaryCardProps {
   destination: DestinationPublic;

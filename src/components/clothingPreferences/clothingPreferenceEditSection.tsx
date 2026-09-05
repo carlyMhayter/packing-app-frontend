@@ -1,12 +1,23 @@
 import { useEffect, useState } from "react";
-import type { ClothingPref, ClothingPrefsAll } from "../../types/clothingPrefs";
+import type { ClothingPref, ClothingDetail } from "../../types/clothingPrefs";
 import { ClothingPreferenceStandards } from "../../enums/enums";
 import "../traveler/styles/travelerEdit.css";
 import Tooltip from "../basic/tooltip";
+
 type Props = {
   clothingPrefs: ClothingPref | null;
   travelerType: string;
 };
+
+// Only the keys that map to ClothingDetail objects (not arrays)
+type ClothingDetailKey =
+  | "tops"
+  | "bottoms"
+  | "dresses"
+  | "suits"
+  | "outerwear"
+  | "underwear"
+  | "socks";
 
 // Local input types to allow empty strings during editing so that
 // clearing a field does not immediately snap to 0 and introduce a leading zero
@@ -18,10 +29,13 @@ type ClothingDetailInput = {
 };
 
 type ClothingPrefsInput = {
-  [K in keyof ClothingPrefsAll]: ClothingDetailInput;
+  [K in ClothingDetailKey]: ClothingDetailInput;
 };
 
-function ClothingPreferenceEditSection({ clothingPrefs, travelerType }: Props) {
+function ClothingPreferenceEditSection({
+  clothingPrefs,
+  travelerType,
+}: Props) {
   const [localPrefs, setLocalPrefs] = useState<ClothingPrefsInput | null>(null);
 
   useEffect(() => {
@@ -30,13 +44,14 @@ function ClothingPreferenceEditSection({ clothingPrefs, travelerType }: Props) {
         const inputData = {} as ClothingPrefsInput;
 
         (
-          Object.keys(clothingPrefs.preferences) as (keyof ClothingPrefsAll)[]
+          Object.keys(clothingPrefs.preferences) as ClothingDetailKey[]
         ).forEach((key) => {
-          const item = clothingPrefs.preferences[key];
+          const item = clothingPrefs.preferences[key] as ClothingDetail;
+          if (!item || Array.isArray(item)) return;
           inputData[key] = {
-            type: item.type,
-            num_per_day: String(item.num_per_day),
-            rewear_days: key === "underwear" ? "0" : String(item.rewear_days),
+            type: item.type ?? key,
+            num_per_day: String(item.num_per_day ?? 1),
+            rewear_days: key === "underwear" ? "0" : String(item.rewear_days ?? 1),
           };
         });
 
@@ -52,10 +67,10 @@ function ClothingPreferenceEditSection({ clothingPrefs, travelerType }: Props) {
     return <>Loading...</>;
   }
 
-  const prefKeys = Object.keys(localPrefs) as (keyof ClothingPrefsInput)[];
+  const prefKeys = Object.keys(localPrefs) as ClothingDetailKey[];
 
   const handleInputChange = (
-    key: keyof ClothingPrefsInput,
+    key: ClothingDetailKey,
     field: keyof ClothingDetailInput,
     value: string,
   ) => {
@@ -80,11 +95,12 @@ function ClothingPreferenceEditSection({ clothingPrefs, travelerType }: Props) {
 
     const resetData = {} as ClothingPrefsInput;
     (Object.keys(standard) as (keyof typeof standard)[]).forEach((key) => {
-      const item = standard[key];
-      resetData[key as keyof ClothingPrefsInput] = {
-        type: item.type,
-        num_per_day: String(item.num_per_day),
-        rewear_days: key === "underwear" ? "0" : String(item.rewear_days),
+      const item = standard[key] as ClothingDetail;
+      if (!item || Array.isArray(item)) return;
+      resetData[key as ClothingDetailKey] = {
+        type: item.type ?? key,
+        num_per_day: String(item.num_per_day ?? 1),
+        rewear_days: key === "underwear" ? "0" : String(item.rewear_days ?? 1),
       };
     });
 

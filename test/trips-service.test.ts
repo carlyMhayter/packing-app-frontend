@@ -12,19 +12,19 @@ const fixture: TripPublic = {
   destinations: [
     {
       id: 1,
-      name: "Paris",
       label: "Starting Destination",
       arrival_date: "2026-06-15",
       departure_date: "2026-06-22",
-      nights: 7,
       has_laundry: false,
       order: 0,
+      created_at: "2026-01-01T00:00:00Z",
+      updated_at: "2026-01-15T00:00:00Z",
     },
   ],
-  forecastTrip: {
+  forecast_trip: {
     id: 1,
     trip_id: 1,
-    cached_at: "2026-06-14T00:00:00Z",
+    cached_at: new Date("2026-06-14T00:00:00Z"),
     day_conditions: {
       conditions: { sunny: 6, partly_cloudy: 2 },
       total_hours: 8,
@@ -41,8 +41,8 @@ const fixture: TripPublic = {
 describe("mapTripPublicToDetail", () => {
   const result = mapTripPublicToDetail(fixture);
 
-  it("maps trip.id to string", () => {
-    expect(result.trip.id).to.equal("1");
+  it("maps trip.id to number", () => {
+    expect(result.trip.id).to.equal(1);
   });
 
   it("maps trip.name", () => {
@@ -93,9 +93,9 @@ describe("mapTripPublicToDetail", () => {
     expect(result.destinations[0].name).to.equal("Paris");
   });
 
-  it("maps destination.arrival_date and departureDate", () => {
+  it("maps destination.arrival_date and departure_date", () => {
     expect(result.destinations[0].arrival_date).to.equal("2026-06-15");
-    expect(result.destinations[0].departureDate).to.equal("2026-06-22");
+    expect(result.destinations[0].departure_date).to.equal("2026-06-22");
   });
 
   it("initializes travelers as empty array", () => {

@@ -1,34 +1,74 @@
-import { type Traveler } from "../../types/trip";
+import { useState } from "react";
 import "./styles/travelerSummary.css";
+import { useAppDispatch, useAppSelector } from "../../hooks/reduxHooks.ts";
+import { selectError } from "../../state/travelerSlice.ts";
+import { selectTripTravelers, loadTripThunk } from "../../state/tripSlice.tsx";
+import { selectCurrentUser } from "../../state/appSlice.ts";
+import { TravelerType, TemperatureUnit } from "../../enums/enums.ts";
+import type { TravelerCreateDraft } from "../../types/travelers.ts";
+import AddTravelerModal from "./AddTravelerModal/AddTravelerModal";
+
+const DEFAULT_TEMPS_F = { cold: 32, cool: 55, warm: 75, hot: 90 };
+
+const defaultDraft: TravelerCreateDraft = {
+  name: "",
+  traveler_type: TravelerType.ADULT,
+  temp_unit: TemperatureUnit.FAHRENHEIT,
+  temps: { ...DEFAULT_TEMPS_F },
+};
 
 interface TravelersSectionProps {
-  travelers: Traveler[];
-  onAddTraveler: () => void;
+  tripId: number;
 }
 
-export default function TravelersSection({
-  travelers,
-  onAddTraveler,
-}: TravelersSectionProps) {
+export default function TravelersSection({ tripId }: TravelersSectionProps) {
+  const dispatch = useAppDispatch();
+  const error = useAppSelector(selectError);
+  const travelers = useAppSelector(selectTripTravelers);
+  const user = useAppSelector(selectCurrentUser);
+  const [showAddModal, setShowAddModal] = useState(false);
+  const [newTravelerDraft, setNewTravelerDraft] =
+    useState<TravelerCreateDraft>(defaultDraft);
+
+  const existingTravelerIds = travelers?.map((t) => t.id) ?? [];
+  const userId = user?.id ?? 0;
+
+  const handleTravelerAdded = () => {
+    // Refresh trip data to show the new traveler
+    if (tripId && userId) {
+      dispatch(loadTripThunk({ trip_id: tripId, user_id: userId }));
+    }
+  };
+
+  const handleOpenModal = () => {
+    // Reset draft to defaults every time modal opens
+    setNewTravelerDraft(defaultDraft);
+    setShowAddModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setShowAddModal(false);
+  };
+
+  const handleDraftChange = (updates: Partial<TravelerCreateDraft>) => {
+    setNewTravelerDraft((prev) => ({ ...prev, ...updates }));
+  };
+
+  if (error) {
+    return <>{error}</>;
+  }
+
   return (
     <div className="travelers-section">
       <h2 className="travelers-heading">Who is going on this trip?</h2>
 
-      {travelers.length > 0 && (
+      {travelers && (
         <div className="travelers-list">
           {travelers.map((traveler) => (
             <div key={traveler.id} className="traveler-chip">
-              {traveler.avatar ? (
-                <img
-                  src={traveler.avatar}
-                  alt={traveler.name}
-                  className="traveler-avatar"
-                />
-              ) : (
-                <div className="traveler-avatar-placeholder">
-                  {traveler.name.charAt(0).toUpperCase()}
-                </div>
-              )}
+              <div className="traveler-avatar-placeholder">
+                {traveler.name.charAt(0).toUpperCase()}
+              </div>
               <span className="traveler-name">{traveler.name}</span>
             </div>
           ))}
@@ -37,7 +77,7 @@ export default function TravelersSection({
 
       <button
         className="add-traveler-btn"
-        onClick={onAddTraveler}
+        onClick={handleOpenModal}
         type="button"
       >
         <div className="add-traveler-icon">
@@ -56,6 +96,17 @@ export default function TravelersSection({
         </div>
         <span className="add-traveler-label">Add Traveler</span>
       </button>
+
+      <AddTravelerModal
+        open={showAddModal}
+        onClose={handleCloseModal}
+        tripId={tripId}
+        userId={userId}
+        existingTravelerIds={existingTravelerIds}
+        draft={newTravelerDraft}
+        onDraftChange={handleDraftChange}
+        onTravelerAdded={handleTravelerAdded}
+      />
     </div>
   );
 }

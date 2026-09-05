@@ -7,7 +7,7 @@ const USE_MOCKS = import.meta.env.VITE_USE_MOCKS === "true";
 export const listRoutines = async (
   userId: number,
   limit?: number,
-): Promise<Routine[]> => {
+): Promise<RoutinePublic[]> => {
   try {
     const url =
       limit !== undefined
@@ -16,7 +16,7 @@ export const listRoutines = async (
     const res = await api.request(url);
     if (!res.ok) throw new Error("Failed to fetch routines");
     const data: unknown = await res.json();
-    return data as Routine[];
+    return data as RoutinePublic[];
   } catch (err) {
     if (USE_MOCKS) {
       console.warn("[MOCK] listRoutines:", err);

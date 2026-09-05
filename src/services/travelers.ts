@@ -1,5 +1,5 @@
 import { api } from "./api";
-import { type TravelerPublic } from "../types/traveler";
+import { type TravelerPublic } from "../types/travelers";
 
 export const listTravelers = async (
   userId: number,

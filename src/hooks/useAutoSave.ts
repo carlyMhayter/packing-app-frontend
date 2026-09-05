@@ -1,5 +1,5 @@
 import { useEffect, useState, useCallback, useRef } from "react";
-import { type SaveStatus, type UseAutoSaveResult } from "../types/forms";
+import { type SaveStatus, type UseAutoSaveResult } from "../types/forms/forms";
 
 export function useAutoSave<T>(
   draft: T | null,

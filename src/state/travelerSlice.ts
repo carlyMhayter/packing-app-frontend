@@ -4,7 +4,7 @@ import { TemperatureUnit } from "../enums/enums.ts";
 import {
   type TravelerPublicState,
   type TravelerPublic,
-} from "../types/traveler.ts";
+} from "../types/travelers.ts";
 import { getTravelerById, updateTraveler } from "../services/travelers.ts";
 
 export const fetchTravelerThunk = createAsyncThunk(

@@ -23,36 +23,42 @@ function toWeatherConditions(strs: string[]): WeatherCondition[] {
 }
 
 export function mapTripPublicToDetail(trip: TripPublic): TripDetailData {
+  const forecastTrip = trip.forecast_trip;
+
   const destinations: DestinationSummary[] = trip.destinations.map((dest) => {
-    const forecast = trip.forecastTrip.forecast_destinations.find(
+    const forecast = forecastTrip?.forecast_destinations.find(
       (f) => f.destination_id === dest.id,
     );
     return {
       id: String(dest.id),
-      name: dest.name,
-      location: dest.address?.full_name ?? dest.name,
+      name: dest.label,
+      location: dest.address?.full_name ?? dest.label,
       arrival_date: dest.arrival_date,
-      departureDate: dest.departure_date,
+      departure_date: dest.departure_date,
       dayWeather: {
-        highTemp: forecast?.day_high ?? trip.forecastTrip.day_high,
-        lowTemp: forecast?.day_low ?? trip.forecastTrip.day_low,
+        highTemp: forecast?.day_high ?? forecastTrip?.day_high ?? 0,
+        lowTemp: forecast?.day_low ?? forecastTrip?.day_low ?? 0,
         conditions: toWeatherConditions(
           forecast
             ? Object.keys(forecast.day_conditions.conditions)
-            : Object.keys(trip.forecastTrip.day_conditions.conditions),
+            : forecastTrip
+              ? Object.keys(forecastTrip.day_conditions.conditions)
+              : [],
         ),
       },
       nightWeather: {
-        highTemp: forecast?.night_high ?? trip.forecastTrip.night_high,
-        lowTemp: forecast?.night_low ?? trip.forecastTrip.night_low,
+        highTemp: forecast?.night_high ?? forecastTrip?.night_high ?? 0,
+        lowTemp: forecast?.night_low ?? forecastTrip?.night_low ?? 0,
         conditions: toWeatherConditions(
           forecast
             ? Object.keys(forecast.night_conditions.conditions)
-            : Object.keys(trip.forecastTrip.night_conditions.conditions),
+            : forecastTrip
+              ? Object.keys(forecastTrip.night_conditions.conditions)
+              : [],
         ),
       },
-      sunrise: forecast?.sunrise ?? "",
-      sunset: forecast?.sunset ?? "",
+      sunrise: "",
+      sunset: "",
       dailyWeather: [],
     };
   });
@@ -61,7 +67,7 @@ export function mapTripPublicToDetail(trip: TripPublic): TripDetailData {
 
   return {
     trip: {
-      id: String(trip.id),
+      id: trip.id,
       name: trip.name,
       start_date: trip.arrival_date,
       end_date: trip.departure_date,
@@ -69,17 +75,21 @@ export function mapTripPublicToDetail(trip: TripPublic): TripDetailData {
       created_at: trip.created_at,
     },
     overallDayWeather: {
-      highTemp: trip.forecastTrip.day_high,
-      lowTemp: trip.forecastTrip.day_low,
+      highTemp: forecastTrip?.day_high ?? 0,
+      lowTemp: forecastTrip?.day_low ?? 0,
       conditions: toWeatherConditions(
-        Object.keys(trip.forecastTrip.day_conditions.conditions),
+        forecastTrip
+          ? Object.keys(forecastTrip.day_conditions.conditions)
+          : [],
       ),
     },
     overallNightWeather: {
-      highTemp: trip.forecastTrip.night_high,
-      lowTemp: trip.forecastTrip.night_low,
+      highTemp: forecastTrip?.night_high ?? 0,
+      lowTemp: forecastTrip?.night_low ?? 0,
       conditions: toWeatherConditions(
-        Object.keys(trip.forecastTrip.night_conditions.conditions),
+        forecastTrip
+          ? Object.keys(forecastTrip.night_conditions.conditions)
+          : [],
       ),
     },
     destinations,

@@ -1,7 +1,7 @@
 import { useState } from "react";
-import RoutineEditSlidePanel from "../../../routines/modals/editRoutine/RoutineEditSlidePanel";
-import SlideModal from "../../../modals/modal/SlideModal";
-import ModalSlidePanel from "../../../modals/modal/ModalSlidePanel";
+import Modal from "../../../modals/modal/Modal";
+import RoutineEditSection from "../../../routines/modals/editRoutine/RoutineEditSection";
+import TravelerEditSlidePanel from "./TravelerEditSlidePanel";
 import { createTraveler, updateTraveler } from "../../../../services/travelers";
 import { createRoutine, updateRoutine } from "../../../../services/routines";
 import { type Traveler } from "../../../../types/traveler";
@@ -27,7 +27,7 @@ export default function TravelerEditModal({
   travelerId,
   onSaved,
 }: TravelerEditModalProps) {
-  const [activePanel, setActivePanel] = useState(0);
+  const [showRoutineEditor, setShowRoutineEditor] = useState(false);
   const [routines, setRoutines] = useState<RoutineItem[]>([
     {
       id: "routine-1",
@@ -62,7 +62,7 @@ export default function TravelerEditModal({
       temperaturePreferences: { ...formData.temperaturePreferences },
       medications: formData.medications,
       routineIds: routines.map((r) => r.id),
-      clothingPreferences: { ...formData.clothingPreferences }, // Assuming you have clothing preferences in formData
+      clothingPreferences: { ...formData.clothingPreferences },
     };
     try {
       const result = travelerId
@@ -75,69 +75,87 @@ export default function TravelerEditModal({
     }
   };
 
-  return (
-    <SlideModal
-      open={open}
-      title={title}
-      onClose={onClose}
-      activePanel={activePanel}
-    >
-      {/* <ModalSlidePanel>
-        {error && <p className="modal-error">{error}</p>}
-        <TravelerEditSlidePanel
-          routines={routines}
-          onRoutinesChange={setRoutines}
-          onNavigateNext={() => {
-            setEditingRoutineId(null);
-            setActivePanel(1);
-          }}
-          onEditRoutine={(id) => {
-            setEditingRoutineId(id);
-            setActivePanel(1);
-          }}
-          onSave={handleSaveTraveler}
-        />
-      </ModalSlidePanel> */}
+  const handleNavigateToRoutineEditor = (routineId?: string) => {
+    setEditingRoutineId(routineId ?? null);
+    setShowRoutineEditor(true);
+    setError(null);
+  };
 
-      <ModalSlidePanel>
-        <RoutineEditSlidePanel
-          onNavigateBack={() => {
-            setEditingRoutineId(null);
-            setActivePanel(0);
-          }}
-          onSave={async (routine) => {
-            setError(null);
-            try {
-              if (editingRoutineId) {
-                const saved = await updateRoutine(editingRoutineId, routine);
-                setRoutines((prev) =>
-                  prev.map((r) =>
-                    r.id === editingRoutineId
-                      ? {
-                          id: editingRoutineId,
-                          name: saved.name,
-                          items: saved.items,
-                        }
-                      : r,
-                  ),
-                );
-              } else {
-                const saved = await createRoutine(routine);
-                setRoutines((prev) => [
-                  ...prev,
-                  { id: saved.id, name: saved.name, items: saved.items },
-                ]);
-              }
-              setEditingRoutineId(null);
-            } catch (err) {
-              setError(
-                err instanceof Error ? err.message : "Failed to save routine",
-              );
-            }
-          }}
-          initialRoutine={routineToEdit}
-        />
-      </ModalSlidePanel>
-    </SlideModal>
+  const handleBackFromRoutineEditor = () => {
+    setShowRoutineEditor(false);
+    setEditingRoutineId(null);
+    setError(null);
+  };
+
+  const handleSaveRoutine = async (routine: { name: string; items: string[] }) => {
+    setError(null);
+    try {
+      if (editingRoutineId) {
+        const saved = await updateRoutine(editingRoutineId, routine);
+        setRoutines((prev) =>
+          prev.map((r) =>
+            r.id === editingRoutineId
+              ? { id: editingRoutineId, name: saved.name, items: saved.items }
+              : r,
+          ),
+        );
+      } else {
+        const saved = await createRoutine(routine);
+        setRoutines((prev) => [
+          ...prev,
+          { id: saved.id, name: saved.name, items: saved.items },
+        ]);
+      }
+      handleBackFromRoutineEditor();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to save routine");
+    }
+  };
+
+  return (
+    <Modal open={open} title={title} onClose={onClose}>
+      {error && <p className="modal-error">{error}</p>}
+
+      {!showRoutineEditor && (
+        <div className="modal-wizard-section">
+          <TravelerEditSlidePanel
+            routines={routines}
+            onRoutinesChange={setRoutines}
+            onNavigateNext={() => handleNavigateToRoutineEditor()}
+            onEditRoutine={(id) => handleNavigateToRoutineEditor(id)}
+            onSave={handleSaveTraveler}
+          />
+        </div>
+      )}
+
+      {showRoutineEditor && (
+        <div className="modal-wizard-section">
+          <button
+            className="modal-back-btn"
+            onClick={handleBackFromRoutineEditor}
+            type="button"
+          >
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              width="18"
+              height="18"
+            >
+              <polyline points="15 18 9 12 15 6" />
+            </svg>
+            Back to Traveler
+          </button>
+          <RoutineEditSection
+            onSave={handleSaveRoutine}
+            onCancel={handleBackFromRoutineEditor}
+            initialRoutine={routineToEdit}
+          />
+        </div>
+      )}
+    </Modal>
   );
 }
