@@ -1,15 +1,7 @@
 import { api } from "./api";
 import { type TripPublic } from "../types/trip";
-import { mockTripDetail, mockTripList } from "../mocks/trips";
-export { mapTripPublicToDetail } from "../utils/tripsMapper";
-import {
-  type TravelerCreate,
-  type TravelerPublic,
-  type TravelerUpdate,
-} from "../types/travelers";
+import { type TravelerCreate, type TravelerPublic } from "../types/travelers";
 import type { Address } from "../types/addresses";
-
-const USE_MOCKS = import.meta.env.VITE_USE_MOCKS === "true";
 
 interface CreateTripDestinationPayload {
   user_id: number;
@@ -33,20 +25,12 @@ export const fetchRecentTrips = async (
   limit: number,
   userId: number,
 ): Promise<TripPublic[]> => {
-  try {
-    const res = await api.request(
-      `/trips?sort_field=updated_at&sort_order=desc&limit=${limit}&user_id=${userId}`,
-    );
-    if (!res.ok) throw new Error("Failed to fetch trips");
-    const data: unknown = await res.json();
-    return data as TripPublic[];
-  } catch (err) {
-    if (USE_MOCKS) {
-      console.warn("[MOCK] fetchRecentTrips:", err);
-      return mockTripList.slice(0, limit);
-    }
-    throw err;
-  }
+  const res = await api.request(
+    `/trips?sort_field=updated_at&sort_order=desc&limit=${limit}&user_id=${userId}`,
+  );
+  if (!res.ok) throw new Error("Failed to fetch trips");
+  const data: unknown = await res.json();
+  return data as TripPublic[];
 };
 
 export const getTripById = async (
@@ -59,7 +43,7 @@ export const getTripById = async (
 
   if (!res.ok) throw new Error(`Failed to fetch trip ${trip_id}`);
   const data: unknown = await res.json();
-  console.log("getTripById data", data);
+  // console.log("getTripById data", data);
 
   return data as TripPublic;
 };
@@ -67,55 +51,31 @@ export const getTripById = async (
 export const createTrip = async (
   payload: CreateTripPayload,
 ): Promise<TripPublic> => {
-  try {
-    const res = await api.request("/trips/create", {
-      method: "POST",
-      body: JSON.stringify(payload),
-    });
-    if (!res.ok) throw new Error("Failed to create trip");
-    const data: unknown = await res.json();
-    return data as TripPublic;
-  } catch (err) {
-    if (USE_MOCKS) {
-      console.warn("[MOCK] createTrip:", err);
-      return { ...mockTripDetail, name: payload.name };
-    }
-    throw err;
-  }
+  const res = await api.request("/trips/create", {
+    method: "POST",
+    body: JSON.stringify(payload),
+  });
+  if (!res.ok) throw new Error("Failed to create trip");
+  const data: unknown = await res.json();
+  return data as TripPublic;
 };
 
 export const updateTrip = async (
   trip_id: string,
   payload: Partial<Pick<TripPublic, "name">>,
 ): Promise<TripPublic> => {
-  try {
-    const res = await api.request(`/trips/${trip_id}`, {
-      method: "PATCH",
-      body: JSON.stringify(payload),
-    });
-    if (!res.ok) throw new Error(`Failed to update trip ${trip_id}`);
-    const data: unknown = await res.json();
-    return data as TripPublic;
-  } catch (err) {
-    if (USE_MOCKS) {
-      console.warn("[MOCK] updateTrip:", err);
-      return { ...mockTripDetail, ...payload };
-    }
-    throw err;
-  }
+  const res = await api.request(`/trips/${trip_id}`, {
+    method: "PATCH",
+    body: JSON.stringify(payload),
+  });
+  if (!res.ok) throw new Error(`Failed to update trip ${trip_id}`);
+  const data: unknown = await res.json();
+  return data as TripPublic;
 };
 
 export const deleteTrip = async (trip_id: string): Promise<void> => {
-  try {
-    const res = await api.request(`/trips/${trip_id}`, { method: "DELETE" });
-    if (!res.ok) throw new Error(`Failed to delete trip ${trip_id}`);
-  } catch (err) {
-    if (USE_MOCKS) {
-      console.warn("[MOCK] deleteTrip:", err);
-      return;
-    }
-    throw err;
-  }
+  const res = await api.request(`/trips/${trip_id}`, { method: "DELETE" });
+  if (!res.ok) throw new Error(`Failed to delete trip ${trip_id}`);
 };
 
 export const fetchTravelersForTrip = async (
@@ -126,7 +86,7 @@ export const fetchTravelersForTrip = async (
   });
   if (!res.ok) throw new Error(`Failed to fetch travelers for trip ${trip_id}`);
   const data = await res.json();
-  console.log("getTravelersForTrip data", data);
+  // console.log("getTravelersForTrip data", data);
 
   return data;
 };

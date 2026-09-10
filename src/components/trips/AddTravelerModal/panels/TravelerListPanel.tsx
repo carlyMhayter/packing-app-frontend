@@ -39,9 +39,16 @@ export default function TravelerListPanel({
   if (travelers.length === 0) {
     return (
       <div className="traveler-list-panel empty-state">
-        <div className="empty-icon">👤</div>
+        <img
+          className="empty-icon"
+          src="/src/assets/platy_square.png"
+          alt="Platypak logo"
+        />
         <h3>No Other Travelers</h3>
-        <p>You don&apos;t have any other travelers! Would you like to make another Traveler Profile?</p>
+        <p>
+          You don&apos;t have any other travelers! Would you like to make
+          another Traveler Profile?
+        </p>
         <button className="btn-primary" onClick={onCreateNew} type="button">
           Create New Traveler
         </button>

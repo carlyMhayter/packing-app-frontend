@@ -1,0 +1,155 @@
+.add-trip-activities {
+  background-color: var(--vanillaCustardLt);
+  padding: 1rem;
+  border-radius: 0.5rem;
+}
+
+.add-trip-activities-header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  color: var(--dustyGrapeVDark);
+}
+
+.add-trip-activities-instructions {
+  color: var(--mahoganyDark);
+}
+
+.category-group {
+  gap: 0.25rem;
+
+  display: flex;
+  flex-wrap: wrap;
+  padding-bottom: 1rem;
+  padding-top: 0.5rem;
+}
+
+.category-button {
+}
+
+.all-other-activities {
+  height: 0px;
+  overflow: hidden;
+  transition: all 0.3s ease-out;
+  opacity: 0;
+}
+
+.show {
+  height: auto;
+  opacity: 1;
+  overflow: auto;
+}
+
+.activity-button {
+  padding: 2px 10px;
+  min-width: fit-content;
+  min-height: 36px;
+  margin: 2px;
+  font-size: 16px;
+}
+
+.selected {
+  background-color: var(--limeCream);
+}
+
+.clear-selections-button {
+  min-width: fit-content;
+  padding: 0.25rem 0.5rem;
+  margin: 2px;
+  background-color: var(--lobsterVLt);
+}
+
+.score-1 {
+  background-color: var(--vanillaCustard);
+}
+.score-2 {
+  background-color: var(--steelBlueVLt);
+}
+.score-3 {
+  background-color: var(--steelBlueDark);
+}
+.score-4 {
+  background-color: var(--limeCream);
+}
+.score-5 {
+  background-color: var(--limeCreamDark);
+}
+.score-6 {
+  background-color: var(--limeCreamVDark);
+}
+.score-7 {
+  background-color: var(--limeCreamVVDark);
+}
+
+.selected-activity {
+  background-color: var(--limeCreamLt);
+  border: 1px solid var(--limeCreamDark);
+}
+
+/* Activity group sections */
+.activity-group-fade-in {
+  animation: activity-group-fade-in 0.3s ease-out;
+  margin-bottom: 16px;
+}
+
+@keyframes activity-group-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.activity-group-header {
+  font-family: var(--heading);
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--mahogany);
+  margin: 12px 0 8px;
+  text-transform: capitalize;
+}
+
+.activity-group-header-unselected {
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.activity-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+/* Activities container with fade-out */
+.unselected-tag-groups {
+  overflow: hidden;
+  transition: all 0.3s ease-out;
+  height: 0;
+}
+.show-all {
+  height: auto;
+}
+
+/* Show all button */
+.show-all-button {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 10;
+  background: transparent;
+  border: none;
+  color: var(--steelBlue);
+  text-decoration: underline;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 500;
+  padding: 4px 8px;
+  transition: color 0.2s ease;
+}
+
+.show-all-button:hover {
+  color: var(--mahogany);
+}

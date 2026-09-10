@@ -1,9 +1,7 @@
-import { type WeatherData, type WeatherCondition } from "./weather";
 import type { DestinationPublic, DestinationSummary } from "./destinations";
 import type { ForecastTripPublic } from "./forecasts";
 import type { TravelerPublic, TravelerBase } from "./travelers";
 
-export type { WeatherCondition };
 export type { Traveler } from "./travelers";
 
 // Re-export destination types for backward compatibility
@@ -23,17 +21,6 @@ export interface Trip {
 
 export interface TripCreate extends Trip {
   destinations: DestinationPublic[];
-}
-
-export interface TripDetailData {
-  trip: TripSimple & {
-    start_date?: string;
-    end_date?: string;
-  };
-  overallDayWeather: WeatherData;
-  overallNightWeather: WeatherData;
-  destinations: DestinationSummary[];
-  travelers: TravelerBase[];
 }
 
 export interface TripPublic {
@@ -67,7 +54,7 @@ export interface TripCreateResponse {
 export interface TripPublicState {
   isLoading: boolean;
   error: string | null;
-  forecastTrip?: ForecastTripPublic | null;
+  forecast_trip?: ForecastTripPublic | null;
   id: number;
   name?: string | null;
   updated_at?: string | null;

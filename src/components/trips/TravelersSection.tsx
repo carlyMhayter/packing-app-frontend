@@ -7,14 +7,13 @@ import { selectCurrentUser } from "../../state/appSlice.ts";
 import { TravelerType, TemperatureUnit } from "../../enums/enums.ts";
 import type { TravelerCreateDraft } from "../../types/travelers.ts";
 import AddTravelerModal from "./AddTravelerModal/AddTravelerModal";
-
-const DEFAULT_TEMPS_F = { cold: 32, cool: 55, warm: 75, hot: 90 };
+import { TempPrefStandards } from "../../enums/enums.ts";
 
 const defaultDraft: TravelerCreateDraft = {
   name: "",
   traveler_type: TravelerType.ADULT,
   temp_unit: TemperatureUnit.FAHRENHEIT,
-  temps: { ...DEFAULT_TEMPS_F },
+  temps: { ...TempPrefStandards },
 };
 
 interface TravelersSectionProps {
@@ -30,7 +29,6 @@ export default function TravelersSection({ tripId }: TravelersSectionProps) {
   const [newTravelerDraft, setNewTravelerDraft] =
     useState<TravelerCreateDraft>(defaultDraft);
 
-  const existingTravelerIds = travelers?.map((t) => t.id) ?? [];
   const userId = user?.id ?? 0;
 
   const handleTravelerAdded = () => {
@@ -60,21 +58,21 @@ export default function TravelersSection({ tripId }: TravelersSectionProps) {
 
   return (
     <div className="travelers-section">
-      <h2 className="travelers-heading">Who is going on this trip?</h2>
-
-      {travelers && (
-        <div className="travelers-list">
-          {travelers.map((traveler) => (
-            <div key={traveler.id} className="traveler-chip">
-              <div className="traveler-avatar-placeholder">
-                {traveler.name.charAt(0).toUpperCase()}
+      <h2 className="travelers-heading">Who is going on this trip?</h2>{" "}
+      <div className="attending-travelers">
+        {travelers && (
+          <div className="travelers-list">
+            {travelers.map((traveler) => (
+              <div key={traveler.id} className="traveler-chip">
+                <div className="traveler-avatar-placeholder">
+                  {traveler.name.charAt(0).toUpperCase()}
+                </div>
+                <span className="traveler-name">{traveler.name}</span>
               </div>
-              <span className="traveler-name">{traveler.name}</span>
-            </div>
-          ))}
-        </div>
-      )}
-
+            ))}
+          </div>
+        )}
+      </div>
       <button
         className="add-traveler-btn"
         onClick={handleOpenModal}
@@ -94,15 +92,14 @@ export default function TravelersSection({ tripId }: TravelersSectionProps) {
             <line x1="5" y1="12" x2="19" y2="12" />
           </svg>
         </div>
-        <span className="add-traveler-label">Add Traveler</span>
+        <span className="add-traveler-label">Add More Travelers</span>
       </button>
-
       <AddTravelerModal
         open={showAddModal}
         onClose={handleCloseModal}
         tripId={tripId}
         userId={userId}
-        existingTravelerIds={existingTravelerIds}
+        travelers={travelers ? travelers : []}
         draft={newTravelerDraft}
         onDraftChange={handleDraftChange}
         onTravelerAdded={handleTravelerAdded}

@@ -27,13 +27,5 @@ export function aggregateConditions(
     hoursByCondition.set(conditionName, current + entry[1]);
   });
 
-  //   for (const [codeStr, hours] of entries) {
-  //     console.log("2");
-
-  //     const conditionName = getWeatherCondition(Number(codeStr));
-  //     const current = hoursByCondition.get(conditionName) ?? 0;
-  //     hoursByCondition.set(conditionName, current + hours);
-  //   }
-
   return Array.from(hoursByCondition.entries());
 }

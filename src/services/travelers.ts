@@ -3,12 +3,9 @@ import { type TravelerPublic } from "../types/travelers";
 
 export const listTravelers = async (
   userId: number,
-  limit?: number,
 ): Promise<TravelerPublic[]> => {
-  const url =
-    limit !== undefined
-      ? `/travelers?user_id=${userId}&limit=${limit}`
-      : `/travelers?user_id=${userId}`;
+  const url = `/user/${userId}/travelers`;
+
   const res = await api.request(url);
   if (!res.ok) throw new Error("Failed to fetch travelers");
   const data: unknown = await res.json();

@@ -1,43 +1,10 @@
-import { type ConditionsMap } from "./weather";
-
-export interface ForecastDaySchema {
-  date: string;
-  day_high: number;
-  day_low: number;
-  day_conditions: ConditionsMap;
-  night_high: number;
-  night_low: number;
-  night_conditions: ConditionsMap;
-  sunrise: string;
-  sunset: string;
+export interface Conditions {
+  [condition: string]: number;
 }
-
-export interface ForecastDestinationSchema {
-  destination_id: number;
-  start_date: string;
-  end_date: string;
-  forecast_days: ForecastDaySchema[];
-  day_high: number;
-  day_low: number;
-  night_high: number;
-  night_low: number;
-  day_conditions: ConditionsMap;
-  night_conditions: ConditionsMap;
-  sunrise: string;
-  sunset: string;
+export interface ConditionsSummary {
+  conditions: Conditions[];
+  total_hours: number;
 }
-
-export interface ForecastTripSchema {
-  trip_id?: number;
-  forecast_destinations: ForecastDestinationSchema[];
-  day_high: number;
-  day_low: number;
-  night_high: number;
-  night_low: number;
-  day_conditions: ConditionsMap;
-  night_conditions: ConditionsMap;
-}
-
 export interface ForecastDestinationPublic {
   id: number;
   destination_id: number;
@@ -48,8 +15,8 @@ export interface ForecastDestinationPublic {
   day_low: number;
   night_high: number;
   night_low: number;
-  day_conditions: ConditionsMap;
-  night_conditions: ConditionsMap;
+  day_conditions: ConditionsSummary;
+  night_conditions: ConditionsSummary;
   cached_at: Date;
 }
 
@@ -58,10 +25,10 @@ export interface ForecastDayPublic {
   date: string;
   day_high: number;
   day_low: number;
-  day_conditions: ConditionsMap;
+  day_conditions: ConditionsSummary;
   night_high: number;
   night_low: number;
-  night_conditions: ConditionsMap;
+  night_conditions: ConditionsSummary;
   cached_at: Date;
 }
 
@@ -73,7 +40,7 @@ export interface ForecastTripPublic {
   day_low: number;
   night_high: number;
   night_low: number;
-  day_conditions: ConditionsMap;
-  night_conditions: ConditionsMap;
+  day_conditions: ConditionsSummary;
+  night_conditions: ConditionsSummary;
   cached_at: Date;
 }

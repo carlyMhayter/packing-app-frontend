@@ -1,12 +1,16 @@
 import { useState } from "react";
 import "./styles/destinationSummary.css";
 import type { DestinationPublic } from "../../types/destinations";
+import type { ForecastDestinationPublic } from "../../types/forecasts";
+
 interface DestinationSummaryCardProps {
   destination: DestinationPublic;
+  forecast: ForecastDestinationPublic | null;
 }
 
 export default function DestinationSummaryCard({
   destination,
+  forecast,
 }: DestinationSummaryCardProps) {
   const [expanded, setExpanded] = useState(false);
 
@@ -19,23 +23,29 @@ export default function DestinationSummaryCard({
           <h3 className="destination-summary-name">
             Destination {destination.order}: {destination.label}
           </h3>
-          {/* <p className="destination-summary-location">{destination.location}</p> */}
+          <p className="destination-summary-location">
+            {destination?.address?.full_name}
+          </p>
         </div>
 
         <div className="destination-summary-weather">
           <div className="destination-weather-block">
             <span className="destination-weather-label">Day</span>
             <div className="destination-weather-temps">
-              {/* <span>Hi {destination.dayWeather.highTemp}&deg;F</span>
-              <span>Low {destination.dayWeather.lowTemp}&deg;F</span> */}
+              {forecast?.day_high && <span>Hi {forecast.day_high}&deg;F</span>}
+              {forecast?.day_low && <span>Low {forecast.day_low}&deg;F</span>}
             </div>
           </div>
 
           <div className="destination-weather-block">
             <span className="destination-weather-label">Night</span>
             <div className="destination-weather-temps">
-              {/* <span>Hi {destination.nightWeather.highTemp}&deg;F</span>
-              <span>Low {destination.nightWeather.lowTemp}&deg;F</span> */}
+              {forecast?.night_high && (
+                <span>Hi {forecast.night_high}&deg;F</span>
+              )}
+              {forecast?.night_low && (
+                <span>Low {forecast.night_low}&deg;F</span>
+              )}
             </div>
           </div>
         </div>

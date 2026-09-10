@@ -4,54 +4,74 @@
   --carbon: #191919;
   --white: #fff;
 
-  --lobsterVLt: #fcf1f1;
-  --lobsterLt: #ffe3e1;
-  --lobsterMed: #f9c0bc;
+  --lobsterVVLt: #fcf1f1;
+  --lobsterVLt: #ffe3e1;
+  --lobsterLt: #f9c0bc;
   --lobster: #d14f46;
   --lobsterDark: #ac3b33;
-  --lobsterDarker: rgb(128, 35, 29);
+  --lobsterVDark: #80231d;
+  --lobsterVVDark: #6c1c16;
 
   --mahoganyVLt: #432323;
   --mahoganyLt: #441717;
   --mahogany: #4b0d0d;
   --mahoganyDark: #280000;
-  --mahoganyDarker: #1a0000;
+  --mahoganyVDark: #1a0000;
 
   --dustyGrapeVVLt: #f7f6fa;
-  --dustyGrapeVLt: #e8e7f2;
-  --dustyGrapeLt: #c9c7d8;
-  --dustyGrape: #4b4e6d;
-  --dustyGrapeDark: #2e3045;
-  --dustyGrapeDarker: #1a1c2b;
+  --dustyGrapeVLt: #dddce8;
+  --dustyGrapeLt: #bab8c7;
+  --dustyGrape: #a29fb3;
+  --dustyGrapeDark: #858299;
+  --dustyGrapeVDark: #65627a;
 
-  --steelBlueVVLt: #f4fcff;
-  --steelBlueVLt: #e0f0f4;
-  --steelBlueLt: #cadde3;
-  --steelBlue: #b5ccd3;
-  --steelBlueDark: #748b91;
-  --steelBlueDarker: #4a5e63;
+  --steelBlueVVLt: #f4f8ff;
+  --steelBlueVLt: #eaf1fc;
+  --steelBlueLt: #deeafd;
+  --steelBlue: #d6e4fa;
+  --steelBlueDark: #c5dafc;
+  --steelBlueVDark: #b8cef4;
+  --steelBlueVVDark: #92aad3;
 
   --oceanBlueVVLt: #dffffb;
   --oceanBlueVLt: #cdf5f1;
   --oceanBlueLt: #bae5e3;
   --oceanBlue: #a4d0ce;
   --oceanBlueDark: #87b1ae;
-  --oceanBlueDarker: #65918d;
+  --oceanBlueVDark: #65918d;
+  --oceanBlueVVVDark: #4a7a6b;
 
-  --limeCreamVVLt: rgb(255, 255, 241);
-  --limeCreamVLt: #edefd2;
-  --limeCreamLt: #ecf3a6;
-  --limeCream: #ebf38b;
-  --limeCreamMed: #c2c96b;
-  --limeCreamDark: #99a03e;
-  --limeCreamDarker: #646923;
+  --limeCreamVVLt: #f2fff8;
+  --limeCreamVLt: #e9fef3;
+  --limeCreamLt: #e3fff0;
+  --limeCream: #d7fee9;
+  --limeCreamDark: #baefd3;
+  --limeCreamVDark: #aae2c4;
+  --limeCreamVVDark: #8cbca2;
 
-  --vanillaCustardVVLt: #fffdf1;
-  --vanillaCustardVLt: #fffced;
-  --vanillaCustardLt: #fff8d5;
-  --vanillaCustard: #f1e8b8;
-  --vanillaCustardDark: #d1c17a;
-  --vanillaCustardDarker: #a38c4d;
+  --vanillaCustardVVLt: #fffef6;
+  --vanillaCustardVLt: #fefcf4;
+  --vanillaCustardLt: #f9f7ed;
+  --vanillaCustard: #fbf7e4;
+  --vanillaCustardDark: #efebda;
+  --vanillaCustardVDark: #f1ead5;
+  --vanillaCustardVVDark: #a0946f;
+
+  --lemonVVLt: rgb(255, 255, 225);
+  --lemonVLt: #ffffbd;
+  --lemonLt: #ffffa3;
+  --lemon: #ffff8d;
+  --lemonDark: #fef849;
+  --lemonVDark: #feef49;
+  --lemonVVDark: #7c660f;
+
+  --lavenderVVLt: #f7f6ff;
+  --lavenderVLt: #f1f0ff;
+  --lavenderLt: #e6e5ff;
+  --lavender: #dbd8ff;
+  --lavenderDark: #d2d0ff;
+  --lavenderVDark: #bebbf6;
+  --lavenderVVDark: #484671;
 
   --wineRed:
     #501b1b --shadow: rgba(0, 0, 0, 0.1) 0 10px 15px -3px,
@@ -219,6 +239,34 @@ code {
 
 .btn-text:hover {
   background: var(--ltMahogany);
+}
+
+.sci-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+  color: var(--lobster);
+  background: rgba(209, 79, 70, 0.06);
+  border: 1.5px solid var(--lobster);
+  border-radius: 4px;
+  padding: 5px 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.sci-btn:hover {
+  background: var(--lobster);
+  color: var(--white);
+}
+
+.sci-btn:active {
+  transform: scale(0.97);
 }
 
 /* ── Form utilities ── */

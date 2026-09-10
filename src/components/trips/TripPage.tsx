@@ -11,9 +11,11 @@ import {
 import TripSummary from "./TripSummary";
 import DestinationSummaryCard from "./DestinationSummaryCard";
 import TravelersSection from "./TravelersSection";
-
+import AddTripActivities from "./AddTripActivities";
 import "./styles/tripDetail.css";
 import LoadingDots from "../basic/loading";
+import destinations from "../../services/destinations";
+import type { DestinationPublic } from "../../types/destinations";
 
 export default function TripPage() {
   const { trip_id } = useParams<{ trip_id: string }>();
@@ -52,23 +54,30 @@ export default function TripPage() {
     <div className="trip-detail-page">
       <TripSummary
         name={trip.name ?? ""}
-        arrival_date={trip.arrival_date}
-        departure_date={trip.departure_date}
-        updated_at={trip.updated_at}
-        created_at={trip.created_at}
+        arrival_date={trip.destinations?.[0]?.arrival_date ?? trip.arrival_date}
+        departure_date={
+          trip.destinations?.[destinations.length]?.departure_date ??
+          trip.departure_date
+        }
+        trip={trip}
       />
       <TravelersSection tripId={trip_id ? Number(trip_id) : 0} />
-
+      <AddTripActivities />
       <div className="destinations-section">
         <h2 className="section-title">Destinations</h2>
         <div className="destinations-list">
           {trip.destinations &&
-            trip.destinations.map((destination) => (
-              <DestinationSummaryCard
-                key={destination.id}
-                destination={destination}
-              />
-            ))}
+            trip.destinations.map(
+              (destination: DestinationPublic, index: number) => (
+                <DestinationSummaryCard
+                  key={destination.id}
+                  destination={destination}
+                  forecast={
+                    trip?.forecast_trip?.forecast_destinations[index] || null
+                  }
+                />
+              ),
+            )}
         </div>
       </div>
     </div>

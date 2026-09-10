@@ -481,9 +481,9 @@
 }
 
 .destination-laundry-btn.selected {
-  background: var(--limeCreamMed);
+  background: var(--limeCream);
   color: var(--carbon);
-  border-color: var(--limeCreamMed);
+  border-color: var(--limeCream);
 }
 
 /* Drag & drop */

@@ -38,6 +38,8 @@ export interface ClothingPref {
   traveler_id?: number;
   trip_traveler_id?: number;
   is_master_from_template: boolean;
+  change_for_lounge: boolean;
+  change_for_sleep: boolean;
 }
 
 export interface ClothingPrefCreate extends ClothingPref {

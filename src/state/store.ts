@@ -4,6 +4,7 @@ import travelerReducer from "./travelerSlice.ts";
 import tripReducer from "./tripSlice.tsx";
 import routineReducer from "./routineSlice.ts";
 import clothingPrefReducer from "./clothingPrefSlice.ts";
+import activitiesReducer from "./activitySlice.tsx";
 
 const store = configureStore({
   reducer: {
@@ -12,6 +13,7 @@ const store = configureStore({
     trip: tripReducer,
     routine: routineReducer,
     clothingPref: clothingPrefReducer,
+    activities: activitiesReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

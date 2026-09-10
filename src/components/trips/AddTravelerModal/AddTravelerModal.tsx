@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import Modal from "../../modals/modal/Modal";
 import TravelerListPanel from "./panels/TravelerListPanel";
 import TravelerCreatePanel from "./panels/TravelerCreatePanel";
@@ -15,7 +15,7 @@ interface AddTravelerModalProps {
   onClose: () => void;
   tripId: number;
   userId: number;
-  existingTravelerIds: number[];
+  travelers: TravelerPublic[];
   draft: TravelerCreateDraft;
   onDraftChange: (updates: Partial<TravelerCreateDraft>) => void;
   onTravelerAdded: () => void;
@@ -26,7 +26,7 @@ export default function AddTravelerModal({
   onClose,
   tripId,
   userId,
-  existingTravelerIds,
+  travelers,
   draft,
   onDraftChange,
   onTravelerAdded,
@@ -52,10 +52,8 @@ export default function AddTravelerModal({
   }, [open, userId]);
 
   useEffect(() => {
-    if (open) {
-      fetchAllTravelersForUser();
-    }
-  }, [open, fetchAllTravelersForUser]);
+    fetchAllTravelersForUser();
+  }, [fetchAllTravelersForUser, travelers]);
 
   // Reset to list view when modal opens
   useEffect(() => {
@@ -136,8 +134,14 @@ export default function AddTravelerModal({
   };
 
   // Filter out travelers already on this trip
-  const existingIds = new Set(existingTravelerIds);
-  const availableTravelers = allTravelers.filter((t) => !existingIds.has(t.id));
+  const existingIds = new Set(travelers.map((t) => t.id));
+  const parentIds = new Set(
+    allTravelers.filter((t) => t.parent_id).map((t) => t.parent_id),
+  );
+  const availableTravelers = travelers.filter(
+    (traveler: TravelerPublic) =>
+      !existingIds.has(traveler.id) && !parentIds.has(traveler.id),
+  );
 
   const title = view === "list" ? "Add Traveler" : "Create New Traveler";
 

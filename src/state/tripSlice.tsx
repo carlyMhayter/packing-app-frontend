@@ -22,7 +22,7 @@ export const loadTripThunk = createAsyncThunk(
   },
 );
 
-// fetches a trip by its ID
+// fetches all travelers on trip by its ID
 export const loadTripTravelersThunk = createAsyncThunk(
   "trips/loadTripTravelers",
   async ({ trip_id }: { trip_id: number }) => {
@@ -34,7 +34,7 @@ export const loadTripTravelersThunk = createAsyncThunk(
 const intialState: TripPublicState = {
   isLoading: false,
   error: null,
-  forecastTrip: null,
+  forecast_trip: null,
   id: 0,
   name: null,
   updated_at: null,
@@ -58,7 +58,7 @@ const tripSlice = createSlice({
       .addCase(loadTripThunk.fulfilled, (state, action) => {
         const data = action.payload;
         state.isLoading = false;
-        state.forecastTrip = data.forecast_trip;
+        state.forecast_trip = data.forecast_trip;
         state.id = data.id;
         state.name = data.name;
         state.updated_at = data.updated_at;

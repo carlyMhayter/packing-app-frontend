@@ -1,35 +1,57 @@
 /* ── Trip Summary ── */
 
-.trip-summary {
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
-}
-
 .trip-summary-header {
   display: flex;
+  flex-direction: row;
   align-items: center;
   justify-content: space-between;
   gap: 16px;
-  flex-wrap: wrap;
-  background-color: var(--lobsterLt);
-  padding: 0.5rem 1rem;
+  background-color: var(--steelBlueVLt);
+  padding: 1rem 1.5rem;
   border-radius: 0.5rem;
+}
+
+.trip-summary-left {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.trip-summary-timestamps {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  color: var(--dustyGrapeDark);
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.2;
 }
 
 .trip-summary-title {
   font-family: var(--heading);
   font-size: 32px;
   font-weight: 600;
-  color: var(--mahogany);
-  margin: 0;
+  color: var(--dustyGrapeVDark);
+  margin-bottom: 1rem;
 }
 
-.trip-summary-meta {
+.dates-data-container {
   display: flex;
+  flex-direction: row;
+  justify-content: space-between;
   align-items: center;
   gap: 24px;
+}
+
+.trip-summary-nights {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   flex-wrap: wrap;
+  background-color: var(--steelBlueVVLt);
+  width: 100%;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
 }
 
 .trip-summary-nights {

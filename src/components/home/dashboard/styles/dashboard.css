@@ -259,36 +259,6 @@
   }
 }
 
-/* ── Scientific Button (for New Trip) ── */
-
-.sci-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  font-family: var(--mono);
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: 0.4px;
-  text-transform: uppercase;
-  color: var(--lobster);
-  background: rgba(209, 79, 70, 0.06);
-  border: 1.5px solid var(--lobster);
-  border-radius: 4px;
-  padding: 5px 12px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  flex-shrink: 0;
-}
-
-.sci-btn:hover {
-  background: var(--lobster);
-  color: var(--white);
-}
-
-.sci-btn:active {
-  transform: scale(0.97);
-}
-
 .trip-section {
   grid-column: span 2;
 }
