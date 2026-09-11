@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo, useCallback } from "react";
+import { useEffect, useMemo, useCallback, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../hooks/reduxHooks";
 import "./styles/tripDetail.css";
 
@@ -25,13 +25,23 @@ const ALL_TAGS = [
   ...Object.values(ActivityOutdoorLocationTags),
 ];
 
-function AddTripActivities() {
+interface AddTripActivitiesProps {
+  selectedTags: string[];
+  selectedActivityIds: number[];
+  onTagsChange: (tags: string[]) => void;
+  onActivityIdsChange: (ids: number[]) => void;
+}
+
+function AddTripActivities({
+  selectedTags,
+  selectedActivityIds,
+  onTagsChange,
+  onActivityIdsChange,
+}: AddTripActivitiesProps) {
   const activities = useAppSelector(selectActivities);
   const error = useAppSelector(selectActivitiesError);
   const dispatch = useAppDispatch();
   const isLoading = useAppSelector(selectActivitiesIsLoading);
-  const [selectedTags, setSelectedTags] = useState<string[]>([]);
-  const [selectedActivityIds, setSelectedActivityIds] = useState<number[]>([]);
   const [showAll, setShowAll] = useState(false);
   const [showSubCategories, setShowSubCategories] = useState<boolean>(true);
 
@@ -62,29 +72,24 @@ function AddTripActivities() {
 
   const toggleTag = (tag: string) => {
     const categoryHasBeenSelected = selectedTags.some((tag: string) =>
-      Object.values(ActivityContextTags).includes(tag),
+      (Object.values(ActivityContextTags) as string[]).includes(tag),
     );
     console.log("categoryHasBeenSelected", categoryHasBeenSelected);
+    if (categoryHasBeenSelected) {
+      setShowSubCategories(true);
+    }
 
-    setSelectedTags((prev) => {
-      // console.log("prev", prev);
-      if (prev.includes(tag)) {
-        return prev.filter((t) => t !== tag);
-      }
-      const newValue = [...prev, tag];
-
-      // console.log("newValue", newValue);
-      return newValue;
-    });
+    const newTags = selectedTags.includes(tag)
+      ? selectedTags.filter((t) => t !== tag)
+      : [...selectedTags, tag];
+    onTagsChange(newTags);
   };
 
   const toggleActivity = (activityId: number) => {
-    setSelectedActivityIds((prev) => {
-      if (prev.includes(activityId)) {
-        return prev.filter((id) => id !== activityId);
-      }
-      return [...prev, activityId];
-    });
+    const newIds = selectedActivityIds.includes(activityId)
+      ? selectedActivityIds.filter((id) => id !== activityId)
+      : [...selectedActivityIds, activityId];
+    onActivityIdsChange(newIds);
   };
 
   const selectedTagList = ALL_TAGS.filter((tag) => selectedTags.includes(tag));
@@ -108,8 +113,8 @@ function AddTripActivities() {
           className="btn-text clear-selections-button"
           type="button"
           onClick={() => {
-            setSelectedTags([]);
-            setSelectedActivityIds([]);
+            onTagsChange([]);
+            onActivityIdsChange([]);
             setShowAll(false);
           }}
         >

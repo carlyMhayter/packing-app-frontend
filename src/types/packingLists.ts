@@ -60,3 +60,22 @@ export interface PackingListSectionUpdate {
   order?: number;
   traveler_id?: number;
 }
+
+export interface PackingListCreationDetails {
+  context_tags: string[];
+  indoor_tags: string[];
+  outdoor_tags: string[];
+  selected_activities: string[];
+  traveler_ids: number[];
+}
+
+export interface GeneratePackingListPayload {
+  trip_id: number;
+  category_details: PackingListCreationDetails;
+}
+
+export interface PackingListCreationResponse {
+  traveler_id: number;
+  list: PackingListPublic;
+  skeleton: Record<string, unknown>;
+}

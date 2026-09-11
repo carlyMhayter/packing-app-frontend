@@ -16,6 +16,8 @@ import TripPage from "../components/trips/TripPage.tsx";
 import AccountSettings from "../components/accountSettings/accountSettings.tsx";
 import TripsListPage from "../components/trips/TripsListPage.tsx";
 import RoutinePage from "../components/routines/routinePage.tsx";
+import MasterListPage from "../components/packingLists/MasterListPage.tsx";
+import ListPage from "../components/packingLists/ListPage.tsx";
 // function ProtectedRoute({ children }: { children: ReactNode }) {
 //   const { isAuthenticated, isLoading } = useAuth();
 //   if (isLoading) return <LoadingDots />;
@@ -77,6 +79,16 @@ const router = createBrowserRouter([
         path: "trips/:trip_id",
         Component: InternalLayout,
         children: [{ index: true, Component: TripPage }],
+      },
+      {
+        path: "trips/:trip_id/lists/all",
+        Component: InternalLayout,
+        children: [{ index: true, Component: MasterListPage }],
+      },
+      {
+        path: "lists/:list_id",
+        Component: InternalLayout,
+        children: [{ index: true, Component: ListPage }],
       },
       {
         path: "trip_planner",
